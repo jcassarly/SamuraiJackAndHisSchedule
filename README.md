@@ -1,8 +1,15 @@
 # Scheduling App
 
+## Authors:
+
+- Jack Doiron (jad245) <- Team Lead
+- Jared Cassarly (jwc160)
+- Shota Nemoto (srn24)
+- Martin Peters (mjp184)
+
 ## Overview
 
-The app will be a standard scheduler/calendar.  It will allow for easier User Experience than existing platforms like Google Calendar.  The way in which the User Experience will be streamlined will be through increasing the speed at which users can create events.  
+The app will be a standard scheduler/calendar.  It will allow for easier User Experience than existing platforms like Google Calendar.  The way in which the User Experience will be streamlined will be through increasing the speed at which users can create events.  Additionally, the application will be cross platform, allowing the user to manage their schedule on all of their devices.
 
 ## Features
 
@@ -22,7 +29,7 @@ This feature will also auto-update when the user adds more events to their calen
 
 ### Calendar Sync
 
-The application will maintain the calendar between all devices on which the user is signed in.
+The application will maintain the calendar between all devices on which the user is signed in.  As a result the application will also require the user to make an account in order to have access to this feature.
 
 ### Notifications
 
@@ -33,3 +40,7 @@ Additionally, it will allow the user to set the default notification delays easi
 ### API Integration
 
 The app will be able to integrate with other services using an API.
+
+### Compatibility
+
+The application will function on multiple different types of devices including Windows, Linux, Android, and iPhone.
