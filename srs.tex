@@ -251,8 +251,50 @@ meaningful tag of some kind.$>$
 
 REQ-1:	REQ-2:
 
-\section{System Feature 2 (and so on)}
+\section{Inter-Device Synchronization}
 
+\subsection{Description and Priority}
+This feature allows the user to synchronize their schedule between devices. 
+This will be done by allowing the user to register an account with which they
+can log into the application. The user's schedule will be associated with that
+account. All updates the user makes on their current device will be sent to the
+server, so that their changes will be pulled from the server when the user logs 
+in on a different device. Additionally, the user will be able to log out of 
+their account on their current device.
+
+\subsection{Stimulus/Response Sequences}
+When the application initially opens, the user will be prompted with a dialog
+box to enter their user-name and password. Once they have entered those, the 
+user's schedule will be displayed. Regardless of which device their are using,
+the schedule should be the same. Once the user is finished checking or editing
+the schedule, they will be able to click a button to log out of their account.
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item REQ-1: Account Dialog Box\newline
+    The dialog box will have the following features:
+    \begin{enumerate}
+        \item This dialog box will open at the start of the application.
+        \item Text fields that allow the user to enter their user-name and password
+        with the characters hidden.
+        \item A button that will verify the user's user-name and password when clicked
+        \item A button that will allow new users to register an account
+    \end{enumerate}
+    \item REQ-2: Account Registration
+    The user will be able to register an account with a user-name and password. 
+    The user-name and password will be used to log in at the account dialog box.
+    The server will store user-name and password pairs along with their associated
+    schedule.
+    \item REQ-3: Sending Updates
+    The application will send any updates made by the user to the server at a scheduled
+    interval. The updates will be applied to the schedule on the server.
+    \item REQ-4: Receiving Updates
+    The application will receive any updates made to the schedule on the server and 
+    update the schedule on the local device if the schedules are different
+    \item REQ-5: Logging out
+    The application will have a button that logs the user out of their account when 
+    pressed.
+\end{itemize}
 
 \chapter{Other Nonfunctional Requirements}
 
