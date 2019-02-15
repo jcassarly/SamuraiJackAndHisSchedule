@@ -218,6 +218,9 @@ The General Settings menu of the application provides the user with options that
 Stimulus: & The user opens the General Settings menu. \\
 Response: & All of the available options to customize are listed to the user with entry forms. \\
 \\
+Stimulus: & The user chooses the exit menu option. \\
+Response: & The application returns to the calendar view. \\
+\\
 Stimulus: & The user enters a new default value into one of the entry forms in the General Settings menu. \\
 Response: & The value used by the feature they are changing the setting for is updated within the application. The change is only used for future actions by the user.  No changes are automatically made to existing events. \\
 \\
@@ -226,12 +229,17 @@ Response: & The user is presented with an error and the application requests tha
 \\
 Stimulus: & The user chooses to change their email or reset their password. \\
 Response: & The application displays two new text fields under the selected option where the user enters their new email or password and then re-enters the same email or password.  Assuming both fields have matching text, the application updates the account with the new information on the server. \\
+\\
+Stimulus: & The user tries to login, logout, or register. \\
+Response: & The appropriate synchronization menu is opened and the user follows the prompts there. \\
 \end{tabular}
 \end{center}
 
 \subsection{Functional Requirements}
 \begin{center}
 \begin{tabular}{ | p{6cm} | p{9cm} | }
+\hline
+Settings.Exit & The General Settings menu shall have an option to leave the menu and return to the calendar. \\
 \hline
 Settings.Toolbar.SnapToGrid & The General Settings menu shall allow the user to set the default length of time that is used in the Toolbar's Snap to Grid feature. \\
 & \\
