@@ -21,6 +21,7 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{longtable}
 \hypersetup{
     bookmarks=false,    % show bookmarks bar?
     pdftitle={Software Requirement Specification},    % title
@@ -131,17 +132,17 @@ to satisfy.$>$
 
 \section{Operating Environment}
 \begin{center}
-\begin{tabular}{ p{1cm} p{14cm} }
-OE-1: & The GBUS application shall operate on the following platforms: Google Chrome version 72, Android version 7, iPhone versions 7, 8, and X. \\
-OE-2: & The GBUS application shall store all user account data on a server running the latest Debian Linux and Apache WebServer. \\
-\end{tabular}
+\begin{longtable}{ p{1cm} p{14cm} }
+OE-1: & The GBUS application shall operate on the following platforms: The latest version of Google Chrome, Android version 7, iPhone versions 7, 8, and X. \\
+OE-2: & The GBUS application shall store all user account data on a server running the latest Debian Linux and will be move to Amazon Web Services for production. \\
+\end{longtable}
 \end{center}
 
 \section{Design and Implementation Constraints}
 \begin{center}
-\begin{tabular}{ p{2cm} p{13cm} }
+\begin{longtable}{ p{2cm} p{13cm} }
 CO-1: & All JavaScript code shall conform to the Airbnb Javascript Style Guide \\
-\end{tabular}
+\end{longtable}
 \end{center}
 
 \section{User Documentation}
@@ -214,7 +215,7 @@ The General Settings menu of the application provides the user with options that
 
 \subsection{Stimulus/Response Sequences}
 \begin{center}
-\begin{tabular}{ p{2cm} p{13cm} }
+\begin{longtable}{ p{2cm} p{13cm} }
 Stimulus: & The user opens the General Settings menu. \\
 Response: & All of the available options to customize are listed to the user with entry forms. \\
 \\
@@ -232,12 +233,12 @@ Response: & The application displays two new text fields under the selected opti
 \\
 Stimulus: & The user tries to login, logout, or register. \\
 Response: & The appropriate synchronization menu is opened and the user follows the prompts there. \\
-\end{tabular}
+\end{longtable}
 \end{center}
 
 \subsection{Functional Requirements}
 \begin{center}
-\begin{tabular}{ | p{6cm} | p{9cm} | }
+\begin{longtable}{ | p{6cm} | p{9cm} | }
 \hline
 Settings.Exit & The General Settings menu shall have an option to leave the menu and return to the calendar. \\
 \hline
@@ -258,26 +259,24 @@ Settings.AutoScheduling.MaxTime & The General Settings menu shall allow the user
 Settings.AutoScheduling.MaxTime. Constraints & The General Settings menu shall not allow the user to set a default maximum event time less than the minimum event time. \\
 & \\
 Settings.AutoScheduling.MaxTime. Default & The default maximum event time for the auto scheduler shall be set to 1 hour until changed by the user. \\
+& \\
+Settings.AutoScheduling. MinOpenTime & The General Settings menu shall allow the user to set the default minimum amount of time that must be between auto scheduled deadline events. \\
+& \\
+Settings.AutoScheduling. MinOpenTime.Default & The default minimum open time between deadline events for the auto scheduler shall be set to 15 hour until changed by the user. \\
 \hline
 Settings.Language & The General Settings menu shall allow the user to change the language localization from a list of available languages. \\
 & \\
 Settings.Language.Default & The default language localization used by the application shall be English. \\
 \hline
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ | p{6cm} | p{9cm} | }
-\hline
 Settings.Events.Notifications & The General Settings menu shall allow the user to set the default notifications from the following choices: banner, popup, off. \\
 & \\
 Settings.Events.Notifications.Default & The default notification setting shall be a banner by default \\
 & \\
-Settings.Events.Notifications.Time & The General Settings menu shall allow the user to set the default amount of time for a notification on an event. \\
+Settings.Events.Notifications.Time & The General Settings menu shall allow the user to set the default amount of time before the event to notify the user. \\
 & \\
 Settings.Events.Notifications. Time.Default & The default amount of time for a notification on an event shall be set to 5 minutes until changed by the user. \\
 & \\
-Settings.Events.Duration & The General Settings menu shall allow the user to set the default duration for an event. \\
+Settings.Events.Duration & The General Settings menu shall allow the user to set the default duration for a standard event. \\
 & \\
 Settings.Events.Duration.Default & The default duration for an event shall be set to 1 hour until changed by the user. \\
 & \\
@@ -291,13 +290,13 @@ Settings.Account.Logout & The General Settings menu shall allow the user to logo
 & \\
 Settings.Account.Register & The General Settings menu shall allow the user to create a new account and then login. \\
 & \\
-Settings.Account.View & The General Settings menu shall allow the user to view their account information (email and password) after logging in. \\
+Settings.Account.View & The General Settings menu shall allow the user to view their account information (email and option to reset password) after logging in. \\
 & \\
 Settings.Account.ChangeEmail & The General Settings menu shall allow the user to change their account email after logging in. \\
 & \\
 Settings.Account.ResetPassword & The General Settings menu shall allow the user to reset the password for their account after logging in. \\
 \hline
-\end{tabular}
+\end{longtable}
 \end{center}
 
 \section{System Feature 2 (and so on)}
