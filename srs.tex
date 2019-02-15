@@ -310,15 +310,17 @@ Auto.Deadline.MinTime & The length of time that a time block is scheduled may no
 be less than the minimum specified time by the user.\\
 & \\
 Auto.Deadline.MaxTime & The length of time that a time block is scheduled may not
-be greater than the maximum specified time by the user.  In addition, any blocks
-that are less than 1 hour apart count toward this time.\\
+be greater than the maximum specified time by the user.\\
+& \\
+Auto.Deadline.TimeBetween & There must be a time between blocks of the same event
+sepecified by the Settings.AutoScheduling.MinOpenTime.\\
 & \\
 Auto.Deadline.Breaks & If specified by the user, time blocks must contain breaks
 of a specified length such that there is no contiguous length of time greater
 than specified by the user during which a block of the deadline event is scheduled
-but no break is scheduled.  The minimum number of breaks must be used to achieve this.
-Breaks count toward total block length, but do not contribute to the total time of
-the deadline event.\\
+but no break is scheduled.  The algorithm must use the fewest number of breaks
+possible.  Breaks count toward total block length, but do not contribute to the
+total time of the deadline event.\\
 \hline
 Auto.Schedule & The auto scheduler must create a valid schedule.\\
 & \\
@@ -372,8 +374,8 @@ No safety Requirements have been identified
 \begin{center}
 \begin{tabular}{ p{1.5cm} p{13cm} }
 SE-1: & All communication between the server and client must be encrypted over https.\\
-SE-2: & Plaintext passwords must not be stored on the server ever and should only be
-stored in the database salted and hashed.\\
+SE-2: & Plaintext passwords must not be stored on the server and should only be
+stored in the database after being salted and hashed.\\
 SE-3: & Users may only see their own information including but not limited to calendar
 events and personal info such as name and email unless granted permission by the owner.
 No other parties may have access to this information.
