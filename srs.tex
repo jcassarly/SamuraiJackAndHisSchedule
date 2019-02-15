@@ -21,6 +21,7 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{longtable}
 \hypersetup{
     bookmarks=false,    % show bookmarks bar?
     pdftitle={Software Requirement Specification},    % title
@@ -160,9 +161,23 @@ customer’s organization will be responsible for maintaining the delivered
 software).$>$
 
 \section{User Documentation}
-$<$List the user documentation components (such as user manuals, on-line help, 
-and tutorials) that will be delivered along with the software. Identify any 
-known user documentation delivery formats or standards.$>$
+The user documentation includes: 
+\begin{itemize}
+    \item General help page\newline
+    This page will provide links to other help pages specialized for particular
+    features as well as answers to frequently asked questions.
+    \item Event creation help page\newline
+    This page will contain a step-by-step procedure of how to create events 
+    and pictures of the relevant sections of the user interface.
+    \item Event editing help page\newline
+    This page will contain typical sequences for editing event attributes. It 
+    includes information about the editing toolbar as well as editing events 
+    from the event information screen.
+    \item Auto-scheduling help page\newline
+    This page will contain information about how the auto-scheduler identifies 
+    time-slots to place its events as well as how each setting alters its behavior.
+\end{itemize}
+
 \section{Assumptions and Dependencies}
 
 $<$List any assumed factors (as opposed to known facts) that could affect the 
@@ -263,38 +278,65 @@ in on a different device. Additionally, the user will be able to log out of
 their account on their current device. This feature will be \textbf{medium} priority.
 
 \subsection{Stimulus/Response Sequences}
-When the application initially opens, the user will be prompted with a dialog
-box to enter their user-name and password. Once they have entered those, the 
-user's schedule will be displayed. Regardless of which device their are using,
-the schedule should be the same. Once the user is finished checking or editing
-the schedule, they will be able to click a button to log out of their account.
+\begin{center}
+    \begin{tabular}{ p{2cm} p{13cm} }
+    Stimulus: & User opens application\\
+    Response: & Application opens login dialog box for the user to enter their user-name
+    and password.\\
+    \\
+    Stimulus: & User verifies login information\\
+    Response: & If the information was correct, the user's schedule will be displayed.
+    If not, the user will be informed it was incorrect and prompt for login information 
+    again.\\
+    \\
+    Stimulus: & User attempts to register account\\
+    Response: & Application opens up a new prompt where the user may create a new
+    account and register it with the server.\\
+    \\
+    Stimulus: & User edits schedule locally\\
+    Response: & Application sends the updates to the server and applies changes to 
+    schedule on the server\\
+    \\
+    Stimulus: & User edits schedule on remote device\\
+    Response: & Application receives the updates from the server and applies changes 
+    schedule on local device.\\
+    \\
+    Stimulus: & User logs out of application\\
+    Response: & Application closes the schedule and redisplays the login dialog box.\\
+    \end{tabular}
+\end{center}
 
 \subsection{Functional Requirements}
-\begin{itemize}
-    \item REQ-1: Account Dialog Box\newline
-    The dialog box will have the following features:
-    \begin{enumerate}
-        \item This dialog box will open at the start of the application.
-        \item Text fields that allow the user to enter their user-name and password
-        with the characters hidden.
-        \item A button that will verify the user's user-name and password when clicked
-        \item A button that will allow new users to register an account
-    \end{enumerate}
-    \item REQ-2: Account Registration\newline
-    The user will be able to register an account with a user-name and password. 
-    The user-name and password will be used to log in at the account dialog box.
-    The server will store user-name and password pairs along with their associated
-    schedule.
-    \item REQ-3: Sending Updates\newline
-    The application will send any updates made by the user to the server at a scheduled
-    interval. The updates will be applied to the schedule on the server.
-    \item REQ-4: Receiving Updates\newline
-    The application will receive any updates made to the schedule on the server and 
-    update the schedule on the local device if the schedules are different
-    \item REQ-5: Logging out\newline
-    The application will have a button that logs the user out of their account when 
-    pressed.
-\end{itemize}
+\begin{center}
+    \begin{longtable}{ | p{6cm} | p{9cm} | }
+    \hline
+    Sync.Login & The application must prompt the user for their login information
+    upon startup.\\
+    & \\
+    Sync.Login.User-name & The login dialog box must allow the user to type their 
+    user-name into a text field.\\
+    & \\
+    Sync.Login.Password & The login dialog box must allow the user to type their 
+    password into a text field while hiding their entry.\\
+    & \\
+    Sync.Login.Verify & The login dialog box must allow the user to verify their
+    entered login information. Application will query the server for the
+    user-name and password pair. If it was correct they will see their schedule, 
+    if not they will be prompted for their login information again.\\
+    Sync.Login.Register & The login dialog box must open a new dialog box to allow the 
+    user to create a new account and register it with the server\\
+    \hline
+    Sync.Update.Send & The application will send any updates made by the user to the 
+    server at a scheduled interval. The updates will be applied to the schedule on the server.\\
+    & \\
+    Sync.Update.Receive & The application will receive any updates made to the schedule
+    on the server and update the schedule on the local device if the schedules are different.\\
+    \hline
+    Sync.Logout & The application will allow the user to log out of their account. The
+    application then displays the login dialog box. While closing the previous schedule\\
+    \hline
+    \end{longtable}
+\end{center}
 
 \section{Editing Toolbar}
 
@@ -305,56 +347,92 @@ such as drag and drop, re-size, cut and paste, and add from existing. These edit
 tools will be selected via the toolbar.
 
 \subsection{Stimulus/Response Sequences}
+\begin{center}
+    \begin{tabular}{ p{2cm} p{13cm} }
+    Stimulus: & User selects tool (clicking on tool's icon)\\
+    Response: & Application registers subsequent clicks as using the selected tool and 
+    adjusts events accordingly.\\
+    \\
+    Stimulus: & User uses drag and drop tool (click event then hold+drag)\\
+    Response: & Application adjusts corresponding event's start and end times.\\
+    \\
+    Stimulus: & User uses re-size tool (click event edge then hold+drag top or bottom edge)\\
+    Response: & Application adjusts corresponding event's start time if the top
+    edge was moved, end time if the bottom edge was moved.\\
+    \\
+    Stimulus: & User uses copy and paste tool (click event then click on new time slot)\\
+    Response: & Application selects event for "copying" and places a new copy of the event
+    in the time slot where the user clicks. Subsequent clicks add additional copies of 
+    the event. The original event is preserved.\\
+    \\
+    Stimulus: & User uses cut and paste tool (click event then click on new time slot)\\
+    Response: & Application selects event for "cutting" and places a new copy of the event 
+    in the time slot where the user clicks. Subsequent clicks add additional copies of 
+    the event. The original event is removed.\\
+    \\
+    Stimulus: & User deselects tool (clicking on tool's icon again or selecting different tool)\\
+    Response: & Application registers subsequent clicks as normal if tool's icon
+    was clicked again. If the cut and paste tool was deselected, the "cut" event 
+    is no longer pasted on clicks. If new tool was selected, registers subsequent clicks as 
+    using the new tool. 
+    \end{tabular}
+\end{center}
 The user will select a tool on the toolbar by clicking the tool's corresponding icon
 then apply the tool to events on the schedule. The user can then utilize the tools 
 by clicking on the events in their graphical user interface. The tools can be de-selected
 by clicking on their icon in the toolbar.
 
 \subsection{Functional Requirements}
-\begin{itemize}
-    \item REQ-1: Drag and drop tool\newline 
-    The user will click and hold on the event to select it, then move their cursor
-    while still holding on the event to change the time.
-    \item REQ-2: Re-size tool\newline
-    The user will click and hold on the top edge of the event to select the start 
-    time of the event, then move their cursor while still holding onto the event to
-    change the start time. The same will occur with the bottom edge and the end time.
-    \item REQ-3: Cut and Paste tool\newline
-    The user will click on an event to select it for "cutting", then click on a 
-    different time to place it there. Additional clicks will place another copy
-    of the event.
-\end{itemize}
-
-\section{User Documentation}
-This feature includes tutorials the application provides to help the user create
-and edit events in their schedule as well as utilize the auto-scheduling feature.
-
-\subsection{Stimulus/Response Sequences}
-The user will click on a button that will open a page containing information about 
-the application. The first page will contain frequently asked questions and links 
-to other pages which contain more information about specific features. Each of the 
-subsequent pages contain links to the other pages and a button to return to the 
-application.
-
-\subsection{Functional Requirements}
-\begin{itemize}
-    \item REQ-1: Main help page
-    This page will be directly accessible from the application's main screen. It 
-    will contain frequently asked questions and links to additional help pages
-    that are specific to certain features.
-    \item REQ-2: Event creation help page
-    This page will be linked to by the main help page and contain information about
-    the event creation process. It will contain a step-by-step procedure and pictures
-    of relevant sections of the application.
-    \item REQ-3: Event editing help page
-    This page will be linked to by the main help page and contain information about
-    editing existing events. It will contain typical sequences for using the editing 
-    toolbar and directly altering the event's attributes from its information screen.
-    \item REQ-4: Auto-scheduling help page
-    This page will be linked to by the main help page and contain information about 
-    how the auto-scheduler identifies time-slots to place its events as well as how
-    each setting alters its behavior.
-\end{itemize}
+\begin{center}
+    \begin{longtable}{ | p{6cm} | p{9cm} | }
+    \hline
+    Toolbar.Select.DragDrop & The application registers the drag and drop tool
+    as selected when the user clicks on the drag and drop icon in the toolbar.\\
+    & \\
+    Toolbar.Select.Re-size & The application registers the re-size tool as selected
+    when the user clicks on the re-size icon in the toolbar.\\
+    & \\
+    Toolbar.Select.CutPaste & The application registers the cut and paste tool
+    as selected when the user clicks on the cut and paste icon in the toolbar.\\
+    \hline
+    Toolbar.DragDrop & The application moves the start and end times to the new 
+    times specified by the user when the drag and drop tool is selected\\
+    & \\ 
+    Toolbar.DragDrop.Drag & The application moves the event in the graphical
+    interface following the user's cursor after the event was clicked on and
+    not released.\\
+    & \\
+    Toolbar.DragDrop.Release & The application moves the start and end times to
+    the new times specified by the time slot the user released the event in.\\
+    \hline
+    Toolbar.Re-size & The application adjusts the duration of the specified event.\\
+    & \\
+    Toolbar.Re-size.DragEdge & The application moves the top or bottom edge
+    of the event in the graphical interface when the edge was clicked and not 
+    released. The edge follows the cursor.\\
+    & \\ 
+    Toolbar.Re-size.Release & The application moves the start time to the new time
+    specified by where the user released the top edge of the event. The end time
+    will be moved if the bottom edge was released.\\
+    \hline
+    Toolbar.Copy & The application adds copies of an event at time slots specified
+    by the user. The original event is preserved.\\
+    & \\
+    Toolbar.Copy.Select & The application selects the event for "copying".\\
+    & \\
+    Toolbar.Copy.Paste & The application creates a copy of the event selected
+    for "copying" at the specified time slot.\\
+    \hline
+    Toolbar.Cut & The application adds copies of an event at time slots specified
+    by the user. The original event is removed.\\
+    & \\
+    Toolbar.Cut.Select & The application selects the event for "cutting".\\
+    & \\
+    Toolbar.Cut.Paste & The application creates a copy of the event selected
+    for "cutting" at the specified time slot.\\
+    \hline
+    \end{longtable}
+\end{center}
 
 \chapter{Other Nonfunctional Requirements}
 
