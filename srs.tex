@@ -260,7 +260,7 @@ can log into the application. The user's schedule will be associated with that
 account. All updates the user makes on their current device will be sent to the
 server, so that their changes will be pulled from the server when the user logs 
 in on a different device. Additionally, the user will be able to log out of 
-their account on their current device.
+their account on their current device. This feature will be \textbf{medium} priority.
 
 \subsection{Stimulus/Response Sequences}
 When the application initially opens, the user will be prompted with a dialog
@@ -280,20 +280,49 @@ the schedule, they will be able to click a button to log out of their account.
         \item A button that will verify the user's user-name and password when clicked
         \item A button that will allow new users to register an account
     \end{enumerate}
-    \item REQ-2: Account Registration
+    \item REQ-2: Account Registration\newline
     The user will be able to register an account with a user-name and password. 
     The user-name and password will be used to log in at the account dialog box.
     The server will store user-name and password pairs along with their associated
     schedule.
-    \item REQ-3: Sending Updates
+    \item REQ-3: Sending Updates\newline
     The application will send any updates made by the user to the server at a scheduled
     interval. The updates will be applied to the schedule on the server.
-    \item REQ-4: Receiving Updates
+    \item REQ-4: Receiving Updates\newline
     The application will receive any updates made to the schedule on the server and 
     update the schedule on the local device if the schedules are different
-    \item REQ-5: Logging out
+    \item REQ-5: Logging out\newline
     The application will have a button that logs the user out of their account when 
     pressed.
+\end{itemize}
+
+\section{Editing Toolbar}
+
+\subsection{Description and Priority}
+This feature allows the user to edit their schedule directly in the application's
+graphical display. There will be a toolbar providing the user with editing tools
+such as drag and drop, re-size, cut and paste, and add from existing. These editing
+tools will be selected via the toolbar.
+
+\subsection{Stimulus/Response Sequences}
+The user will select a tool on the toolbar by clicking the tool's corresponding icon
+then apply the tool to events on the schedule. The user can then utilize the tools 
+by clicking on the events in their graphical user interface. The tools can be de-selected
+by clicking on their icon in the toolbar.
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item REQ-1: Drag and drop tool\newline 
+    The user will click and hold on the event to select it, then move their cursor
+    while still holding on the event to change the time.
+    \item REQ-2: Re-size tool\newline
+    The user will click and hold on the top edge of the event to select the start 
+    time of the event, then move their cursor while still holding onto the event to
+    change the start time. The same will occur with the bottom edge and the end time.
+    \item REQ-3: Cut and Paste tool\newline
+    The user will click on an event to select it for "cutting", then click on a 
+    different time to place it there. Additional clicks will place another copy
+    of the event.
 \end{itemize}
 
 \chapter{Other Nonfunctional Requirements}
