@@ -161,14 +161,9 @@ example, in the vision and scope document or the project plan).$>$
 \chapter{External Interface Requirements}
 
 \section{User Interfaces}
-$<$Describe the logical characteristics of each interface between the software
-product and the users. This may include sample screen images, any GUI standards
-or product family style guides that are to be followed, screen layout
-constraints, standard buttons and functions (e.g., help) that will appear on
-every screen, keyboard shortcuts, error message display standards, and so on.
-Define the software components for which a user interface is needed. Details of
-the user interface design should be documented in a separate user interface
-specification.$>$
+There are three different interfaces. The primary interface is the calendar page, which displays 4 weeks, starting with the first week in the current month. On this page the toolbar is placed next to the calendar, with editing tools for the calendar as well as access to the general settings page on it. The calendar page will allow the user to drag and drop events into new locations on the calendar. The second interface is the event editing page, accessible by double-clicking or tapping on an event. The event editing page is in list format, with each point corresponding to an editable trait of the event, which the user is able to edit from either a drop-down menu or a text box, depending on the trait. The third user interface is the general settings page, which is laid out in list format, and the items in that list are enumerated in the general settings section.
+
+
 
 \section{Hardware Interfaces}
 $<$Describe the logical and physical characteristics of each interface between
@@ -395,6 +390,88 @@ edit mode with the new schedule, but no changes are made to their calendar.\\
 Auto.Diff.Reject & If the user rejects the schedule, they are returned to their
 calendar view and the new schedule is thrown out with no changes being made to
 their calendar.\\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Events}
+
+\subsection{Description and Priority}
+Events are blocks of time on the calendar with attached reminders as the time of the event approaches. Priority = High.
+
+\subsection{Event Types}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Standard Event &
+The default event type. This is locked by default.\\
+\\
+Location Event &
+The event type which denotes the location of the user is within its duration.\\
+\\
+Deadline without Location &
+The autoscheduler schedules times to work before this event happens. It takes as input
+approximate working time as well as the standard event inputs.\\
+\\
+Deadline with Location &
+This is the same as the Deadline without Location, with the addition 
+that working time can only be scheduled when the user is within the duration of a certain named Location Event.\\
+\\
+\end{tabular}
+\end{center}
+
+\subsection{Stimulus/Response Sequences}
+\begin{center}
+\begin{longtable}{ p{2cm} p{13cm} }
+Stimulus: & The user clicks the button to create an event. \\
+Response: & A form is opened which presents the user with the option to change the event characteristics and type.\\
+\\
+Stimulus: & The user chooses the option to finish the event creation form. \\
+Response: & The application returns to the calendar view and creates an event as specified by the form. \\
+\\
+Stimulus: & The user double clicks or taps on an existing event. \\
+Response: & The event editing form is opened. \\
+\\
+Stimulus: & The user exits the event editing form by clicking or tapping an "apply" button. \\
+Response: & The event characteristics are changed and the event is moved on the calendar if necessary. \\
+\\
+Stimulus: & The user clicks or taps the delete button while an event is selected. \\
+Response: & The application displays a popup which asks the user for confirmation. If the user confirms, the event is deleted. \\
+\\
+Stimulus: & The user drags an event to a place on the calendar. \\
+Response: & The event snaps to the grid, avoiding overlap with other non-location event. \\
+\end{longtable}
+\end{center}
+
+\subsection{Functional Requirements}
+\begin{center}
+\begin{longtable}{ | p{6cm} | p{9cm} | }
+\hline
+Event.TimePeriod & Event start and end times can be set. \\
+\hline
+Event.Location & Events can have a location attached to them. Location events must have this characteristic. \\
+& \\
+Event.Notifications & Events have editable notification settings (time before event, types of notification).\\
+\hline
+Event.Frequency & Events can be set to repeat after a set amount of time (weekly, monthy, yearly, etc.) \\
+& \\
+Event.Lock & Events can be set to be unable to be moved by the autoscheduler. \\
+& \\
+Event.Unlock & Events can set a range in which the autoscheduler can schedule them.\\
+& \\
+Event.Create & Events can be created on the calendar. \\
+& \\
+Event.Edit & Events can be opened for editing after creation. \\
+& \\
+Event.Delete & Events can be deleted from the calendar. \\
+& \\
+Event.Standard.StartTime & Events have a start time which can be adjusted in the editing form. \\
+& \\
+Event.Standard.EndTime & Events have an end time which can be adjusted in the editing form. \\
+& \\
+Event.Deadline.Deadline & Deadline Events have a deadline, before which all scheduled work for that deadline must be placed. \\
+& \\
+Event.Deadline.WorkTime & Deadline Events have a duration of time that they must schedule for work before the deadline time. \\
+
 \hline
 \end{longtable}
 \end{center}
