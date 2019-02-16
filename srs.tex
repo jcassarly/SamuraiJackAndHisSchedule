@@ -143,9 +143,23 @@ CO-1: & All JavaScript code shall conform to the \textit{Airbnb Javascript Style
 \end{center}
 
 \section{User Documentation}
-$<$List the user documentation components (such as user manuals, on-line help,
-and tutorials) that will be delivered along with the software. Identify any
-known user documentation delivery formats or standards.$>$
+The user documentation includes:
+\begin{itemize}
+    \item General help page\newline
+    This page will provide links to other help pages specialized for particular
+    features as well as answers to frequently asked questions.
+    \item Event creation help page\newline
+    This page will contain a step-by-step procedure of how to create events
+    and pictures of the relevant sections of the user interface.
+    \item Event editing help page\newline
+    This page will contain typical sequences for editing event attributes. It
+    includes information about the editing toolbar as well as editing events
+    from the event information screen.
+    \item Auto-scheduling help page\newline
+    This page will contain information about how the auto-scheduler identifies
+    time-slots to place its events as well as how each setting alters its behavior.
+\end{itemize}
+
 \section{Assumptions and Dependencies}
 
 $<$List any assumed factors (as opposed to known facts) that could affect the
@@ -394,6 +408,179 @@ their calendar.\\
 \end{longtable}
 \end{center}
 
+\section{Inter-Device Synchronization}
+
+\subsection{Description and Priority}
+This feature allows the user to synchronize their schedule between devices.
+This will be done by allowing the user to register an account with which they
+can log into the application. The user's schedule will be associated with that
+account. All updates the user makes on their current device will be sent to the
+server, so that their changes will be pulled from the server when the user logs
+in on a different device. Additionally, the user will be able to log out of
+their account on their current device. This feature will be \textbf{medium} priority.
+
+\subsection{Stimulus/Response Sequences}
+\begin{center}
+    \begin{tabular}{ p{2cm} p{13cm} }
+    Stimulus: & User opens application\\
+    Response: & Application opens login dialog box for the user to enter their user-name
+    and password if the user is not already logged in.\\
+    \\
+    Stimulus: & User verifies login information\\
+    Response: & If the information was correct, the user's schedule will be displayed.
+    If not, the user will be informed it was incorrect and prompt for login information
+    again.\\
+    \\
+    Stimulus: & User attempts to register account\\
+    Response: & Application opens up a new prompt where the user may create a new
+    account and register it with the server.\\
+    \\
+    Stimulus: & User edits schedule locally\\
+    Response: & Application sends the updates to the server and applies changes to
+    schedule on the server\\
+    \\
+    Stimulus: & User edits schedule on remote device\\
+    Response: & Application receives the updates from the server and applies changes
+    to the schedule on local device.\\
+    \\
+    Stimulus: & User logs out of application\\
+    Response: & Application closes the schedule and redisplays the login dialog box.\\
+    \end{tabular}
+\end{center}
+
+\subsection{Functional Requirements}
+\begin{center}
+    \begin{longtable}{ | p{6cm} | p{9cm} | }
+    \hline
+    Sync.Login & The application must prompt the user for their login information
+    upon startup if they are not already logged in.\\
+    & \\
+    Sync.Login.User-name & The login dialog box must allow the user to type their
+    user-name into a text field.\\
+    & \\
+    Sync.Login.Password & The login dialog box must allow the user to type their
+    password into a text field while hiding their entry.\\
+    & \\
+    Sync.Login.Verify & The login dialog box must allow the user to verify their
+    entered login information. Application will query the server for the
+    user-name and password pair. If it was correct they will see their schedule,
+    if not they will be prompted for their login information again.\\
+    & \\
+    Sync.Login.Register & The login dialog box must open a new dialog box to allow the
+    user to create a new account and register it with the server\\
+    \hline
+    Sync.Update.Send & The application will send any updates made by the user to the
+    server at a scheduled interval. The updates will be applied to the schedule on the server.\\
+    & \\
+    Sync.Update.Receive & The application will receive any updates made to the schedule
+    on the server and update the schedule on the local device if the schedules are different.\\
+    \hline
+    Sync.Logout & The application will allow the user to log out of their account. The
+    application then displays the login dialog box. While closing the previous schedule\\
+    \hline
+    \end{longtable}
+\end{center}
+
+\section{Editing Toolbar}
+
+\subsection{Description and Priority}
+This feature allows the user to edit their schedule directly in the application's
+graphical display. There will be a toolbar providing the user with editing tools
+such as drag and drop, re-size, cut, copy, paste, and add from existing. These editing
+tools will be selected via the toolbar. Priority = High.
+
+\subsection{Stimulus/Response Sequences}
+\begin{center}
+    \begin{tabular}{ p{2cm} p{13cm} }
+    Stimulus: & User selects tool (clicking on tool's icon)\\
+    Response: & Application registers subsequent clicks as using the selected tool and
+    adjusts events accordingly.\\
+    \\
+    Stimulus: & User uses drag and drop tool (click event then hold+drag)\\
+    Response: & Application adjusts corresponding event's start and end times. The event
+    will be movable within a grid with cells corresponding to a specified time
+    interval (for example 15 minute intervals)\\
+    \\
+    Stimulus: & User uses re-size tool (click event edge then hold+drag top or bottom edge)\\
+    Response: & Application adjusts corresponding event's start time if the top
+    edge was moved, end time if the bottom edge was moved. The edges will also be adjustable
+    to the grid as mentioned in the drag and drop tool above.\\
+    \\
+    Stimulus: & User uses copy tool (click event)\\
+    Response: & Application selects event for "copying". This original event is preserved.\\
+    \\
+    Stimulus: & User uses cut tool (click event)\\
+    Response: & Application selects event for "cutting". This original event is removed.\\
+    \\
+    Stimulus: & User uses paste tool (click a new time slot)\\
+    Response: & Application places a new copy of the event selected for "cutting" or "copying"
+    in the time slot where the user clicks. Subsequent clicks add additional copies of the
+    event. Only one event can be cut or copied at once.\\
+    \\
+    Stimulus: & User deselects tool (clicking on tool's icon again or selecting different tool)\\
+    Response: & Application registers subsequent clicks as normal if tool's icon
+    was clicked again. If new tool was selected, registers subsequent clicks as
+    using the new tool.
+    \end{tabular}
+\end{center}
+The user will select a tool on the toolbar by clicking the tool's corresponding icon
+then apply the tool to events on the schedule. The user can then utilize the tools
+by clicking on the events in their graphical user interface. The tools can be de-selected
+by clicking on their icon in the toolbar.
+
+\subsection{Functional Requirements}
+\begin{center}
+    \begin{longtable}{ | p{6cm} | p{9cm} | }
+    \hline
+    Toolbar.Select.DragDrop & The application registers the drag and drop tool
+    as selected when the user clicks on the drag and drop icon in the toolbar.\\
+    & \\
+    Toolbar.Select.Re-size & The application registers the re-size tool as selected
+    when the user clicks on the re-size icon in the toolbar.\\
+    & \\
+    Toolbar.Select.Cut & The application registers the cut tool
+    as selected when the user clicks on the cut icon in the toolbar.\\
+    & \\
+    Toolbar.Select.Copy & The application registers the copy tool as selected
+    when the user clicks on the copy icon in the toolbar.\\
+    & \\
+    Toolbar.Select.Paste & The application registers the paste tool as selected
+    when the user clicks on the paste icon in the toolbar.\\
+    \hline
+    Toolbar.DragDrop & The application moves the start and end times to the new
+    times specified by the user when the drag and drop tool is selected\\
+    & \\
+    Toolbar.DragDrop.Drag & The application moves the event in the graphical
+    interface following the user's cursor after the event was clicked on and
+    not released.\\
+    & \\
+    Toolbar.DragDrop.Release & The application moves the start and end times to
+    the new times specified by the time slot the user released the event in.\\
+    \hline
+    Toolbar.Re-size & The application adjusts the duration of the specified event.\\
+    & \\
+    Toolbar.Re-size.DragEdge & The application moves the top or bottom edge
+    of the event in the graphical interface when the edge was clicked and not
+    released. The edge follows the cursor.\\
+    & \\
+    Toolbar.Re-size.Release & The application moves the start time to the new time
+    specified by where the user released the top edge of the event. The end time
+    will be moved if the bottom edge was released.\\
+    \hline
+    Toolbar.Copy & The application selects the event for "copying". The
+    event remains unchanged.\\
+    & \\
+    Toolbar.Cut & The application selects the event for "cutting". The
+    event is removed from the schedule.\\
+    & \\
+    Toolbar.Paste & The application creates a copy of the event selected
+    for "cutting" or "copying" at the specified time slot. Only one
+    event can be selected at a time.\\
+    & \\
+    \hline
+    \end{longtable}
+\end{center}
+
 \section{Events}
 
 \subsection{Description and Priority}
@@ -401,21 +588,22 @@ Events are blocks of time on the calendar with attached reminders as the time of
 
 \subsection{Event Types}
 \begin{center}
-\begin{tabular}{ p{2cm} p{13cm} }
+\begin{tabular}{ | p{5cm} | p{10cm} | }
+\hline
 Standard Event &
 The default event type. This is locked by default.\\
-\\
+\hline
 Location Event &
 The event type which denotes the location of the user is within its duration.\\
-\\
+\hline
 Deadline without Location &
 The autoscheduler schedules times to work before this event happens. It takes as input
 approximate working time as well as the standard event inputs.\\
-\\
+\hline
 Deadline with Location &
-This is the same as the Deadline without Location, with the addition 
+This is the same as the Deadline without Location, with the addition
 that working time can only be scheduled when the user is within the duration of a certain named Location Event.\\
-\\
+\hline
 \end{tabular}
 \end{center}
 
