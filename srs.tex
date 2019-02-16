@@ -643,6 +643,10 @@ Event.Lock & Events can be set to be unable to be moved by the autoscheduler. \\
 & \\
 Event.Unlock & Events can set a range in which the autoscheduler can schedule them.\\
 & \\
+Event.Name & Events have unique identifiers. \\
+& \\
+Event.Description & Events can have descriptions.\\
+& \\
 Event.Create & Events can be created on the calendar. \\
 & \\
 Event.Edit & Events can be opened for editing after creation. \\
@@ -711,10 +715,12 @@ a locales file which can contain alternatives for supported languages.\\
 
 \chapter{Appendix A: Glossary}
 %see https://en.wikibooks.org/wiki/LaTeX/Glossary
-$<$Define all the terms necessary to properly interpret the SRS, including
-acronyms and abbreviations. You may wish to build a separate glossary that spans
-multiple projects or the entire organization, and just include terms specific to
-a single project in each SRS.$>$
+\\
+Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.\\
+\\
+Event - A block of time on the scheduler with characteristics such as start time, end time, 
+location, description, name, locked toggle, etc. (see Event functional requirements).\\
+\\
 
 \chapter{Appendix B: Analysis Models}
 $<$Optionally, include any pertinent analysis models, such as data flow
