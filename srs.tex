@@ -161,9 +161,7 @@ example, in the vision and scope document or the project plan).$>$
 \chapter{External Interface Requirements}
 
 \section{User Interfaces}
-
-\subsection{Description and Priority}
-$<$There are three different interfaces. The primary interface is the calendar page, which displays 4 weeks, starting with the first week in the current month. On this page the toolbar is placed next to the calendar, with editing tools for the calendar as well as access to the general settings page on it. The calendar page will allow the user to drag and drop events into new locations on the calendar. The second interface is the event editing page, accessible by double-clicking or tapping on an event. The event editing page is in list format, with each point corresponding to an editable trait of the event, which the user is able to edit from either a drop-down menu or a text box, depending on the trait. The third user interface is the general settings page, which is laid out in list format, and the items in that list are enumerated in the general settings section. Priority = High.$>$
+There are three different interfaces. The primary interface is the calendar page, which displays 4 weeks, starting with the first week in the current month. On this page the toolbar is placed next to the calendar, with editing tools for the calendar as well as access to the general settings page on it. The calendar page will allow the user to drag and drop events into new locations on the calendar. The second interface is the event editing page, accessible by double-clicking or tapping on an event. The event editing page is in list format, with each point corresponding to an editable trait of the event, which the user is able to edit from either a drop-down menu or a text box, depending on the trait. The third user interface is the general settings page, which is laid out in list format, and the items in that list are enumerated in the general settings section.
 
 
 
@@ -399,13 +397,13 @@ their calendar.\\
 \section{Events}
 
 \subsection{Description and Priority}
-$<$Events are blocks of time on the calendar with attached reminders as the time of the event approaches. Priority = High.$>$
+Events are blocks of time on the calendar with attached reminders as the time of the event approaches. Priority = High.
 
 \subsection{Event Types}
 \begin{center}
 \begin{tabular}{ p{2cm} p{13cm} }
 Standard Event &
-The default event type. This cannot be moved by the autoscheduler by default.\\
+The default event type. This is locked by default.\\
 \\
 Location Event &
 The event type which denotes where the user is within its duration.\\
@@ -463,6 +461,10 @@ Event.Unlock & Events can set a range in which the autoscheduler can schedule th
 Event.Create & Events can be created on the calendar. \\
 & \\
 Event.Edit & Events can be opened for editing after creation. \\
+& \\
+Event.Standard.Duration & Events have a duration which can be adjusted in the editing form. \\
+& \\
+Event.Deadline.Deadline & Deadline Events have a deadline, before which all scheduled work for that deadline must be placed. \\
 & \\
 Event.Delete & Events can be deleted from the calendar. \\
 
