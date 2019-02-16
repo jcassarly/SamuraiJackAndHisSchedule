@@ -406,7 +406,7 @@ Standard Event &
 The default event type. This is locked by default.\\
 \\
 Location Event &
-The event type which denotes where the user is within its duration.\\
+The event type which denotes the location of the user is within its duration.\\
 \\
 Deadline without Location &
 The autoscheduler schedules times to work before this event happens. It takes as input
@@ -462,11 +462,15 @@ Event.Create & Events can be created on the calendar. \\
 & \\
 Event.Edit & Events can be opened for editing after creation. \\
 & \\
-Event.Standard.Duration & Events have a duration which can be adjusted in the editing form. \\
+Event.Delete & Events can be deleted from the calendar. \\
+& \\
+Event.Standard.StartTime & Events have a start time which can be adjusted in the editing form. \\
+& \\
+Event.Standard.EndTime & Events have an end time which can be adjusted in the editing form. \\
 & \\
 Event.Deadline.Deadline & Deadline Events have a deadline, before which all scheduled work for that deadline must be placed. \\
 & \\
-Event.Delete & Events can be deleted from the calendar. \\
+Event.Deadline.WorkTime & Deadline Events have a duration of time that they must schedule for work before the deadline time. \\
 
 \hline
 \end{longtable}
