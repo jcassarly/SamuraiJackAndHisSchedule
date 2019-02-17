@@ -55,9 +55,9 @@
         \LARGE{Version \myversion approved}\\
         \vspace{1.9cm}
         Prepared by Jack Doiron, Jared Cassarly, Shota Nemoto, Martin Peters\\
-        \vspace{1.9cm}
+        \vspace{1.5cm}
         GBUS!LLC\\
-        \vspace{1.9cm}
+        \vspace{1.5cm}
         \today\\
     \end{bfseries}
 \end{flushright}
@@ -82,50 +82,49 @@
 \chapter{Introduction}
 
 \section{Purpose}
-$<$Identify the product whose software requirements are specified in this
-document, including the revision or release number. Describe the scope of the
-product that is covered by this SRS, particularly if this SRS describes only
-part of the system or a single subsystem.$>$
+This document describes the requirements for the GBUS Scheduling Application version 1.0.  This document is intended to be used for reference by the developers of the application.
 
-\section{Project Scope}
-$<$Provide a short description of the software being specified and its purpose,
-including relevant benefits, objectives, and goals. Relate the software to
-corporate goals or business strategies. If a separate vision and scope document
-is available, refer to it rather than duplicating its contents here.$>$
+\section{Vision Statement}
+The application will be a standard scheduler/calendar. The goal of this project is to give the user a standard calendar experience while streamlining their ability to schedule and modify events.  We want to improve upon the user experience when using a calendar so that the user can manage their time more effectively with less overhead. Additionally, the application will be cross platform, allowing the user to manage their schedule on all of their devices.\\
+
+\section{Major Features}
+\begin{center}
+\begin{tabular}{  p{1cm}  p{13cm}  }
+FE-1: & The user has the ability to view a graphical representation of their schedule.\\
+FE-2: & The user can create Standard, Location, and Deadline events with parameters defined by the user.\\
+FE-3: & User can modify any of their scheduled events.\\
+FE-4: & The user can request the application to automatically schedule deadline events and resolve event conflicts.\\
+FE-5: & The user will be able to use a editing toolbar to easily modify their events.\\
+FE-6: & The user will be able to sync their calendar data across devices.\\
+FE-7: & The user will be able to change application settings and view account information\\
+\end{tabular}
+\end{center}
+
+\section{Dependencies}
+\begin{center}
+\begin{tabular}{  p{1cm}  p{13cm}  }
+DE-1: & The user must have internet connection in order to utilize calendar synchronization.\\
+\end{tabular}
+\end{center}
+
 
 \section{References}
-Airbnb. \textit{Airbnb Javascript Style Guide() \{},\\ https://github.com/airbnb/javascript
-
-
+Airbnb. \textit{Airbnb Javascript Style Guide() \{}, \\
+https://github.com/airbnb/javascript\\
+Facebook. \textit{React}, \\
+https://reactjs.org/\\
+Facebook. \textit{Create React App}, \\
+https://facebook.github.io/create-react-app/\\
+Facebook. \textit{React Native}
+https://facebook.github.io/react-native/\\
+Facebook. \textit{React Native CLI}, \\
+https://github.com/react-native-community/react-native-cli\\
+Facebook. \textit{ReactDOM}, \\
+https://reactjs.org/docs/react-dom.html\\
+Dan Abramov, et al. \textit{Redux}, \\
+https://redux.js.org/\\
 
 \chapter{Overall Description}
-
-\section{Product Perspective}
-$<$Describe the context and origin of the product being specified in this SRS.
-For example, state whether this product is a follow-on member of a product
-family, a replacement for certain existing systems, or a new, self-contained
-product. If the SRS defines a component of a larger system, relate the
-requirements of the larger system to the functionality of this software and
-identify interfaces between the two. A simple diagram that shows the major
-components of the overall system, subsystem interconnections, and external
-interfaces can be helpful.$>$
-
-\section{Product Functions}
-$<$Summarize the major functions the product must perform or must let the user
-perform. Details will be provided in Section 3, so only a high level summary
-(such as a bullet list) is needed here. Organize the functions to make them
-understandable to any reader of the SRS. A picture of the major groups of
-related requirements and how they relate, such as a top level data flow diagram
-or object class diagram, is often effective.$>$
-
-\section{User Classes and Characteristics}
-$<$Identify the various user classes that you anticipate will use this product.
-User classes may be differentiated based on frequency of use, subset of product
-functions used, technical expertise, security or privilege levels, educational
-level, or experience. Describe the pertinent characteristics of each user class.
-Certain requirements may pertain only to certain user classes. Distinguish the
-most important user classes for this product from those who are less important
-to satisfy.$>$
 
 \section{Operating Environment}
 \begin{center}
@@ -160,17 +159,6 @@ The user documentation includes:
     time-slots to place its events as well as how each setting alters its behavior.
 \end{itemize}
 
-\section{Assumptions and Dependencies}
-
-$<$List any assumed factors (as opposed to known facts) that could affect the
-requirements stated in the SRS. These could include third-party or commercial
-components that you plan to use, issues around the development or operating
-environment, or constraints. The project could be affected if these assumptions
-are incorrect, are not shared, or change. Also identify any dependencies the
-project has on external factors, such as software components that you intend to
-reuse from another project, unless they are already documented elsewhere (for
-example, in the vision and scope document or the project plan).$>$
-
 
 \chapter{External Interface Requirements}
 
@@ -187,16 +175,13 @@ between the software and the hardware, and communication protocols to be
 used.$>$
 
 \section{Software Interfaces}
-$<$Describe the connections between this product and other specific software
-components (name and version), including databases, operating systems, tools,
-libraries, and integrated commercial components. Identify the data items or
-messages coming into the system and going out and describe the purpose of each.
-Describe the services needed and the nature of communications. Refer to
-documents that describe detailed application programming interface protocols.
-Identify data that will be shared across software components. If the data
-sharing mechanism must be implemented in a specific way (for example, use of a
-global data area in a multitasking operating system), specify this as an
-implementation constraint.$>$
+\begin{center}
+\begin{tabular}{  p{1cm}  p{13cm}  }
+SI-1: & \textit{Create React App} was used to initialize the web environment and \textit{React Native CLI} was used to initialize the native environment.\\
+SI-2: & The application relies on the \textit{React}, \textit{React Native}, and \textit{ReactDOM} for interacting with the user interface.\\
+SI-3: & The application relies on \textit{Redux} to manage and update state information.
+\end{tabular}
+\end{center}
 
 \section{Communications Interfaces}
 $<$Describe the requirements associated with any communications functions
@@ -217,7 +202,7 @@ most logical sense for your product.$>$
 \section{General Settings}
 
 \subsection{Description and Priority}
-The General Settings menu of the application provides the user with options that allows them to customize their experience. All changes made in the menu will automatically save and sync with the server. Priority = Medium.
+The General Settings menu of the application provides the user with options that allows them to customize their experience. All changes made in the menu will automatically save and sync with the server. Priority = Low.
 
 \subsection{Stimulus/Response Sequences}
 \begin{center}
@@ -718,14 +703,5 @@ $<$Define all the terms necessary to properly interpret the SRS, including
 acronyms and abbreviations. You may wish to build a separate glossary that spans
 multiple projects or the entire organization, and just include terms specific to
 a single project in each SRS.$>$
-
-\chapter{Appendix B: Analysis Models}
-$<$Optionally, include any pertinent analysis models, such as data flow
-diagrams, class diagrams, state-transition diagrams, or entity-relationship
-diagrams.$>$
-
-\chapter{Appendix C: To Be Determined List}
-$<$Collect a numbered list of the TBD (to be determined) references that remain
-in the SRS so they can be tracked to closure.$>$
 
 \end{document}
