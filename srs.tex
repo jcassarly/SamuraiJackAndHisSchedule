@@ -56,9 +56,7 @@
         \LARGE{Version \myversion approved}\\
         \vspace{1.9cm}
         Prepared by Jack Doiron, Jared Cassarly, Shota Nemoto, Martin Peters\\
-        \vspace{1.5cm}
-        GBUS!LLC\\
-        \vspace{1.5cm}
+        \vspace{1.9cm}
         \today\\
     \end{bfseries}
 \end{flushright}
@@ -73,9 +71,7 @@
         \hline
 	    Name & Date & Reason For Changes & Version\\
         \hline
-	    21 & 22 & 23 & 24\\
-        \hline
-	    31 & 32 & 33 & 34\\
+	    Jack Doiron & 2/16/19 & initial draft & 1.0 draft 1\\
         \hline
     \end{tabular}
 \end{center}
@@ -88,7 +84,7 @@ This document describes the requirements for the GBUS Scheduling Application ver
 \section{Vision Statement}
 The application will be a standard scheduler/calendar. The goal of this project is to give the user a standard calendar experience while streamlining their ability to schedule and modify events.  We want to improve upon the user experience when using a calendar so that the user can manage their time more effectively with less overhead. Additionally, the application will be cross platform, allowing the user to manage their schedule on all of their devices.\\
 
-\section{Major Features}
+\section{Major Features / Scope}
 \begin{center}
 \begin{tabular}{  p{1cm}  p{13cm}  }
 FE-1: & The user has the ability to view a graphical representation of their schedule.\\
@@ -110,20 +106,27 @@ DE-1: & The user must have internet connection in order to utilize calendar sync
 
 
 \section{References}
-Airbnb. \textit{Airbnb Javascript Style Guide() \{}, \\
-https://github.com/airbnb/javascript\\
-Facebook. \textit{React}, \\
-https://reactjs.org/\\
-Facebook. \textit{Create React App}, \\
-https://facebook.github.io/create-react-app/\\
-Facebook. \textit{React Native}
-https://facebook.github.io/react-native/\\
-Facebook. \textit{React Native CLI}, \\
-https://github.com/react-native-community/react-native-cli\\
-Facebook. \textit{ReactDOM}, \\
-https://reactjs.org/docs/react-dom.html\\
 Dan Abramov, et al. \textit{Redux}, \\
 https://redux.js.org/\\
+\\
+Airbnb. \textit{Airbnb Javascript Style Guide() \{}, \\
+https://github.com/airbnb/javascript\\
+\\
+Facebook. \textit{React}, \\
+https://reactjs.org/\\
+\\
+Facebook. \textit{Create React App}, \\
+https://facebook.github.io/create-react-app/\\
+\\
+Facebook. \textit{React Native}
+https://facebook.github.io/react-native/\\
+\\
+Facebook. \textit{React Native CLI}, \\
+https://github.com/react-native-community/react-native-cli\\
+\\
+Facebook. \textit{ReactDOM}, \\
+https://reactjs.org/docs/react-dom.html\\
+
 
 \chapter{Overall Description}
 
@@ -169,11 +172,7 @@ There are three different interfaces. The primary interface is the calendar page
 
 
 \section{Hardware Interfaces}
-$<$Describe the logical and physical characteristics of each interface between
-the software product and the hardware components of the system. This may include
-the supported device types, the nature of the data and control interactions
-between the software and the hardware, and communication protocols to be
-used.$>$
+No hardware interface have been identified
 
 \section{Software Interfaces}
 \begin{center}
@@ -191,37 +190,53 @@ schedule. The client must also be able to alter their schedule on the server.
 
 
 \chapter{System Features}
-$<$This template illustrates organizing the functional requirements for the
-product by system features, the major services provided by the product. You may
-prefer to organize this section by use case, mode of operation, user class,
-object class, functional hierarchy, or combinations of these, whatever makes the
-most logical sense for your product.$>$
 
-\section{General Settings}
+\section{Events}
 
 \subsection{Description and Priority}
-The General Settings menu of the application provides the user with options that allows them to customize their experience. All changes made in the menu will automatically save and sync with the server. Priority = Low.
+Events are blocks of time on the calendar with attached reminders as the time of the event approaches. Priority = High.
+
+\subsection{Event Types}
+\begin{center}
+\begin{tabular}{ | p{5cm} | p{10cm} | }
+\hline
+Standard Event &
+The default event type. This is locked by default.\\
+\hline
+Location Event &
+The event type which denotes the location of the user is within its duration.\\
+\hline
+Deadline without Location &
+The autoscheduler schedules times to work before this event happens. It takes as input
+approximate working time as well as the standard event inputs.\\
+\hline
+Deadline with Location &
+This is the same as the Deadline without Location, with the addition
+that working time can only be scheduled when the user is within the duration of a certain named Location Event.\\
+\hline
+\end{tabular}
+\end{center}
 
 \subsection{Stimulus/Response Sequences}
 \begin{center}
 \begin{longtable}{ p{2cm} p{13cm} }
-Stimulus: & The user opens the General Settings menu. \\
-Response: & All of the available options to customize are listed to the user with entry forms. \\
+Stimulus: & The user clicks the button to create an event. \\
+Response: & A form is opened which presents the user with the option to change the event characteristics and type.\\
 \\
-Stimulus: & The user chooses the exit menu option. \\
-Response: & The application returns to the calendar view. \\
+Stimulus: & The user chooses the option to finish the event creation form. \\
+Response: & The application returns to the calendar view and creates an event as specified by the form. \\
 \\
-Stimulus: & The user enters a new default value into one of the entry forms in the General Settings menu. \\
-Response: & The value used by the feature they are changing the setting for is updated within the application. The change is only used for future actions by the user.  No changes are automatically made to existing events. \\
+Stimulus: & The user double clicks or taps on an existing event. \\
+Response: & The event editing form is opened. \\
 \\
-Stimulus: & The user attempts to enter a new value minimum or maximum event time value that does not fall into the proper constraints for the value. \\
-Response: & The user is presented with an error and the application requests that they change the value to something valid.  No changes to the default used by the application are used and the changes the user made are not saved if they leave the menu and come back. \\
+Stimulus: & The user exits the event editing form by clicking or tapping an "apply" button. \\
+Response: & The event characteristics are changed and the event is moved on the calendar if necessary. \\
 \\
-Stimulus: & The user chooses to change their email or reset their password. \\
-Response: & The application displays two new text fields under the selected option where the user enters their new email or password and then re-enters the same email or password.  Assuming both fields have matching text, the application updates the account with the new information on the server. \\
+Stimulus: & The user clicks or taps the delete button while an event is selected. \\
+Response: & The application displays a popup which asks the user for confirmation. If the user confirms, the event is deleted. \\
 \\
-Stimulus: & The user tries to login, logout, or register. \\
-Response: & The appropriate synchronization menu is opened and the user follows the prompts there. \\
+Stimulus: & The user drags an event to a place on the calendar. \\
+Response: & The event snaps to the grid, avoiding overlap with other non-location event. \\
 \end{longtable}
 \end{center}
 
@@ -229,61 +244,35 @@ Response: & The appropriate synchronization menu is opened and the user follows 
 \begin{center}
 \begin{longtable}{ | p{6cm} | p{9cm} | }
 \hline
-Settings.Exit & The General Settings menu shall have an option to leave the menu and return to the calendar. \\
+Event.TimePeriod & Event start and end times can be set. \\
 \hline
-Settings.Toolbar.SnapToGrid & The General Settings menu shall allow the user to set the default length of time that is used in the Toolbar's Snap to Grid feature. \\
+Event.Location & Events can have a location attached to them. Location events must have this characteristic. \\
 & \\
-Settings.Toolbar.SnapToGrid.Default & The default Snap to Grid time shall be set to 5 minutes until changed by the user. \\
+Event.Notifications & Events have editable notification settings (time before event, types of notification).\\
 \hline
-Settings.AutoScheduling.Breaks & The General Settings menu shall allow the user to set time periods where no events are scheduled when using the Auto Scheduling feature. \\
+Event.Frequency & Events can be set to repeat after a set amount of time (weekly, monthy, yearly, etc.) \\
 & \\
-Settings.AutoScheduling.MinTime & The General Settings menu shall allow the user to set the default minimum amount of time the auto scheduler will use when creating events. \\
+Event.Lock & Events can be set to be unable to be moved by the autoscheduler. \\
 & \\
-Settings.AutoScheduling. MinTime.Constraints & The General Settings menu shall not allow the user to set a default minimum event time greater than the maximum event time. \\
+Event.Unlock & Events can set a range in which the autoscheduler can schedule them.\\
 & \\
-Settings.AutoScheduling. MinTime.Default & The default maximum event time for the auto scheduler shall be set to 15 minutes until changed by the user. \\
+Event.Name & Events have unique identifiers. \\
 & \\
-Settings.AutoScheduling.MaxTime & The General Settings menu shall allow the user to set the default maximum amount of time the auto scheduler will use when creating events. \\
+Event.Description & Events can have descriptions.\\
 & \\
-Settings.AutoScheduling.MaxTime. Constraints & The General Settings menu shall not allow the user to set a default maximum event time less than the minimum event time. \\
+Event.Create & Events can be created on the calendar. \\
 & \\
-Settings.AutoScheduling.MaxTime. Default & The default maximum event time for the auto scheduler shall be set to 1 hour until changed by the user. \\
+Event.Edit & Events can be opened for editing after creation. \\
 & \\
-Settings.AutoScheduling. MinOpenTime & The General Settings menu shall allow the user to set the default minimum amount of time that must be between auto scheduled deadline events. \\
+Event.Delete & Events can be deleted from the calendar. \\
 & \\
-Settings.AutoScheduling. MinOpenTime.Default & The default minimum open time between deadline events for the auto scheduler shall be set to 15 hour until changed by the user. \\
-\hline
-Settings.Language & The General Settings menu shall allow the user to change the language localization from a list of available languages. \\
+Event.Standard.StartTime & Events have a start time which can be adjusted in the editing form. \\
 & \\
-Settings.Language.Default & The default language localization used by the application shall be English. \\
-\hline
-Settings.Events.Notifications & The General Settings menu shall allow the user to set the default notifications from the following choices: banner, popup, off. \\
+Event.Standard.EndTime & Events have an end time which can be adjusted in the editing form. \\
 & \\
-Settings.Events.Notifications.Default & The default notification setting shall be a banner by default \\
+Event.Deadline.Deadline & Deadline Events have a deadline, before which all scheduled work for that deadline must be placed. \\
 & \\
-Settings.Events.Notifications.Time & The General Settings menu shall allow the user to set the default amount of time before the event to notify the user. \\
-& \\
-Settings.Events.Notifications. Time.Default & The default amount of time for a notification on an event shall be set to 5 minutes until changed by the user. \\
-& \\
-Settings.Events.Duration & The General Settings menu shall allow the user to set the default duration for a standard event. \\
-& \\
-Settings.Events.Duration.Default & The default duration for an event shall be set to 1 hour until changed by the user. \\
-& \\
-Settings.Events.Location & The General Settings menu shall allow the user to set a default location for when events are created. \\
-& \\
-Settings.Events.Location.Default & The default location for events shall be set to none until changed by the user. \\
-\hline
-Settings.Account.Login & The General Settings menu shall allow the user to login to their account. \\
-& \\
-Settings.Account.Logout & The General Settings menu shall allow the user to logout of their account. \\
-& \\
-Settings.Account.Register & The General Settings menu shall allow the user to create a new account and then login. \\
-& \\
-Settings.Account.View & The General Settings menu shall allow the user to view their account information (email and option to reset password) after logging in. \\
-& \\
-Settings.Account.ChangeEmail & The General Settings menu shall allow the user to change their account email after logging in. \\
-& \\
-Settings.Account.ResetPassword & The General Settings menu shall allow the user to reset the password for their account after logging in. \\
+Event.Deadline.WorkTime & Deadline Events have a duration of time that they must schedule for work before the deadline time. \\
 \hline
 \end{longtable}
 \end{center}
@@ -391,79 +380,6 @@ their calendar.\\
 \end{longtable}
 \end{center}
 
-\section{Inter-Device Synchronization}
-
-\subsection{Description and Priority}
-This feature allows the user to synchronize their schedule between devices.
-This will be done by allowing the user to register an account with which they
-can log into the application. The user's schedule will be associated with that
-account. All updates the user makes on their current device will be sent to the
-server, so that their changes will be pulled from the server when the user logs
-in on a different device. Additionally, the user will be able to log out of
-their account on their current device. This feature will be \textbf{medium} priority.
-
-\subsection{Stimulus/Response Sequences}
-\begin{center}
-    \begin{tabular}{ p{2cm} p{13cm} }
-    Stimulus: & User opens application\\
-    Response: & Application opens login dialog box for the user to enter their user-name
-    and password if the user is not already logged in.\\
-    \\
-    Stimulus: & User verifies login information\\
-    Response: & If the information was correct, the user's schedule will be displayed.
-    If not, the user will be informed it was incorrect and prompt for login information
-    again.\\
-    \\
-    Stimulus: & User attempts to register account\\
-    Response: & Application opens up a new prompt where the user may create a new
-    account and register it with the server.\\
-    \\
-    Stimulus: & User edits schedule locally\\
-    Response: & Application sends the updates to the server and applies changes to
-    schedule on the server\\
-    \\
-    Stimulus: & User edits schedule on remote device\\
-    Response: & Application receives the updates from the server and applies changes
-    to the schedule on local device.\\
-    \\
-    Stimulus: & User logs out of application\\
-    Response: & Application closes the schedule and redisplays the login dialog box.\\
-    \end{tabular}
-\end{center}
-
-\subsection{Functional Requirements}
-\begin{center}
-    \begin{longtable}{ | p{6cm} | p{9cm} | }
-    \hline
-    Sync.Login & The application must prompt the user for their login information
-    upon startup if they are not already logged in.\\
-    & \\
-    Sync.Login.User-name & The login dialog box must allow the user to type their
-    user-name into a text field.\\
-    & \\
-    Sync.Login.Password & The login dialog box must allow the user to type their
-    password into a text field while hiding their entry.\\
-    & \\
-    Sync.Login.Verify & The login dialog box must allow the user to verify their
-    entered login information. Application will query the server for the
-    user-name and password pair. If it was correct they will see their schedule,
-    if not they will be prompted for their login information again.\\
-    & \\
-    Sync.Login.Register & The login dialog box must open a new dialog box to allow the
-    user to create a new account and register it with the server\\
-    \hline
-    Sync.Update.Send & The application will send any updates made by the user to the
-    server at a scheduled interval. The updates will be applied to the schedule on the server.\\
-    & \\
-    Sync.Update.Receive & The application will receive any updates made to the schedule
-    on the server and update the schedule on the local device if the schedules are different.\\
-    \hline
-    Sync.Logout & The application will allow the user to log out of their account. The
-    application then displays the login dialog box. While closing the previous schedule\\
-    \hline
-    \end{longtable}
-\end{center}
-
 \section{Editing Toolbar}
 
 \subsection{Description and Priority}
@@ -564,52 +480,104 @@ by clicking on their icon in the toolbar.
     \end{longtable}
 \end{center}
 
-\section{Events}
+\section{Inter-Device Synchronization}
 
 \subsection{Description and Priority}
-Events are blocks of time on the calendar with attached reminders as the time of the event approaches. Priority = High.
+This feature allows the user to synchronize their schedule between devices.
+This will be done by allowing the user to register an account with which they
+can log into the application. The user's schedule will be associated with that
+account. All updates the user makes on their current device will be sent to the
+server, so that their changes will be pulled from the server when the user logs
+in on a different device. Additionally, the user will be able to log out of
+their account on their current device. Priority=Medium
 
-\subsection{Event Types}
+\subsection{Stimulus/Response Sequences}
 \begin{center}
-\begin{tabular}{ | p{5cm} | p{10cm} | }
-\hline
-Standard Event &
-The default event type. This is locked by default.\\
-\hline
-Location Event &
-The event type which denotes the location of the user is within its duration.\\
-\hline
-Deadline without Location &
-The autoscheduler schedules times to work before this event happens. It takes as input
-approximate working time as well as the standard event inputs.\\
-\hline
-Deadline with Location &
-This is the same as the Deadline without Location, with the addition
-that working time can only be scheduled when the user is within the duration of a certain named Location Event.\\
-\hline
-\end{tabular}
+    \begin{tabular}{ p{2cm} p{13cm} }
+    Stimulus: & User opens application\\
+    Response: & Application opens login dialog box for the user to enter their user-name
+    and password if the user is not already logged in.\\
+    \\
+    Stimulus: & User verifies login information\\
+    Response: & If the information was correct, the user's schedule will be displayed.
+    If not, the user will be informed it was incorrect and prompt for login information
+    again.\\
+    \\
+    Stimulus: & User attempts to register account\\
+    Response: & Application opens up a new prompt where the user may create a new
+    account and register it with the server.\\
+    \\
+    Stimulus: & User edits schedule locally\\
+    Response: & Application sends the updates to the server and applies changes to
+    schedule on the server\\
+    \\
+    Stimulus: & User edits schedule on remote device\\
+    Response: & Application receives the updates from the server and applies changes
+    to the schedule on local device.\\
+    \\
+    Stimulus: & User logs out of application\\
+    Response: & Application closes the schedule and redisplays the login dialog box.\\
+    \end{tabular}
 \end{center}
+
+\subsection{Functional Requirements}
+\begin{center}
+    \begin{longtable}{ | p{6cm} | p{9cm} | }
+    \hline
+    Sync.Login & The application must prompt the user for their login information
+    upon startup if they are not already logged in.\\
+    & \\
+    Sync.Login.User-name & The login dialog box must allow the user to type their
+    user-name into a text field.\\
+    & \\
+    Sync.Login.Password & The login dialog box must allow the user to type their
+    password into a text field while hiding their entry.\\
+    & \\
+    Sync.Login.Verify & The login dialog box must allow the user to verify their
+    entered login information. Application will query the server for the
+    user-name and password pair. If it was correct they will see their schedule,
+    if not they will be prompted for their login information again.\\
+    & \\
+    Sync.Login.Register & The login dialog box must open a new dialog box to allow the
+    user to create a new account and register it with the server\\
+    \hline
+    Sync.Update.Send & The application will send any updates made by the user to the
+    server at a scheduled interval. The updates will be applied to the schedule on the server.\\
+    & \\
+    Sync.Update.Receive & The application will receive any updates made to the schedule
+    on the server and update the schedule on the local device if the schedules are different.\\
+    \hline
+    Sync.Logout & The application will allow the user to log out of their account. The
+    application then displays the login dialog box. While closing the previous schedule\\
+    \hline
+    \end{longtable}
+\end{center}
+
+\section{General Settings}
+
+\subsection{Description and Priority}
+The General Settings menu of the application provides the user with options that allows them to customize their experience. All changes made in the menu will automatically save and sync with the server. Priority = Low.
 
 \subsection{Stimulus/Response Sequences}
 \begin{center}
 \begin{longtable}{ p{2cm} p{13cm} }
-Stimulus: & The user clicks the button to create an event. \\
-Response: & A form is opened which presents the user with the option to change the event characteristics and type.\\
+Stimulus: & The user opens the General Settings menu. \\
+Response: & All of the available options to customize are listed to the user with entry forms. \\
 \\
-Stimulus: & The user chooses the option to finish the event creation form. \\
-Response: & The application returns to the calendar view and creates an event as specified by the form. \\
+Stimulus: & The user chooses the exit menu option. \\
+Response: & The application returns to the calendar view. \\
 \\
-Stimulus: & The user double clicks or taps on an existing event. \\
-Response: & The event editing form is opened. \\
+Stimulus: & The user enters a new default value into one of the entry forms in the General Settings menu. \\
+Response: & The value used by the feature they are changing the setting for is updated within the application. The change is only used for future actions by the user.  No changes are automatically made to existing events. \\
 \\
-Stimulus: & The user exits the event editing form by clicking or tapping an "apply" button. \\
-Response: & The event characteristics are changed and the event is moved on the calendar if necessary. \\
+Stimulus: & The user attempts to enter a new value minimum or maximum event time value that does not fall into the proper constraints for the value. \\
+Response: & The user is presented with an error and the application requests that they change the value to something valid.  No changes to the default used by the application are used and the changes the user made are not saved if they leave the menu and come back. \\
 \\
-Stimulus: & The user clicks or taps the delete button while an event is selected. \\
-Response: & The application displays a popup which asks the user for confirmation. If the user confirms, the event is deleted. \\
+Stimulus: & The user chooses to change their email or reset their password. \\
+Response: & The application displays two new text fields under the selected option where the user enters their new email or password and then re-enters the same email or password.  Assuming both fields have matching text, the application updates the account with the new information on the server. \\
 \\
-Stimulus: & The user drags an event to a place on the calendar. \\
-Response: & The event snaps to the grid, avoiding overlap with other non-location event. \\
+Stimulus: & The user tries to login, logout, or register. \\
+Response: & The appropriate synchronization menu is opened and the user follows the prompts there. \\
 \end{longtable}
 \end{center}
 
@@ -617,36 +585,61 @@ Response: & The event snaps to the grid, avoiding overlap with other non-locatio
 \begin{center}
 \begin{longtable}{ | p{6cm} | p{9cm} | }
 \hline
-Event.TimePeriod & Event start and end times can be set. \\
+Settings.Exit & The General Settings menu shall have an option to leave the menu and return to the calendar. \\
 \hline
-Event.Location & Events can have a location attached to them. Location events must have this characteristic. \\
+Settings.Toolbar.SnapToGrid & The General Settings menu shall allow the user to set the default length of time that is used in the Toolbar's Snap to Grid feature. \\
 & \\
-Event.Notifications & Events have editable notification settings (time before event, types of notification).\\
+Settings.Toolbar.SnapToGrid.Default & The default Snap to Grid time shall be set to 5 minutes until changed by the user. \\
 \hline
-Event.Frequency & Events can be set to repeat after a set amount of time (weekly, monthy, yearly, etc.) \\
+Settings.AutoScheduling.Breaks & The General Settings menu shall allow the user to set time periods where no events are scheduled when using the Auto Scheduling feature. \\
 & \\
-Event.Lock & Events can be set to be unable to be moved by the autoscheduler. \\
+Settings.AutoScheduling.MinTime & The General Settings menu shall allow the user to set the default minimum amount of time the auto scheduler will use when creating events. \\
 & \\
-Event.Unlock & Events can set a range in which the autoscheduler can schedule them.\\
+Settings.AutoScheduling. MinTime.Constraints & The General Settings menu shall not allow the user to set a default minimum event time greater than the maximum event time. \\
 & \\
-Event.Name & Events have unique identifiers. \\
+Settings.AutoScheduling. MinTime.Default & The default maximum event time for the auto scheduler shall be set to 15 minutes until changed by the user. \\
 & \\
-Event.Description & Events can have descriptions.\\
+Settings.AutoScheduling.MaxTime & The General Settings menu shall allow the user to set the default maximum amount of time the auto scheduler will use when creating events. \\
 & \\
-Event.Create & Events can be created on the calendar. \\
+Settings.AutoScheduling.MaxTime. Constraints & The General Settings menu shall not allow the user to set a default maximum event time less than the minimum event time. \\
 & \\
-Event.Edit & Events can be opened for editing after creation. \\
+Settings.AutoScheduling.MaxTime. Default & The default maximum event time for the auto scheduler shall be set to 1 hour until changed by the user. \\
 & \\
-Event.Delete & Events can be deleted from the calendar. \\
+Settings.AutoScheduling. MinOpenTime & The General Settings menu shall allow the user to set the default minimum amount of time that must be between auto scheduled deadline events. \\
 & \\
-Event.Standard.StartTime & Events have a start time which can be adjusted in the editing form. \\
+Settings.AutoScheduling. MinOpenTime.Default & The default minimum open time between deadline events for the auto scheduler shall be set to 15 hour until changed by the user. \\
+\hline
+Settings.Language & The General Settings menu shall allow the user to change the language localization from a list of available languages. \\
 & \\
-Event.Standard.EndTime & Events have an end time which can be adjusted in the editing form. \\
+Settings.Language.Default & The default language localization used by the application shall be English. \\
+\hline
+Settings.Events.Notifications & The General Settings menu shall allow the user to set the default notifications from the following choices: banner, popup, off. \\
 & \\
-Event.Deadline.Deadline & Deadline Events have a deadline, before which all scheduled work for that deadline must be placed. \\
+Settings.Events.Notifications.Default & The default notification setting shall be a banner by default \\
 & \\
-Event.Deadline.WorkTime & Deadline Events have a duration of time that they must schedule for work before the deadline time. \\
-
+Settings.Events.Notifications.Time & The General Settings menu shall allow the user to set the default amount of time before the event to notify the user. \\
+& \\
+Settings.Events.Notifications. Time.Default & The default amount of time for a notification on an event shall be set to 5 minutes until changed by the user. \\
+& \\
+Settings.Events.Duration & The General Settings menu shall allow the user to set the default duration for a standard event. \\
+& \\
+Settings.Events.Duration.Default & The default duration for an event shall be set to 1 hour until changed by the user. \\
+& \\
+Settings.Events.Location & The General Settings menu shall allow the user to set a default location for when events are created. \\
+& \\
+Settings.Events.Location.Default & The default location for events shall be set to none until changed by the user. \\
+\hline
+Settings.Account.Login & The General Settings menu shall allow the user to login to their account. \\
+& \\
+Settings.Account.Logout & The General Settings menu shall allow the user to logout of their account. \\
+& \\
+Settings.Account.Register & The General Settings menu shall allow the user to create a new account and then login. \\
+& \\
+Settings.Account.View & The General Settings menu shall allow the user to view their account information (email and option to reset password) after logging in. \\
+& \\
+Settings.Account.ChangeEmail & The General Settings menu shall allow the user to change their account email after logging in. \\
+& \\
+Settings.Account.ResetPassword & The General Settings menu shall allow the user to reset the password for their account after logging in. \\
 \hline
 \end{longtable}
 \end{center}
@@ -687,7 +680,7 @@ QA-2: & The application must conform to all Android and iOS app standards for th
 respective versions of the app.\\
 QA-3: & If the app is closed while editing, the user should be returned to the editing
 mode with the changes that they had made upon reopening the app on the same device.\\
-QA-4: & 60\% of code for the app on any platform must be shared between all platforms.
+QA-4: & 60\% of code for the app on any platform must be shared between all platforms.\\\\
 \end{tabular}
 \end{center}
 
@@ -705,7 +698,7 @@ a locales file which can contain alternatives for supported languages.\\
 Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.
 See section Auto Scheduling.\\
 \\
-Event - A block of time on the scheduler with characteristics such as start time, end time, 
+Event - A block of time on the scheduler with characteristics such as start time, end time,
 location, description, name, locked toggle, etc. (see Event functional requirements).\\
 \\
 
