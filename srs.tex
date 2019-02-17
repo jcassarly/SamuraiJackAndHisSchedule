@@ -23,6 +23,7 @@
 \usepackage[english]{babel}
 \usepackage{longtable}
 \hypersetup{
+    colorlinks=true,
     bookmarks=false,    % show bookmarks bar?
     pdftitle={Software Requirement Specification},    % title
     pdfauthor={Jean-Philippe Eisenbarth},                     % author
@@ -184,12 +185,9 @@ SI-3: & The application relies on \textit{Redux} to manage and update state info
 \end{center}
 
 \section{Communications Interfaces}
-$<$Describe the requirements associated with any communications functions
-required by this product, including e-mail, web browser, network server
-communications protocols, electronic forms, and so on. Define any pertinent
-message formatting. Identify any communication standards that will be used, such
-as FTP or HTTP. Specify any communication security or encryption issues, data
-transfer rates, and synchronization mechanisms.$>$
+User's application must be able to connect to server specified in requirement OE-2.
+The server must provide the user application with the most recent version of their
+schedule. The client must also be able to alter their schedule on the server.
 
 
 \chapter{System Features}
@@ -631,6 +629,10 @@ Event.Lock & Events can be set to be unable to be moved by the autoscheduler. \\
 & \\
 Event.Unlock & Events can set a range in which the autoscheduler can schedule them.\\
 & \\
+Event.Name & Events have unique identifiers. \\
+& \\
+Event.Description & Events can have descriptions.\\
+& \\
 Event.Create & Events can be created on the calendar. \\
 & \\
 Event.Edit & Events can be opened for editing after creation. \\
@@ -699,9 +701,12 @@ a locales file which can contain alternatives for supported languages.\\
 
 \chapter{Appendix A: Glossary}
 %see https://en.wikibooks.org/wiki/LaTeX/Glossary
-$<$Define all the terms necessary to properly interpret the SRS, including
-acronyms and abbreviations. You may wish to build a separate glossary that spans
-multiple projects or the entire organization, and just include terms specific to
-a single project in each SRS.$>$
+\\
+Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.
+See section Auto Scheduling.\\
+\\
+Event - A block of time on the scheduler with characteristics such as start time, end time, 
+location, description, name, locked toggle, etc. (see Event functional requirements).\\
+\\
 
 \end{document}
