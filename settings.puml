@@ -1,0 +1,31 @@
+@startuml
+
+hide empty description
+
+state "Enter General Settings" as start
+state "Lookup Settings from User's Account" as lookup
+state "Display General Settings Form" as display
+state "User Edits Form" as edit
+state "If there are unsaved changes" as check
+state "Verify User realy wants to exit" as verify
+state "Exit back to Home Screen" as exit
+
+[*] -> start
+
+start --> lookup
+lookup --> display
+display --> edit
+
+edit --> edit : User editing / viewing the form
+edit --> check : User clicks back
+edit --> exit : User clicks save
+
+check --> exit : No
+check --> verify : Yes
+
+verify --> exit : Yes
+verify --> edit : No
+
+exit -> [*]
+
+@enduml

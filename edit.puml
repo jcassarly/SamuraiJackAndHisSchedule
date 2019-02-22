@@ -1,0 +1,61 @@
+@startuml
+
+hide empty description
+
+state "Enter Menu" as start
+
+state "Lookup Chosen Event" as lookup
+state "Display Chosen Event Form" as display
+
+state "Choose Event Type" as event
+state "Display Empty Event Form" as newform
+
+state "User fills in form" as uf
+
+state "If Event is a Deadline Event" as checktype
+state "Display Diff and wait\nfor user acceptance" as diff
+
+state "Event information is saved" as save
+state "Changes to event are\ndiscarded" as nosave
+state "Exit to Home Screen" as exit
+
+newform : a new form with fields for the
+newform : information required to make
+newform : the event is displayed
+
+display : This form is the same as the
+display : empty event form except it has
+display : all the information from the
+display : chosen event filled in
+
+[*] -> start
+start --> lookup : user is editing an event
+start --> event : User is creating an event
+
+event --> newform : Standard
+event --> newform : Location
+event --> newform : Deadline
+
+newform --> uf
+
+lookup --> display
+display --> uf
+
+uf --> uf : User is editing the form
+uf --> checktype : User clicks save
+uf --> nosave : User clicks back
+
+checktype -> diff
+
+diff --> diff : User is viewing diff
+diff --> save : User accepts diff
+diff --> uf : User rejects diff
+
+save -> exit
+nosave -> exit
+
+exit -> [*]
+
+
+
+@enduml
