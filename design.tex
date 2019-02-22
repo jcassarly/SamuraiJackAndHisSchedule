@@ -1,0 +1,149 @@
+%Copyright 2014 Jean-Philippe Eisenbarth
+%This program is free software: you can
+%redistribute it and/or modify it under the terms of the GNU General Public
+%License as published by the Free Software Foundation, either version 3 of the
+%License, or (at your option) any later version.
+%This program is distributed in the hope that it will be useful,but WITHOUT ANY
+%WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+%PARTICULAR PURPOSE. See the GNU General Public License for more details.
+%You should have received a copy of the GNU General Public License along with
+%this program.  If not, see <http://www.gnu.org/licenses/>.
+
+%Based on the code of Yiannis Lazarides
+%http://tex.stackexchange.com/questions/42602/software-requirements-specification-with-latex
+%http://tex.stackexchange.com/users/963/yiannis-lazarides
+%Also based on the template of Karl E. Wiegers
+%http://www.se.rit.edu/~emad/teaching/slides/srs_template_sep14.pdf
+%http://karlwiegers.com
+\documentclass{scrreprt}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage[bookmarks=true]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{longtable}
+\hypersetup{
+    colorlinks=true,
+    bookmarks=false,    % show bookmarks bar?
+    pdftitle={Design Document},    % title
+    pdfauthor={Jean-Philippe Eisenbarth},                     % author
+    pdfsubject={TeX and LaTeX},                        % subject of the document
+    pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=blue,       % color of internal links
+    citecolor=black,       % color of links to bibliography
+    filecolor=black,        % color of file links
+    urlcolor=purple,        % color of external links
+    linktoc=page            % only page is linked
+}%
+\def\myversion{1.0 }
+\date{}
+%\title{%
+
+%}
+\usepackage{hyperref}
+\begin{document}
+
+\begin{flushright}
+    \rule{16cm}{5pt}\vskip1cm
+    \begin{bfseries}
+        \Huge{SOFTWARE ARCHITECTURE}\\
+        \vspace{1.9cm}
+        for\\
+        \vspace{1.9cm}
+        GBUS Scheduling App\\
+        \vspace{1.9cm}
+        \LARGE{Version \myversion approved}\\
+        \vspace{1.9cm}
+        Prepared by Jack Doiron, Jared Cassarly, Shota Nemoto, Martin Peters\\
+        \vspace{1.9cm}
+        \today\\
+    \end{bfseries}
+\end{flushright}
+
+\tableofcontents
+
+
+\chapter*{Revision History}
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+	    Name & Date & Reason For Changes & Version\\
+        \hline
+	    Jack Doiron & 2/22/19 & initial draft & 1.0 draft 1\\
+        \hline
+    \end{tabular}
+\end{center}
+
+\chapter{User Interface}
+
+this section describes UI
+
+\section{Home Screen}
+
+talk about home
+
+\section{Event Editing and Creation Menu}
+
+event edit
+
+\section{General Settings Menu}
+
+settings
+
+\section{Auto Scheduler Diff View}
+
+diff
+
+\section{Toolbar}
+
+toolbar
+
+\subsection{Drag and Drop Events}
+
+dragndrop
+
+\subsection{Resize Events}
+
+resize
+
+\subsection{Cut/Copy/Paste}
+
+copy pasta
+
+\subsection{Create Event}
+
+create
+
+\subsection{Edit Event}
+
+edit
+
+\subsection{View Mode}
+
+view
+
+\chapter{Auto Scheduler}
+
+schedule
+
+\chapter{Event Storage Classes}
+
+classes
+
+\chapter{Synchronization and Account}
+
+sync
+
+\chapter{Appendix A: Glossary}
+%see https://en.wikibooks.org/wiki/LaTeX/Glossary
+\\
+Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.
+See section Auto Scheduling.\\
+\\
+Event - A block of time on the scheduler with characteristics such as start time, end time,
+location, description, name, locked toggle, etc. (see Event functional requirements).\\
+\\
+
+\end{document}
