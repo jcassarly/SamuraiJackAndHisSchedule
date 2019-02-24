@@ -282,6 +282,7 @@ This tool will be used to move the start and end times of an event from the grap
     \item User releases event. (requirement: Toolbar.DragDrop.Release)\\
     \\ & The event's start time will be set to the time represented by the closest grid line when the user releases. The end time will be updated to maintain the original duration of the event.
 \end{enumerate}
+\includegraphics[width=\textwidth]{dragdrop.png}
 
 \subsection{Resize Events}
 This tool will be used to change the duration of an event from the GUI. This tool will generally follow this sequence of events:
@@ -293,6 +294,7 @@ This tool will be used to change the duration of an event from the GUI. This too
     \item User releases edge. (requirement: Toolbar.Re-size.Release)\\
     \\ & If the user had clicked on the top edge of the event, the start time of the event will be updated to the time represented by the closest grid line when the user releases. Else, if the user had clicked on the bottom edge of the event, the end time of the event will be updated.
 \end{enumerate}
+\includegraphics[width=\textwidth]{resize.png}
 
 \subsection{Cut}
 This tool will be used to save and remove an event from the schedule via the GUI. This tool will generally follow this sequence of events:
@@ -302,6 +304,7 @@ This tool will be used to save and remove an event from the schedule via the GUI
     \item User clicks anywhere in the event and releases. (requirement: Toolbar.Cut)\\
     \\ & The event is removed from the GUI and the user's schedule. It is saved within the program for the creation of future copies of the event. The attributes that must be saved include its location, notification settings, locked status, description, name, duration, and parent if it is a deadline event. It replaces whatever previous event was stored in memory.
 \end{enumerate}
+\includegraphics[width=\textwidth]{cut.png}
 
 \subsection{Copy}
 This tool will be used to save an event from the schedule via the GUI. Unlike the cut tool above, it will preserve the original event in the schedule. This tool will generally follow this sequence of events:
@@ -311,6 +314,7 @@ This tool will be used to save an event from the schedule via the GUI. Unlike th
     \item User clicks anywhere in the event and releases. (requirement: Toolbar.Copy)\\
     \\ & The event is saved within the program for the creation of future copies of the event. The attributes that must be saved include its location, notification settings, locked status, description, name, duration, and parent if it is a deadline event. It replaces whatever previous event was stored in memory. The original event remains in the schedule unchanged.
 \end{enumerate}
+\includegraphics[width=\textwidth]{copy.png}
 
 \subsection{Paste}
 This tool will be used to create a new event using the data from an event previously saved using the cut or copy tool via the GUI. This tool will generally follow this sequence of events:
@@ -320,6 +324,7 @@ This tool will be used to create a new event using the data from an event previo
     \item User clicks and releases anywhere on the schedule (requirement: Toolbar.Paste)\\
     \\ & A new event will be created in the GUI and in the user's schedule with the same location, notification settings, locked status, description, name, and parent if it is a deadline event, as the event saved in memory. The start time will be set to the time represented by the closest grid line and the end time will be set to the appropriate time following the new start time to maintain the original event's duration. If there is no event stored in memory, no new event will be created. Events created with this tool can overlap with existing events.
 \end{enumerate}
+\includegraphics[width=\textwidth]{paste.png}
 
 \subsection{View Mode}
 
