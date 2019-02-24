@@ -126,7 +126,35 @@ view
 
 \chapter{Auto Scheduler}
 
-schedule
+\section{Description}
+The Auto Scheduler implements the functionality described in section 4.2 of the Software Requirements Spec.  It must take in a full schedule and a deadline event.  It then returns either a new valid full schedule, or an error if the requested schedule is impossible.
+
+\section{Input}
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{9cm} | }
+\hline
+\textbf{Input Name} & \textbf{Input Type}\\
+\hline
+Old Schedule & Schedule \\
+\hline
+New Deadline Event & Deadline \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Output}
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{9cm} | }
+\hline
+\textbf{Output Name} & \textbf{Output Type}\\
+\hline
+New Schedule & Schedule \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Behavior}
+The new schedule must conform to the functional requirements specified in Section 4.2.3 of the Requirements Specification.
 
 \chapter{Event Storage Classes}
 
@@ -134,11 +162,95 @@ classes
 
 \chapter{Synchronization and Account}
 
-sync
+\section{Description}
+The server must allow a user to log in, log out, as well as sync their data to and from the server.
+
+\section{Database}
+The server must communicate with a database storing the following fields.
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{4cm} | p{7cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Description}\\
+\hline
+user id & uuid & A unique identifier for the user\\
+\hline
+email & email & The user's email address\\
+\hline
+verified & boolean & Is the user's email address verified?\\
+\hline
+verification token & string & string used to verify a user's email address\\
+\hline
+salt & string & unique random string to use while hashing the user password\\
+\hline
+password hash & string & the hash of the user's salted password\\
+\hline
+schedule & string or file reference & This field should contain either a serialized version of the user's
+entire calendar schedule or a reference to a file containing such data.\\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Events}
+\subsection{Create Account}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & The Server receives a request to create a new account with an email and password\\
+Behavior: & The server creates a new entry in the database with the user's email and a unique user id.  It must give the 
+account a unique salt, and then add the user's salted and hashed password.  The schedule is left empty and
+verified must initially be False.  It then stores a random verification token and sends an email to the specified
+email address with a link containing the verification token and the user email.\\
+Errors Handling: & If any operation fails when creating the account, no database entry should be created as to avoid half
+filled database entries.  If the user's email already exists in the database, a new account must not be created.
+\end{tabular}
+\end{center}
+
+\subsection{Verify email}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & The server receives a request to verify an email along with a verification token\\
+Behavior: & The server searches for the account with that email in the database and if the verification token matches
+the entry in the database, verified is set to true.  Otherwise, the server sends back a failure to the user.\\
+\end{tabular}
+\end{center}
+
+\subsection{Log In}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & The server receives a log in request with the email and password of the user\\
+Behavior: & The server verifies that the salted and hashed password match the database and logs the user in,
+assigning them a unique session identifier.  Otherwise, the user receives a login error\\
+\end{tabular}
+\end{center}
+
+\subsection{Log Out}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & The server receives a request to log out along with a session identifier\\
+Behavior: & The server invalidates the user's session identifier\\
+\end{tabular}
+\end{center}
+
+\subsection{Sync from}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & A logged in user requests to sync from the server\\
+Behavior: & The server responds with the schedule database entry corresponding to the user's session id\\
+Error Handling: & No user data may be sent if the session id is not valid\\
+\end{tabular}
+\end{center}
+
+\subsection{Sync to}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & A logged in user sends the server new schedule data\\
+Behavior: & The server replaces the user's schedule data in the database with the recieved data\\
+Error Handling: & No user data may be modified if the session id is not valid\\
+\end{tabular}
+\end{center}
 
 \chapter{Appendix A: Glossary}
 %see https://en.wikibooks.org/wiki/LaTeX/Glossary
-\\
+
 Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.
 See section Auto Scheduling.\\
 \\
