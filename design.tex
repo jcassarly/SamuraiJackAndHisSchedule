@@ -90,13 +90,14 @@ this section describes UI
 
 \section{Home Screen}
 
-The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.
-
-When the application opens, the calendar will show the view with the current day.  swiping left or right will allow the user to look at future or past events (respectively) based on the currently selected view mode.
-
-The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.
-
-In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.
+The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.\\
+\\
+When the application opens, the calendar will show the view with the current day.  swiping left or right will allow the user to look at future or past events (respectively) based on the currently selected view mode.\\
+\\
+The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.\\
+\\
+In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.\\
+\\
 
 \section{Event Editing and Creation Menu}
 
@@ -159,6 +160,8 @@ Locked & Checkbox & True \\
 \end{longtable}
 \end{center}
 
+The custom option for frequency causes a popup like in Figure 4 to come up and the user then chooses the days of the week their event repeats on.  Once they do that, the custom settings are saved and then frequency field is completed and updated.
+
 \subsection{Location Event Input Fields}
 The Location event will have have the same input fields as the Standard event except without the Locked field
 
@@ -214,7 +217,6 @@ The following state diagram depicts the above process:
 \begin{center}
 \includegraphics[scale=0.5]{settings.png}
 \end{center}
-\\\\
 The UI will utilize the skeleton depicted in Figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
 The information on this page will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
@@ -290,13 +292,13 @@ edit
 \subsection{View Mode}
 
 The Toolbar's last item will allow the user to cycle through the method in which the calendar displays events.  There are 3 views that the user can choose from: Day, Week Month. \\
-
+\\
 The Day view shows the user an hourly schedule on the currently selected day.  Swiping left or right will allow the user to look at future or past days (respectively). See Figure 2a for more information. \\
-
+\\
 The Week view shows the user the seven days of the currently selected week with an hourly schedule on each of those days.  Swiping left or right will allow the user to look at future or past weeks (respectively). See Figure 2b for more information. \\
-
+\\
 The Month view show the user all the events in the currently selected month.  The day of the week and day of the month are used to organize the events.  Swiping left or right will allow the user to look at future or past months (respectively).  See Figure 2c for more information. \\
-
+\\
 \chapter{Auto Scheduler}
 
 schedule
@@ -316,11 +318,19 @@ Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked event
 Event - A block of time on the scheduler with characteristics such as start time, end time,
 location, description, name, locked toggle, etc. (see Event functional requirements).\\
 \\
+Hamburger Menu - An overlay element of the UI that appears when the user clicks the icon depicted in the top right corner of Figures 2a-2c.\\
+\\
+Toolbar - An element of the UI that allows the user to select different options for editing their calendar.  See the Toolbar section for more information. \\
+\\
+Banner Notification - A type of notification that appears on a phone across the top of the screen. \\
+\\
 \chapter{Appendix B: Figures}
 
 \section{Figure 1: Form Layout UI}
 
-$<$$<$Form skeleton$>$$>$
+\begin{center}
+\includegraphics{eventform.PNG}
+\end{center}
 
 \section{Figure 2: Home Screen Skeleton}
 
@@ -390,5 +400,15 @@ The following two figures depict the skeleton for the Hamburger Menu when the us
 \begin{center}
 \includegraphics{hmlogout.PNG}
 \end{center}
+
+\section{Figure 4: Custom Frequency Popup}
+
+\begin{center}
+\includegraphics[width=\textwidth]{customfreq.PNG}
+\end{center}
+
+The above figure depicts the the pop-up menu skeleton that is used for creating custom frequencies.  The menu consists of 7 check boxes for each day of the week.  In the above figure, it shows a custom event that repeats every Monday, Wednesday, and Friday.
+\\\\
+When the user clicks "save", the options they chose are used to finish the custom Frequency setup.
 
 \end{document}
