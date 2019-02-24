@@ -318,40 +318,6 @@ This tool will be used to create a new event using the data from an event previo
     \\ & A new event will be created in the GUI and in the user's schedule with the same location, notification settings, locked status, description, name, and parent if it is a deadline event, as the event saved in memory. The start time will be set to the time represented by the closest grid line and the end time will be set to the appropriate time following the new start time to maintain the original event's duration. If there is no event stored in memory, no new event will be created. Events created with this tool can overlap with existing events.
 \end{enumerate}
 
-\subsection{Create and Edit Event}
-A button on the toolbar labelled "create" takes the user to the form to create a new event from scratch (requirement: Event.Create). A second button on the toolbar takes the user to a similar form, which differs from the create form with an additional delete button, to edit the existing information of the event (requirement: Event.Edit). The form will prompt the user for the following information:
-\begin{longtable}{ | p{3cm} | p{7cm} | p{5cm} | }
-\hline
-\textbf{Information} & \textbf{Format} & \textbf{Corresponding Requirement}\\
-\hline 
-Name & Text Field & Event.Name\\
-\hline 
-Description & Text Field & Event.Description\\
-\hline
-Start Date & Date Picker (Values for year, month, day enumerated. User selects value from a menu. Based on Android GUI feature) & Event.TimePeriod\\& & Event.Standard.StartTime\\
-\hline
-Start Time & Time Picker (Values for hour, minute, second, am/pm enumerated. User selects value from a menu. Based on Android GUI feature) & Event.TimePeriod\\& & Event.Standard.StartTime\\
-\hline
-End Date & Date Picker (Default same as start date) & Event.TimePeriod\\& & Event.Standard.EndTime\\
-\hline
-End Time & Time Picker (Default an hour after start time) & Event.TimePeriod\\& & Event.Standard.EndTime\\
-\hline
-Location & Text Field & Event.Location\\
-\hline
-Frequency & Drop Down Menu (contains pre-sets such as monthly, daily, weekly, or a custom setting) & Event.Frequency\\
-\hline 
-Notification Type & Checklist (contains options such as email, text, phone banner) & Event.Notifications\\
-\hline
-Notification Time & Drop Down Menu (contains pre-sets such as hour before, day before, or a custom value) & Event.Notifications\\
-\hline
-Locked Status & Check box & Event.Unlock\\
-\hline 
-Delete & Button (only appears for Edit form) & Event.Edit\\
-\hline
-Confirm & Button & Event.Create\\& & Event.Edit\\
-\hline
-\end{longtable}
-
 \subsection{View Mode}
 
 The Toolbar's last item will allow the user to cycle through the method in which the calendar displays events.  There are 3 views that the user can choose from: Day, Week Month. \\
