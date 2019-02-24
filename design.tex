@@ -22,6 +22,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{longtable}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 \hypersetup{
     colorlinks=true,
     bookmarks=false,    % show bookmarks bar?
@@ -88,11 +90,13 @@ this section describes UI
 
 \section{Home Screen}
 
-The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2 for a skeleton of the Home Screen.
+The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.
 
-The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.  See Figure 3 for a skeleton of the Hamburger menu.
+When the application opens, the calendar will show the view with the current day.  swiping left or right will allow the user to look at future or past events (respectively) based on the currently selected view mode.
 
-In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.
+The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.
+
+In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.
 
 \section{Event Editing and Creation Menu}
 
@@ -108,8 +112,10 @@ One exception to the aforementioned exiting process is with Deadline events.  On
 \\\\
 The following diagram shows the flow of this editing/creation process.
 \\\\
-$<$$<$Insert PUML Diagram$>$$>$
-\\\\
+\begin{center}
+\includegraphics[scale=0.5]{edit.png}
+\end{center}
+
 \subsection{Standard Event Input Fields}
 The following table describes the input fields shown to the user for a Standard Event
 \begin{center}
@@ -205,7 +211,9 @@ The General Settings Menu will be accessible from the Hamburger Menu on the home
 \\\\
 The following state diagram depicts the above process:
 \\\\
-$<$$<$Insert PUML Diagram$>$$>$
+\begin{center}
+\includegraphics[scale=0.5]{settings.png}
+\end{center}
 \\\\
 The UI will utilize the skeleton depicted in Figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
@@ -346,7 +354,13 @@ Confirm & Button & Event.Create\\& & Event.Edit\\
 
 \subsection{View Mode}
 
-view
+The Toolbar's last item will allow the user to cycle through the method in which the calendar displays events.  There are 3 views that the user can choose from: Day, Week Month. \\
+
+The Day view shows the user an hourly schedule on the currently selected day.  Swiping left or right will allow the user to look at future or past days (respectively). See Figure 2a for more information. \\
+
+The Week view shows the user the seven days of the currently selected week with an hourly schedule on each of those days.  Swiping left or right will allow the user to look at future or past weeks (respectively). See Figure 2b for more information. \\
+
+The Month view show the user all the events in the currently selected month.  The day of the week and day of the month are used to organize the events.  Swiping left or right will allow the user to look at future or past months (respectively).  See Figure 2c for more information. \\
 
 \chapter{Auto Scheduler}
 
@@ -362,9 +376,7 @@ sync
 
 \chapter{Appendix A: Glossary}
 %see https://en.wikibooks.org/wiki/LaTeX/Glossary
-\\
-Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around.
-See section Auto Scheduling.\\
+Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked events around. See section Auto Scheduling.\\
 \\
 Event - A block of time on the scheduler with characteristics such as start time, end time,
 location, description, name, locked toggle, etc. (see Event functional requirements).\\
@@ -374,5 +386,74 @@ location, description, name, locked toggle, etc. (see Event functional requireme
 \section{Figure 1: Form Layout UI}
 
 $<$$<$Form skeleton$>$$>$
+
+\section{Figure 2: Home Screen Skeleton}
+
+The following three figures show the skeleton for the Home Screen in the three view modes: Day, Week, and Month.  Below the Date in all of the views is the Toolbar which have numbers in the boxes.  These are placeholders for the tool that will appear there.  The follow table describes what tool each number stands for:\\
+
+\begin{center}
+\begin{longtable}{ | p{0.3cm} | p{7.5cm} | }
+\hline
+\textbf{1} & Copy Selected Event to Clipboard \\
+\hline
+\textbf{2} & Paste Event on Clipboard \\
+\hline
+\textbf{3} & Cut Selected Event from Home to Clipboard \\
+\hline
+\textbf{4} & Enable Drag and Drop \\
+\hline
+\textbf{5} & Enable Resize \\
+\hline
+\textbf{6} & Create Event \\
+\hline
+\textbf{7} & Edit Selected Event \\
+\hline
+\textbf{8} & Cycle View Mode \\
+\hline
+\end{longtable}
+\end{center}
+
+Additionally, in the top left corner of each of the following 3 figures, there is a button with three lines on it to represent the Hamburger menu.  When the user clicks on that, the Hamburger menu will display Figure 3a or 3b based on whether the user is logged in.
+
+\subsection{Figure 2a: Day View}
+
+\begin{center}
+\includegraphics{day.PNG}
+\end{center}
+
+In the above figure, the calendar displays events on an hourly basis in blocks where the top and bottom represent the approximate start and end time of the event.
+
+\subsection{Figure 2b: Week View}
+
+\begin{center}
+\includegraphics{week.PNG}
+\end{center}
+
+In the above figure, the calendar displays events similar to the daily view, except that it divides the horizontal width of the screen by 7 to allow all 7 days of the week to be displayed.  The top and bottom of the event boxes correspond to the approximate start and end times of the events.
+
+\subsection{Figure 2c: Month View}
+
+\begin{center}
+\includegraphics{month.PNG}
+\end{center}
+
+
+In the above figure, the calendar displays all the events in the selected month.  Each event during a particular day is listed under that day such that the user can click on it, but the separation between the events does not correspond to start and end time.  The event names are simply list and the user could click and edit them if they want to see more information.
+
+\section{Figure 3: Hamburger Menu}
+
+The following two figures depict the skeleton for the Hamburger Menu when the user is logged in and logged out. Each box on the Hamburger menu is a button that brings up the relevant page (except the "$<$Account Email$>$" box which just allows the user to view their email on their account).
+
+\subsection{Figure 3a: User Logged In}
+
+\begin{center}
+\includegraphics{hmlogin.PNG}
+\end{center}
+
+\subsection{Figure 3b: User Logged Out}
+
+\begin{center}
+\includegraphics{hmlogout.PNG}
+\end{center}
 
 \end{document}
