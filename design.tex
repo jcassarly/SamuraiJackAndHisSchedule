@@ -276,8 +276,8 @@ Each individual tool can be selected by clicking on the tool's corresponding ico
 This tool will be used to move the start and end times of an event from the graphical user interface (GUI) (Requirement: Toolbar.DragDrop). This tool will generally follow this sequence of events:
 \begin{enumerate}
     \item User clicks on drag and drop icon in the toolbar. (requirement: Toolbar.Select.DragDrop)\\
-    \\ & The GUI's event listener now responds to user clicks with the drag and drop tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the drag and drop tool.
-    \item User clicks anywhere within the event and does not release. (requirement: Toolbar.DragDrop.Drag)\\
+    \\ & The GUI's event listener now responds to user clicks on events with only the drag and drop tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the drag and drop tool.
+    \item User clicks anywhere within the event and does not release. Clicking the icon while the drag and drop tool is selected returns (requirement: Toolbar.DragDrop.Drag)\\
     \\ & The event will follow the user's cursor position with its top edge moved to the grid line closest to the user's cursor. The grid settings can be changed from the General Settings page.
     \item User releases event. (requirement: Toolbar.DragDrop.Release)\\
     \\ & The event's start time will be set to the time represented by the closest grid line when the user releases. The end time will be updated to maintain the original duration of the event.
@@ -287,7 +287,7 @@ This tool will be used to move the start and end times of an event from the grap
 This tool will be used to change the duration of an event from the GUI. This tool will generally follow this sequence of events:
 \begin{enumerate}
     \item User clicks on re-size icon in the toolbar. (requirement: Toolbar.Select.Re-size)\\
-    \\ & The GUI's event listener now responds to user clicks with the re-size tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the re-size tool.
+    \\ & The GUI's event listener now responds to user clicks on events with only the re-size tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the re-size tool.
     \item User clicks on the top or bottom edge of an event and does not release. (requirement: Toolbar.Re-size.DragEdge)\\
     \\ & The selected edge of the event in the GUI will move up or down following the vertical movement of the user's cursor. The edge will move to the grid line closest to the user's cursor. The right and left edges of the event cannot be dragged.
     \item User releases edge. (requirement: Toolbar.Re-size.Release)\\
@@ -298,7 +298,7 @@ This tool will be used to change the duration of an event from the GUI. This too
 This tool will be used to save and remove an event from the schedule via the GUI. This tool will generally follow this sequence of events:
 \begin{enumerate}
     \item User clicks on cut tool icon in the toolbar. (requirement: Toolbar.Select.Cut)\\
-    \\ & The GUI's event listener now responds to user clicks with the cut tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the copy tool.
+    \\ & The GUI's event listener now responds to user clicks on events with only the cut tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the copy tool.
     \item User clicks anywhere in the event and releases. (requirement: Toolbar.Cut)\\
     \\ & The event is removed from the GUI and the user's schedule. It is saved within the program for the creation of future copies of the event. The attributes that must be saved include its location, notification settings, locked status, description, name, duration, and parent if it is a deadline event. It replaces whatever previous event was stored in memory.
 \end{enumerate}
@@ -307,7 +307,7 @@ This tool will be used to save and remove an event from the schedule via the GUI
 This tool will be used to save an event from the schedule via the GUI. Unlike the cut tool above, it will preserve the original event in the schedule. This tool will generally follow this sequence of events:
 \begin{enumerate}
     \item User clicks on copy tool icon in the toolbar. (requirement: Toolbar.Select.Copy)\\
-    \\ & The GUI's event listener now responds to user clicks with the copy tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the copy tool.
+    \\ & The GUI's event listener now responds to user clicks on events with only the copy tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the copy tool.
     \item User clicks anywhere in the event and releases. (requirement: Toolbar.Copy)\\
     \\ & The event is saved within the program for the creation of future copies of the event. The attributes that must be saved include its location, notification settings, locked status, description, name, duration, and parent if it is a deadline event. It replaces whatever previous event was stored in memory. The original event remains in the schedule unchanged.
 \end{enumerate}
@@ -316,7 +316,7 @@ This tool will be used to save an event from the schedule via the GUI. Unlike th
 This tool will be used to create a new event using the data from an event previously saved using the cut or copy tool via the GUI. This tool will generally follow this sequence of events:
 \begin{enumerate}
     \item User clicks on paste tool icon in the toolbar (requirement: Toolbar.Select.Paste)\\
-    \\ & The GUI's event listener now responds to user clicks with the paste tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the paste tool.
+    \\ & The GUI's event listener now responds to user clicks on the schedule with only the paste tool. An attribute in the GUI will be an enumerated value and be set to a value predefined as the paste tool.
     \item User clicks and releases anywhere on the schedule (requirement: Toolbar.Paste)\\
     \\ & A new event will be created in the GUI and in the user's schedule with the same location, notification settings, locked status, description, name, and parent if it is a deadline event, as the event saved in memory. The start time will be set to the time represented by the closest grid line and the end time will be set to the appropriate time following the new start time to maintain the original event's duration. If there is no event stored in memory, no new event will be created. Events created with this tool can overlap with existing events.
 \end{enumerate}

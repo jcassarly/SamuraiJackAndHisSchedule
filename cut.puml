@@ -1,0 +1,21 @@
+@startuml cut
+
+state "Home Screen Current State" as Start
+state "Home Screen Default Selection Mode" as Select
+state "Cut Mode" as Cut
+state "Save Event Info" as Save
+
+Start : (Default selection mode or different tool may be selected)
+Cut : The Cut tool is selected
+Save : Event's info saved in memory, replaces previously saved info. Event is removed from schedule.
+
+[*] --> Start
+Start --> Cut : (1) User clicks on toolbar cut icon
+Cut --> Select : (1)
+Select --> Cut : (1)
+
+Cut --> Save : (2) User clicks on event and releases
+
+Save --> Cut 
+
+@enduml
