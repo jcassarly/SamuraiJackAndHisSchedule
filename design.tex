@@ -101,17 +101,17 @@ In regards to account information, the user will be able to bring up fields to c
 
 \section{Event Editing and Creation Menu}
 
-When the user wants to create an event, they will be able to click the Create event on the Toolbar.  When they do so, they will be presented with a choice of creating a Standard, Location, or Deadline event (from a drop down menu). Once the user makes their decision, a form with the necessary items to create an event will be displayed.  All of the items will have default values filled in based on the General Settings or global defaults.
+When the user wants to create an event, they will be able to click the Create Event button on the Toolbar.  When they do so, they will be presented with a choice of creating a Standard, Location, or Deadline event (from a drop down menu). Once the user makes their decision, a form with the necessary items to create an event will be displayed.  All of the items will have default values filled in based on the General Settings or global defaults.
 \\\\
 Additionally, the same form can be pulled up from any existing event by clicking on  it.  All the default values in the form will be the values stored in the chosen Event object.
 \\\\
 The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
 Once the user finishes filling in the form, they can either save the form and go back to the Home Screen or discard the changes and return to the Home Screen.
-\\
-One exception to the aforementioned exiting process is with Deadline events.  Once the user clicks save on a Deadline event, they will be presented with a diff between their old calendar and the changes the auto scheduler proposes based on the information provided for the deadline event.  The user will be given the option to accept the changes or reject them (returning them to the input form).  Upon acceptance, the changes are saved and the user goes back to the home screen.
 \\\\
-The following diagram shows the flow of this editing/creation process.
+One exception to the aforementioned exiting process is with Deadline Events.  Once the user clicks save on a Deadline event, they will be presented with a diff between their old calendar and the changes the auto scheduler is proposing based on the information provided for the Deadline Event.  The user will be given the option to accept the changes or reject them (returning them to the input form).  Upon acceptance, the changes are saved and the user goes back to the home screen.
+\\\\
+The following diagram shows the flow of this editing/creation process:
 \\\\
 \begin{center}
 \includegraphics[scale=0.5]{edit.png}
@@ -219,7 +219,7 @@ The following state diagram depicts the above process:
 \end{center}
 The UI will utilize the skeleton depicted in Figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
-The information on this page will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
+The information on this page of the application will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
