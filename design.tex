@@ -228,6 +228,42 @@ password hash & string & the hash of the user's salted password\\
 schedule & string or file reference & This field should contain either a serialized version of the user's
 entire calendar schedule or a reference to a file containing such data.\\
 \hline
+user settings & userSettings & A data structure containing the account settings for the user defined below.\\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{userSettings data struct}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Default from Requirements} \\
+\hline
+Snap to Grid & int & Settings.Toolbar.SnapToGrid.Default \\
+\hline
+Break Time & int & Settings.AutoScheduling. \\
+\hline
+Min Event Time & int & MinTime.Default\\
+\hline
+Max Event Time & int & MaxTime.Default\\
+\hline
+Language & enum (languages) & Settings.Language.Default \\
+\hline
+Notifications &  enum of values: & \\
+& - Email &\\
+& - Text & \\
+& - Push & \\
+& - None & \\
+\hline
+Notification Time & Number (in minutes) & Settings.Events.Notifications. \\
+Before Event & & Time.Default \\
+\hline
+Event Duration & Number (in minutes) & Settings.Events.Duration.Default \\
+\hline
+Location & Text Field with Suggestions & Settings.Events.Location.Default \\
+& based on other event locations & \\
+\hline
 \end{longtable}
 \end{center}
 
@@ -275,7 +311,7 @@ Behavior: & The server invalidates the user's session identifier\\
 \begin{center}
 \begin{tabular}{ p{2cm} p{13cm} }
 Description: & A logged in user requests to sync from the server\\
-Behavior: & The server responds with the schedule database entry corresponding to the user's session id\\
+Behavior: & The server responds with the schedule and settings database entries corresponding to the user's session id\\
 Error Handling: & No user data may be sent if the session id is not valid\\
 \end{tabular}
 \end{center}
@@ -283,8 +319,8 @@ Error Handling: & No user data may be sent if the session id is not valid\\
 \subsection{Sync to}
 \begin{center}
 \begin{tabular}{ p{2cm} p{13cm} }
-Description: & A logged in user sends the server new schedule data\\
-Behavior: & The server replaces the user's schedule data in the database with the recieved data\\
+Description: & A logged in user sends the server new schedule and/or settings data\\
+Behavior: & The server replaces the user's schedule and settings data in the database with the recieved data\\
 Error Handling: & No user data may be modified if the session id is not valid\\
 \end{tabular}
 \end{center}
