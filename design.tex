@@ -303,7 +303,9 @@ schedule
 
 \chapter{Event Storage Classes}
 
-This section describes event storage classes and the values stored by these classes, as well as their interactions with each other.
+This section describes event storage classes and the values stored by these classes, as well as their interactions with each other.\\
+
+Placeholder for PlantUML doc.
 
 \section{Standard Event Class}
 
@@ -474,7 +476,7 @@ This is the class which manages frequency of recurring events.
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-frequency & enum & A descriptive enum which explains how often an event occurs \\
+frequency & enum & An enum with the values DAILY, WEEKLY, MONTHLY, YEARLY, and CUSTOM. \\
 \hline
 exceptions & Time object[] & A list of exceptions to the prescribed frequency \\
 \hline
@@ -518,7 +520,7 @@ This is the class which tells the server when to send notifications for an event
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-notificationType & enum & The type of notification to display \\
+notificationType & enum & An enum with the values EMAIL, TEXT, PUSH, and BANNER \\
 \hline
 timeBefore & Number (in minutes) & The amount of time before an event to send a notification \\
 \hline
