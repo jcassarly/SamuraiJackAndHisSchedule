@@ -463,11 +463,11 @@ schedule
 
 \chapter{Event Storage Classes}
 
-This section describes event storage classes and the values stored by these classes, as well as their interactions with each other as described in section 4.1 of the SRS. \\
+This section describes event storage classes and the values stored by these classes, as well as their interactions with each other.\\
 
 Placeholder for PlantUML doc.
 
-\section{Event Class}
+\section{Standard Event Class}
 
 This is the default event class.
 
@@ -499,9 +499,9 @@ parent & Deadline event & null unless the event was created by a deadline object
 
 \subsection{Public Methods}
 
-\textbf{Event Constructor} \\
+\textbf{Standard Event Constructor} \\
 \textbf{Parameters:} name, description, startTime, endTime, location, locked, notifications, parent \\
-This instantiates a Event object and sets all the Private fields to corresponding parameter values.
+This instantiates a Standard Event object and sets all the Private fields to corresponding parameter values.
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{3cm} | p{3cm} | p{5cm} | }
@@ -545,7 +545,7 @@ setParent & Deadline event & void & This sets the parent to an input deadline \\
 
 \section{Location Event Class}
 
-This is the event class for locations. It inherits all the private fields and public methods of Event.
+This is the event class for locations. It inherits all the private fields and public methods of Standard Event.
 
 \subsection{Public Methods}
 
