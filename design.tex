@@ -86,17 +86,60 @@ http://uipatterns.io
 
 \chapter{User Interface}
 
-this section describes UI
-
 \section{Home Screen}
 
-The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.
+The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.\\
+\\
+When the application opens, the calendar will show the view with the current day.  swiping left or right will allow the user to look at future or past events (respectively) based on the currently selected view mode.\\
+\\
+The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.\\
+\\
+In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.\\
+\\
 
-When the application opens, the calendar will show the view with the current day.  swiping left or right will allow the user to look at future or past events (respectively) based on the currently selected view mode.
+\subsection{Attributes}
 
-The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{5cm} | p{5cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+events & Event[] & The list of events being displayed on the calendar \\
+\hline
+toolbarState & Toolbar & The object that stores the state of the Toolbar for the calendar \\
+\hline
+date & Date Object & the date being displayed on the Home Screen
+\hline
+hamburgerMenuState & Boolean & true if the Hamburger Menu is open, false if closed \\
+\hline
+\end{longtable}
+\end{center}
 
-In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{2cm} | p{3cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+displayEvents & void & Event[] & Takes a list of events and displays the events appropriately on the calendar based on the view mode and Figure 2 \\
+\hline
+displayToolbar & void & void & Displays all the parts of the Toolbar defined below as per Figure 2 \\
+\hline
+displayDate & void & void & Displays the date at the top of the screen as per Figure 2 \\
+\hline
+displayHamburgerMenu & void & void & Displays the Hamburger Menu in the top right of the screen as per Figure 2 \\
+\hline
+toolbarEventListener & void & void & Listens for events from the toolbar and updates the GUI accordingly \\
+\hline
+openHamburgerMenu & void & void & Opens the Hamburger Menu overlay when the user clicks the button \\
+\hline
+closeHamburgerMenu & void & void & Closes the Hamburger Menu overlay when the user clicks off the menu when it is open \\
+\hline
+\end{longtable}
+\end{center}
+
+The first 4 methods that display items on the Home Screen are called whenever the user moves to the Home Screen.
 
 \section{Event Editing and Creation Menu}
 
@@ -159,6 +202,8 @@ Locked & Checkbox & True \\
 \end{longtable}
 \end{center}
 
+The custom option for frequency causes a popup like in Figure 4 to come up and the user then chooses the days of the week their event repeats on.  Once they do that, the custom settings are saved and then frequency field is completed and updated.
+
 \subsection{Location Event Input Fields}
 The Location event will have have the same input fields as the Standard event except without the Locked field
 
@@ -205,6 +250,43 @@ Complete Task & & - Task Start Time \\
 \end{longtable}
 \end{center}
 
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+InputEnum & Final Enum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, and DEFAULT.  Default specifies a dropdown menu to load for choosing a different enum value. \\
+\hline
+accountEvents & Event[] & Reference to the list of events on the user's account \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+loadInputFields & void & EventEnum & Loads the proper input fields based on the Event type specifed by the EventEnum passed in.\\
+\hline
+waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+\hline
+displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
+\hline
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
+\hline
+exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+\hline
+\end{longtable}
+\end{center}
+
+Note that the loadInputFields method is called with the DEFAULT input when a event is being created. Once the user selects and event type, the same method is called again based on the chosen event type.\\\\
+If the user us editing an event, loadInputFields gets the event type based on teh type of event being edited.\\\\
+
 \section{General Settings Menu}
 
 The General Settings Menu will be accessible from the Hamburger Menu on the home screen.  When the user enters the General Settings Menu, the application will look up the settings and load them into a series of input fields they they can edit.  When the user saves their changes to the form, they will return to the Home Screen.  If the user clicks the back button without saving, they will be prompted with a pop-up that checks to make sure they really want to leave without saving.  If they say yes, their changes will not be saved and they will go back to the Home Screen.  Otherwise, they will not leave the General Settings and can continue editing.
@@ -214,10 +296,11 @@ The following state diagram depicts the above process:
 \begin{center}
 \includegraphics[scale=0.5]{settings.png}
 \end{center}
-\\\\
 The UI will utilize the skeleton depicted in Figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
 The information on this page will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
+
+\subsection{Input Fields}
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
@@ -258,6 +341,36 @@ Location & Text Field with Suggestions & Settings.Events.Location.Default \\
 The constraints specified in the Settings.AutoScheduling.* Requirements will be checked while the user is entering the form and if the constraints are not met, the user will be unable to save their changes.
 \\\\
 Note that the Settings.AutoScheduling.MinOpenTime Requirement was merged with the Settings.AutoScheduling.Breaks Requirement since they represent the same thing.
+
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+accountSettings & Settings[] & Reference to the list of settingss on the user's account \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+loadInputFields & void & void & Loads the input fields specified in the General Settings Input Field table above.\\
+\hline
+waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+\hline
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
+\hline
+exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+\hline
+\end{longtable}
+\end{center}
 
 \section{Auto Scheduler Diff View}
 The Auto Scheduler Diff view allows the user to view both the old calendar with all existing events in their original state and the new calendar with new events created for the user's deadlines along with updated times for unlocked events.\\
@@ -329,12 +442,13 @@ This tool will be used to create a new event using the data from an event previo
 \subsection{View Mode}
 
 The Toolbar's last item will allow the user to cycle through the method in which the calendar displays events.  There are 3 views that the user can choose from: Day, Week Month. \\
-
+\\
 The Day view shows the user an hourly schedule on the currently selected day.  Swiping left or right will allow the user to look at future or past days (respectively). See Figure 2a for more information. \\
-
+\\
 The Week view shows the user the seven days of the currently selected week with an hourly schedule on each of those days.  Swiping left or right will allow the user to look at future or past weeks (respectively). See Figure 2b for more information. \\
-
+\\
 The Month view show the user all the events in the currently selected month.  The day of the week and day of the month are used to organize the events.  Swiping left or right will allow the user to look at future or past months (respectively).  See Figure 2c for more information. \\
+\\
 
 \chapter{Auto Scheduler}
 
@@ -355,15 +469,23 @@ Auto-Scheduler - Creates events in advance of deadlines. Can move unlocked event
 Event - A block of time on the scheduler with characteristics such as start time, end time,
 location, description, name, locked toggle, etc. (see Event functional requirements).\\
 \\
+Hamburger Menu - An overlay element of the UI that appears when the user clicks the icon depicted in the top right corner of Figures 2a-2c.\\
+\\
+Toolbar - An element of the UI that allows the user to select different options for editing their calendar.  See the Toolbar section for more information. \\
+\\
+Banner Notification - A type of notification that appears on a phone across the top of the screen. \\
+\\
 \chapter{Appendix B: Figures}
 
 \section{Figure 1: Form Layout UI}
 
-$<$$<$Form skeleton$>$$>$
+\begin{center}
+\includegraphics{eventform.PNG}
+\end{center}
 
 \section{Figure 2: Home Screen Skeleton}
 
-The following three figures show the skeleton for the Home Screen in the three view modes: Day, Week, and Month.  Below the Date in all of the views is the Toolbar which have numbers in the boxes.  These are placeholders for the tool that will appear there.  The follow table describes what tool each number stands for:\\
+The following three figures show the skeleton for the Home Screen in the three view modes: Day, Week, and Month.  Below the current date (top bar with DD/MM/YYYY) in all of the views is the Toolbar which have numbers in the boxes.  These are placeholders for the tool that will appear there.  The follow table describes what tool each number stands for:\\
 
 \begin{center}
 \begin{longtable}{ | p{0.3cm} | p{7.5cm} | }
@@ -429,5 +551,15 @@ The following two figures depict the skeleton for the Hamburger Menu when the us
 \begin{center}
 \includegraphics{hmlogout.PNG}
 \end{center}
+
+\section{Figure 4: Custom Frequency Popup}
+
+\begin{center}
+\includegraphics[width=\textwidth]{customfreq.PNG}
+\end{center}
+
+The above figure depicts the the pop-up menu skeleton that is used for creating custom frequencies.  The menu consists of 7 check boxes for each day of the week.  In the above figure, it shows a custom event that repeats every Monday, Wednesday, and Friday.
+\\\\
+When the user clicks "save", the options they chose are used to finish the custom Frequency setup.
 
 \end{document}
