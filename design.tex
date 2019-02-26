@@ -98,17 +98,19 @@ settings
 
 The user can sign up for an account, login, logout, or reset their password.  The Sign Up UI should come up upon opening the app while not logged in and after signing out.
 
+Each form sends a post request to the relevant part of the server.
+
 \subsection{Account Management Form Fields}
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{4cm} | p{8cm} | }
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Description} \\
 \hline
-email & email address & the user's email address \\
+email & Text Field & the user's email address \\
 \hline
-password & password & password of the user \\
+password & Password Field & password of the user \\
 \hline
-second password & password & second password field to verify the user's password\\
+second password & Password Field & second password field to verify the user's password\\
 \hline
 \end{longtable}
 \end{center}
@@ -176,9 +178,9 @@ The Auto Scheduler implements the functionality described in section 4.2 of the 
 \hline
 \textbf{Input Name} & \textbf{Input Type}\\
 \hline
-Old Schedule & Schedule \\
+oldSchedule & Event[] \\
 \hline
-New Deadline Event & Deadline \\
+newDeadlineEvent & Deadline \\
 \hline
 \end{longtable}
 \end{center}
@@ -189,7 +191,7 @@ New Deadline Event & Deadline \\
 \hline
 \textbf{Output Name} & \textbf{Output Type}\\
 \hline
-New Schedule & Schedule \\
+New Schedule & Event[] \\
 \hline
 \end{longtable}
 \end{center}
