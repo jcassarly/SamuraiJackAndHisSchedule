@@ -22,6 +22,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{longtable}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 \hypersetup{
     colorlinks=true,
     bookmarks=false,    % show bookmarks bar?
@@ -91,6 +93,45 @@ event edit
 \section{General Settings Menu}
 
 settings
+
+\section{Account Management}
+
+The user can sign up for an account, login, logout, or reset their password.  The Sign Up UI should come up upon opening the app while not logged in and after signing out.
+
+\subsection{Account Management Form Fields}
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{4cm} | p{8cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Description} \\
+\hline
+email & email address & the user's email address \\
+\hline
+password & password & password of the user \\
+\hline
+second password & password & second password field to verify the user's password\\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Account Management Interfaces}
+There are 3 user interfaces related to account management:\\
+\textbf{Log In:}
+logs the user in.  Uses the email and password fields.
+\begin{center}
+\includegraphics[scale=0.4]{login.png}
+\end{center}
+
+\textbf{Reset Password:}
+Tells the server to send a reset password email.  Uses email field.
+\begin{center}
+\includegraphics[scale=0.4]{resetpass.png}
+\end{center}
+
+\textbf{Sign Up:}
+Requests the server to sign the user up.  Uses the email, password, and second password fields.
+\begin{center}
+\includegraphics[scale=0.4]{signup.png}
+\end{center}
 
 \section{Auto Scheduler Diff View}
 
