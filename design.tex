@@ -86,6 +86,8 @@ http://uipatterns.io
 
 \chapter{User Interface}
 
+This section explains the design for the requirements mentioned in section 3.1 of the Software Requirements Specification document.
+
 \section{Home Screen}
 
 The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.\\
@@ -95,6 +97,8 @@ When the application opens, the calendar will show the view with the current day
 The Home Screen will also have a Hamburger Menu where the user can access their account information and the General Settings.\\
 \\
 In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.\\
+\\
+Finally, the Home Screen will need to load in less than 3 seconds. \\
 \\
 
 \subsection{Attributes}
@@ -127,7 +131,7 @@ diffViewState & DiffView & The object that stores the state of the Auto Schedule
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
-displayEvents & void & Event[] & Takes a list of events and displays the events appropriately on the calendar based on the view mode and Figure 2 \\
+displayEvents & void & void & Syncs from the server and displays the received events appropriately on the calendar based on the view mode and Figure 2 \\
 \hline
 displayToolbar & void & void & Displays all the parts of the Toolbar defined below as per Figure 2 \\
 \hline
@@ -141,6 +145,8 @@ openHamburgerMenu & void & void & Opens the Hamburger Menu overlay when the user
 \hline
 closeHamburgerMenu & void & void & Closes the Hamburger Menu overlay when the user clicks off the menu when it is open \\
 \hline
+hamburgerEventListener & void & void & Waits for the user to click on a button in the Hamburger Menu and then performs the relevant function. \\
+\hline
 userClick & void & UIEvent & Responds to user clicks on schedule. Behavior depends on currently selected tool as described in Toolbar section below.\\
 \hline
 \end{longtable}
@@ -148,13 +154,51 @@ userClick & void & UIEvent & Responds to user clicks on schedule. Behavior depen
 
 The first 4 methods that display items on the Home Screen are called whenever the user moves to the Home Screen.
 
+\section{Abstract Input Form}
+
+Whenever the application needs to get data based on Figure 1, the UI class will have the following methods:
+
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+FieldEnum & Final Enum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, SETTINGS, and EVENT.  EVENT specifies a drop-down menu to load for choosing a different enum value. \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{8cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+loadInputFields & abstract void & FieldEnum & Loads the proper input fields based on the Event type specified by the FieldEnum passed in.\\
+\hline
+waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+\hline
+saveForm & abstract void & void & Saves the changes the user made and handles the storage appropriately \\
+\hline
+back & void & void & Checks if there are unsaved changes to the fields in the form being edited.  If there are unsaved changes, it displays a pop-up that asks the user if they really want to exit the form.  If they do, then it discards the changes and calls exitForm.  Otherwise, the application continues waiting for user input on the form.  If there are no unsaved changes, then the application just calls exitForm.\\
+\hline
+exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+\hline
+\end{longtable}
+\end{center}
+
+This form should load in less than 3 seconds. \\
+
 \section{Event Editing and Creation Menu}
 
 When the user wants to create an event, they will be able to click the Create event on the Toolbar.  When they do so, they will be presented with a choice of creating a Standard, Location, or Deadline event (from a drop down menu). Once the user makes their decision, a form with the necessary items to create an event will be displayed.  All of the items will have default values filled in based on the General Settings or global defaults.
 \\\\
 Additionally, the same form can be pulled up from any existing event by clicking on  it.  All the default values in the form will be the values stored in the chosen Event object.
 \\\\
-The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.
+The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.  Thus, the event editing/creation menu will extend the Abstract Input Form Class.
 \\\\
 Once the user finishes filling in the form, they can either save the form and go back to the Home Screen or discard the changes and return to the Home Screen.
 \\
@@ -198,7 +242,7 @@ Notifications & Drop Down with following choices & General Settings\\
 & - Email & Default\\
 & - Text & \\
 & - Banner & \\
-& - Pop-up & \\
+& - Push & \\
 & - None & \\
 \hline
 Notification Time & Number (in minutes) & General Settings \\
@@ -259,34 +303,34 @@ Complete Task & & - Task Start Time \\
 
 \subsection{Attributes}
 
+The event editing and creation menu will have all attributes from the parent Abstract Input Form class along with the following:
+
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
-\hline
-InputEnum & Final Enum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, and DEFAULT.  Default specifies a dropdown menu to load for choosing a different enum value. \\
 \hline
 accountEvents & Event[] & Reference to the list of events on the user's account \\
 \hline
 \end{longtable}
 \end{center}
 
+Additionally, the edit/creation form will not use the SETTINGS field in the FieldEnum.
+
 \subsection{Methods}
+
+The event editing and creation menu will have all methods from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
-loadInputFields & void & EventEnum & Loads the proper input fields based on the Event type specifed by the EventEnum passed in.\\
+loadInputFields & void & FieldEnum & Loads the proper input fields based on the Input Field type specifed by the FieldEnum passed in. STANDARD, LOCATION, and DEADLINE specify the corresponding input fields from above.  DEFAULT specifies that a drop-down menu to get ask for a different FieldEnum should be used. \\
 \hline
-waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list
 \hline
 displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
-\hline
-saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
-\hline
-exitForm & void & void & Leaves the form and goes back to the Home Screen \\
 \hline
 \end{longtable}
 \end{center}
@@ -332,7 +376,7 @@ Notifications & Drop Down with following choices & Settings.Events.Notifications
 & - Email & Default\\
 & - Text & \\
 & - Banner & \\
-& - Pop-up & \\
+& - Push & \\
 & - None & \\
 \hline
 Notification Time & Number (in minutes) & Settings.Events.Notifications. \\
@@ -348,33 +392,35 @@ Location & Text Field with Suggestions & Settings.Events.Location.Default \\
 The constraints specified in the Settings.AutoScheduling.* Requirements will be checked while the user is entering the form and if the constraints are not met, the user will be unable to save their changes.
 \\\\
 Note that the Settings.AutoScheduling.MinOpenTime Requirement was merged with the Settings.AutoScheduling.Breaks Requirement since they represent the same thing.
+\\\\
+The general settings menu will extend the Abstract Input Form Class
 
 \subsection{Attributes}
+
+The general settings menu will have all attributes from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-accountSettings & Settings[] & Reference to the list of settingss on the user's account \\
+accountSettings & Settings[] & Reference to the list of settings on the user's account \\
 \hline
 \end{longtable}
 \end{center}
 
 \subsection{Methods}
 
+The general settings menu will have all methods from the parent Abstract Input Form class along with the following:
+
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{8cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
-loadInputFields & void & void & Loads the input fields specified in the General Settings Input Field table above.\\
+loadInputFields & void & FeildEnum & Loads the input fields specified in the General Settings Input Field table above. Should always receive the SETTINGS value as the parameter.\\
 \hline
-waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
-\hline
-saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
-\hline
-exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+saveForm & void & void & Saves the changes the user made and adds the event to the account's settings \\
 \hline
 \end{longtable}
 \end{center}
@@ -542,7 +588,258 @@ schedule
 
 \chapter{Event Storage Classes}
 
-classes
+This section describes event storage classes and the values stored by these classes, as well as their interactions with each other as described in section 4.1 of the SRS. \\
+
+Placeholder for PlantUML doc.
+
+\section{Event Class}
+
+This is the default event class.
+
+\subsection{Private Fields}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
+\hline
+name & String & Name of the event \\
+\hline
+description & String & Description of event \\
+\hline
+startTime & Time object & The starting time for an event \\
+\hline
+endTime & Time object & The ending time for an event \\
+\hline
+location & String & The location at which an event takes place \\
+\hline
+locked & boolean & Whether an event can be moved by the autoscheduler \\
+\hline
+notifications & Notification object[] & The settings for notifications for this event \\
+\hline
+parent & Deadline event & null unless the event was created by a deadline object \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Public Methods}
+
+\textbf{Event Constructor} \\
+\textbf{Parameters:} name, description, startTime, endTime, location, locked, notifications, parent \\
+This instantiates a Event object and sets all the Private fields to corresponding parameter values.
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{3cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf {Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\hline
+getName & void & String & This returns name \\
+\hline
+getDescription & void & String & This returns description \\
+\hline
+getStartTime & void & Time object & This returns startTime \\
+\hline
+getEndTime & void & Time object & This returns endTime \\
+\hline
+getLocation & void & String & This returns location \\
+\hline
+isLocked & void & boolean & This returns locked \\
+\hline
+getNotifications & void & Notification object[] & This returns notifications \\
+\hline
+getParent & void & Deadline event & This returns null if the object has no parent, otherwise it returns parent \\
+\hline
+setName & String & void & This sets name to an input String \\
+\hline
+setDescription & String & void & This sets description to an input String \\
+\hline
+setStartTime & Time object & void & This sets startTime to an input Time object \\
+\hline
+setEndTime & Time object & void & This sets endTime to an input Time object \\
+\hline
+setLocation & String & void & This sets location to an input location \\
+\hline
+setLocked & boolean & void & This sets locked to an input boolean \\
+\hline
+setNotifications & Notifications object & void & This sets notifications to an input notifications object[] \\
+\hline
+setParent & Deadline event & void & This sets the parent to an input deadline \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Location Event Class}
+
+This is the event class for locations. It inherits all the private fields and public methods of Event.
+
+\subsection{Public Methods}
+
+\textbf{Location Event Constructor} \\
+\textbf{Parameters:} name, description, startTime, endTime, notifications \\
+This instantiates a Location Event object and sets all the Private fields to corresponding parameter values. It sets parent to null, location to name, and locked to true
+
+\section{Deadline Class}
+
+This is the class which handles deadlines.
+
+\subsection{Private Fields}
+
+\begin{center}
+\begin{longtable}{ | p{4cm} | p{5cm} | p{6cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
+\hline
+createdEvents & Event[] & A list of events created for this deadline by the autoscheduler \\
+\hline
+deadline & Time object & The time before which any event in createdEvents must end \\
+\hline
+totalDuration & Number (in minutes) & The total duration any event in createdEvents must have \\
+\hline
+minChildEventTime & Number (in minutes) & Minimum duration for any event in createdEvents \\
+\hline
+maxChildEventTime & Number (in minutes) & Maximum duration for any event in createdEvents \\
+\hline
+breakTime & number (in minutes) & Minimum free time before and after any event in createdEvents \\
+\hline
+startWorkTime & Time object & The time after which any event in createdEvents must begin \\
+\hline
+location & String & The location event during which any event in createdEvents must be scheduled. Null if no location is required. \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Public Methods}
+
+\textbf{Deadline Constructor} \\
+\textbf{Parameters:} createdEvents, totalDuration, minChildEventTime, maxChildEventTime, breakTime, startWorkTime \\
+This instantiates a Deadline object and sets all the Private fields to corresponding parameter values.
+
+\begin{center}
+\begin{longtable}{ | p{4cm} | p{3cm} | p{2cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\hline
+getCreatedEvents & void & Event[] & This returns createdEvents \\
+\hline
+getDeadline & void & Time object & This returns deadline \\
+\hline
+getTotalDuration & void & Number (in minutes) & This returns totalDuration \\
+\hline
+getMinChildEventTime & void & Number (in minutes) & This returns minChildEventTime \\
+\hline
+getMaxChildEventTime & void & Number (in minutes) & This returns maxChildEventTime \\
+\hline
+getBreakTime & void & Number (in minutes) & This returns breakTime \\
+\hline
+getStartWorkTime & void & Time object & This returns startWorkTime \\
+\hline
+getLocation & void & String & This returns location.
+\hline
+setCreatedEvents & Event[] & void & This sets createdEvents to an input Event[] object \\
+\hline
+setDeadline & Time object & void & This sets deadline to an input Time object \\
+\hline
+setTotalDuration & Number & void & This sets totalDuration to an input number \\
+\hline
+setMinChildEventTime & Number & void & This sets minChildEventTime to an input number \\
+\hline
+setMaxChildEventTime & Number & void & This sets maxChildEventTime to an input number \\
+\hline
+setBreakTime & Number & void & This sets breakTime to an input number \\
+\hline
+setLocation & String & void & This sets location to an input String.
+\hline
+setStartWorkTime & Time object & void & This sets startWorkTime to an input Time object \\
+\hline
+addEvent & Event & void & This adds an event to createdEvents \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Frequency Class}
+
+This is the class which manages frequency of recurring events.
+
+\subsection{Private Fields}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
+\hline
+frequency & enum & An enum with the values DAILY, WEEKLY, MONTHLY, YEARLY, and CUSTOM. \\
+\hline
+exceptions & Time object[] & A list of exceptions to the prescribed frequency \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Public Methods}
+
+\textbf{Frequency Constructor} \\
+\textbf{Parameters:} frequency, exceptions \\
+This instantiates a Frequency object and sets all the Private fields to corresponding parameter values.
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{3cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\hline
+getFrequency & void & enum & This returns frequency \\
+\hline
+getExceptions & void & Time object[] & This returns exceptions \\
+\hline
+setFrequency & enum & void & This sets frequency to a string \\
+\hline
+setExceptions & Time object[] & void & This makes Exceptions equal to an input Time object[] \\
+\hline
+mirrorEvent & Event & Event[] & This interprets frequency to create mirrors of the event \\
+\hline
+addException & Time obejct & void & This adds an input Time to exceptions \\
+\hline
+\end{longtable}
+\end{center}
+
+\section{Notifications Class}
+
+This is the class which tells the server when to send notifications for an event.
+
+\subsection{Private Fields}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\hline
+\textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
+\hline
+notificationType & enum & An enum with the values EMAIL, TEXT, PUSH, and BANNER \\
+\hline
+timeBefore & Number (in minutes) & The amount of time before an event to send a notification \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Public Methods}
+
+\textbf{Notifications Constructor} \\
+\textbf{Parameters:} notificationType, timeBefore \\
+This instantiates a Notifications object and sets all the Private fields to corresponding parameter values.
+
+\begin{center}
+\begin{longtable}{ | p{4cm} | p{3cm} | p{3cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\hline
+getNotificationType & void & enum & This returns notificationType \\
+\hline
+getTimeBefore & void & Number (in minutes) & This returns timeBefore \\
+\hline
+setNotificationType & enum & void & This sets notificationType to an input String \\
+\hline
+setTimeBefore & Number & void & This sets timeBefore to an input number \\
+\hline
+\end{longtable}
+\end{center}
+
 
 \chapter{Synchronization and Account}
 
@@ -560,6 +857,10 @@ Hamburger Menu - An overlay element of the UI that appears when the user clicks 
 Toolbar - An element of the UI that allows the user to select different options for editing their calendar.  See the Toolbar section for more information. \\
 \\
 Banner Notification - A type of notification that appears on a phone across the top of the screen. \\
+\\
+Time Object - A standard Time object in JavaScript \\
+\\
+Date Object - A standard Date object in JavaScript \\
 \\
 \chapter{Appendix B: Figures}
 
@@ -588,9 +889,7 @@ The following three figures show the skeleton for the Home Screen in the three v
 \hline
 \textbf{6} & Create Event \\
 \hline
-\textbf{7} & Edit Selected Event \\
-\hline
-\textbf{8} & Cycle View Mode \\
+\textbf{7} & Cycle View Mode \\
 \hline
 \end{longtable}
 \end{center}
