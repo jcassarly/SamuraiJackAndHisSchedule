@@ -1,0 +1,32 @@
+@startuml resize
+
+state "Home Screen Current State" as Start
+state "Home Screen Default Selection Mode" as Select
+state "Re-Size Mode" as Resize
+state "Dragging Top Edge" as Dragtop
+state "Dragging Bottom Edge" as Dragbot
+state "Update Start Time" as Updatetop
+state "Update End Time" as Updatebot
+
+Start : (Default selection mode or different tool may be selected)
+Resize : The Re-Size tool selected
+Dragtop : User moving event's top edge
+Dragbot: User moving event's bottom edge
+Updatetop : Event's start time updated
+Updatebot : Event's end time updated
+
+[*] --> Start
+Start --> Resize : (1) User clicks on toolbar re-size icon
+Resize --> Select : (1)
+Select --> Resize : (1)
+
+Resize --> Dragtop : (2t) User clicks on top edge of event and does not release
+Dragtop --> Updatetop : (3t) User releases top edge of event
+
+Resize --> Dragbot : (2b) User clicks on bottom edge of event and does not release
+Dragbot --> Updatebot : (3b) User releases bottom edge of event
+
+Updatetop --> Resize
+Updatebot --> Resize 
+
+@enduml

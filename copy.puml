@@ -1,0 +1,21 @@
+@startuml Copy
+
+state "Home Screen Current State" as Start
+state "Home Screen Default Selection Mode" as Select
+state "Copy Mode" as Copy
+state "Save Event Info" as Save
+
+Start : (Default selection mode or different tool may be selected)
+Copy : The Copy tool is selected
+Save : Event's info saved in memory, replaces previously saved info. Event remains in schedule.
+
+[*] --> Start
+Start --> Copy : (1) User clicks on toolbar copy icon
+Copy --> Select : (1)
+Select --> Copy : (1)
+
+Copy --> Save : (2) User clicks on event and releases
+
+Save --> Copy 
+
+@enduml
