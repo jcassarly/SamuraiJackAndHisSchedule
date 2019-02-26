@@ -1,0 +1,24 @@
+@startuml drag_drop
+
+state "Home Screen Current State" as Start
+state "Home Screen Default Selection Mode" as Select
+state "Drag Drop Mode" as Dragdrop
+state "Dragging Event" as Dragging
+state "Update Event" as Update
+
+Start : (Default selection mode or different tool may be selected)
+Dragdrop : The Drag and Drop tool is selected
+Dragging : User moving the event in the GUI
+Update : Event's start and end times are updated
+
+[*] --> Start
+Start --> Dragdrop : (1) User clicks on toolbar drag and drop icon
+Dragdrop --> Select : (1)
+Select --> Dragdrop : (1)
+
+Dragdrop --> Dragging : (2) User clicks on the event and does not release
+Dragging --> Update : (3) User releases event
+
+Update --> Dragdrop 
+
+@enduml

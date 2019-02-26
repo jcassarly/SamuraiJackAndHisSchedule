@@ -1,0 +1,21 @@
+@startuml paste
+
+state "Home Screen Current State" as Start
+state "Home Screen Default Selection Mode" as Select
+state "Paste Mode" as Paste
+state "Create Event" as CreateEvent
+
+Start : (Default selection mode or different tool may be selected)
+Paste : The Paste tool is selected
+CreateEvent : New Event created using saved event info at time specified by user
+
+[*] --> Start
+Start --> Paste : (1) User clicks on toolbar paste icon
+Paste --> Select : (1)
+Select --> Paste : (1)
+
+Paste --> CreateEvent : (2) User clicks on schedule and releases
+
+CreateEvent --> Paste 
+
+@enduml
