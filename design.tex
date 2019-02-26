@@ -418,6 +418,8 @@ breakTime & number (in minutes) & Minimum free time before and after any event i
 \hline
 startWorkTime & Time object & The time after which any event in createdEvents must begin \\
 \hline
+location & String & The location event during which any event in createdEvents must be scheduled. Null if no location is required. \\
+\hline
 \end{longtable}
 \end{center}
 
@@ -446,6 +448,8 @@ getBreakTime & void & Number (in minutes) & This returns breakTime \\
 \hline
 getStartWorkTime & void & Time object & This returns startWorkTime \\
 \hline
+getLocation & void & String & This returns location.
+\hline
 setCreatedEvents & Event[] & void & This sets createdEvents to an input Event[] object \\
 \hline
 setDeadline & Time object & void & This sets deadline to an input Time object \\
@@ -455,8 +459,10 @@ setTotalDuration & Number & void & This sets totalDuration to an input number \\
 setMinChildEventTime & Number & void & This sets minChildEventTime to an input number \\
 \hline
 setMaxChildEventTime & Number & void & This sets maxChildEventTime to an input number \\
-\hline
+\hline 
 setBreakTime & Number & void & This sets breakTime to an input number \\
+\hline
+setLocation & String & void & This sets location to an input String.
 \hline
 setStartWorkTime & Time object & void & This sets startWorkTime to an input Time object \\
 \hline
