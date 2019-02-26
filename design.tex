@@ -305,7 +305,7 @@ schedule
 
 This section describes event storage classes and the values stored by these classes, as well as their interactions with each other.
 
-\section{Event Class}
+\section{Standard Event Class}
 
 This is the default event class.
 
@@ -316,6 +316,10 @@ This is the default event class.
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
+name & String & Name of the event \\
+\hline
+description & String & Description of event \\
+\hline
 startTime & Time object & The starting time for an event \\
 \hline
 endTime & Time object & The ending time for an event \\
@@ -324,58 +328,68 @@ location & String & The location at which an event takes place \\
 \hline
 locked & boolean & Whether an event can be moved by the autoscheduler \\
 \hline
-description & String & Description of event \\
+notifications & Notification object[] & The settings for notifications for this event \\
 \hline
-name & String & Name of the event \\
-\hline
-Notifications & Notification object[] & The settings for notifications for this event \\
-\hline
-parent & deadline event & null unless the event was created by a deadline object \\
+parent & Deadline event & null unless the event was created by a deadline object \\
 \hline
 \end{longtable}
 \end{center}
 
 \subsection{Public Methods}
 
+\textbf{Standard Event Constructor} \\
+\textbf{Parameters:} name, description, startTime, endTime, location, locked, notifications, parent \\
+This instantiates a Standard Event object and sets all the Private fields to corresponding parameter values.
+
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\begin{longtable}{ | p{3cm} | p{3cm} | p{3cm} | p{5cm} | }
 \hline
-\textbf{Method Name} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\textbf{Method Name} & \textbf {Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getStartTime & Time object & This returns startTime \\
+getName & void & String & This returns name \\
 \hline
-getEndTime & Time object & This returns endTime \\
+getDescription & void & String & This returns description \\
 \hline
-getLocation & String & This returns location \\
+getStartTime & void & Time object & This returns startTime \\
 \hline
-getLocked & boolean & This returns locked \\
+getEndTime & void & Time object & This returns endTime \\
 \hline
-getDescription & String & This returns description \\
+getLocation & void & String & This returns location \\
 \hline
-getName & String & This returns name \\
+isLocked & void & boolean & This returns locked \\
 \hline
-getNotifications & Notification object[] & This returns notifications \\
+getNotifications & void & Notification object[] & This returns notifications \\
 \hline
-getParent & deadline event & This returns null if the object has no parent, otherwise it returns parent \\
+getParent & void & Deadline event & This returns null if the object has no parent, otherwise it returns parent \\
 \hline
-setStartTime & void & This sets startTime to an input Time object \\
+setName & String & void & This sets name to an input String \\
 \hline
-setEndTime & void & This sets endTime to an input Time object \\
+setDescription & String & void & This sets description to an input String \\
 \hline
-setLocation & void & This sets location to an input location \\
+setStartTime & Time object & void & This sets startTime to an input Time object \\
 \hline
-setLocked & void & This sets locked to an input boolean \\
+setEndTime & Time object & void & This sets endTime to an input Time object \\
 \hline
-setDescription & void & This sets description to an input String \\
+setLocation & String & void & This sets location to an input location \\
 \hline
-setName & void & This sets name to an input String \\
+setLocked & boolean & void & This sets locked to an input boolean \\
 \hline
-setNotifications & void & This sets notifications to an input notifications object[] \\
+setNotifications & Notifications object & void & This sets notifications to an input notifications object[] \\
 \hline
-setParent & void & This sets the parent to an input deadline \\
+setParent & Deadline event & void & This sets the parent to an input deadline \\
 \hline
 \end{longtable}
 \end{center}
+
+\section{Location Event Class}
+
+This is the event class for locations. It inherits all the private fields and public methods of Standard Event.
+
+\subsection{Public Methods}
+
+\textbf{Location Event Constructor} \\
+\textbf{Parameters:} name, description, startTime, endTime, notifications \\
+This instantiates a Standard Event object and sets all the Private fields to corresponding parameter values. It sets parent to null, location to name, and locked to true
 
 \section{Deadline Class}
 
@@ -407,40 +421,44 @@ startWorkTime & Time object & The time after which any event in createdEvents mu
 
 \subsection{Public Methods}
 
+\textbf{Deadline Constructor} \\
+\textbf{Parameters:} createdEvents, totalDuration, minChildEventTime, maxChildEventTime, breakTime, startWorkTime \\
+This instantiates a Deadline object and sets all the Private fields to corresponding parameter values.
+
 \begin{center}
-\begin{longtable}{ | p{4cm} | p{5cm} | p{6cm} | }
+\begin{longtable}{ | p{4cm} | p{3cm} | p{2cm} | p{5cm} | }
 \hline
-\textbf{Method Name} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getCreatedEvents & Event[] & This returns createdEvents \\
+getCreatedEvents & void & Event[] & This returns createdEvents \\
 \hline
-getDeadline & Time object & This returns deadline \\
+getDeadline & void & Time object & This returns deadline \\
 \hline
-getTotalDuration & Number (in minutes) & This returns totalDuration \\
+getTotalDuration & void & Number (in minutes) & This returns totalDuration \\
 \hline
-getminChildEventTime & Number (in minutes) & This returns minChildEventTime \\
+getMinChildEventTime & void & Number (in minutes) & This returns minChildEventTime \\
 \hline
-getmaxChildEventTime & Number (in minutes) & This returns maxChildEventTime \\
+getMaxChildEventTime & void & Number (in minutes) & This returns maxChildEventTime \\
 \hline
-getBreakTime & Number (in minutes) & This returns breakTime \\
+getBreakTime & void & Number (in minutes) & This returns breakTime \\
 \hline
-getStartWorkTime & Time object & This returns startWorkTime \\
+getStartWorkTime & void & Time object & This returns startWorkTime \\
 \hline
-setCreatedEvents & void & This sets createdEvents to an input Event[] object \\
+setCreatedEvents & Event[] & void & This sets createdEvents to an input Event[] object \\
 \hline
-setDeadline & void & This sets deadline to an input Time object \\
+setDeadline & Time object & void & This sets deadline to an input Time object \\
 \hline
-setTotalDuration & void & This sets totalDuration to an input number \\
+setTotalDuration & Number & void & This sets totalDuration to an input number \\
 \hline
-setminChildEventTime & void & This sets minChildEventTime to an input number \\
+setMinChildEventTime & Number & void & This sets minChildEventTime to an input number \\
 \hline
-setmaxChildEventTime & void & This sets maxChildEventTime to an input number \\
+setMaxChildEventTime & Number & void & This sets maxChildEventTime to an input number \\
 \hline
-setBreakTime & void & This sets breakTime to an input number \\
+setBreakTime & Number & void & This sets breakTime to an input number \\
 \hline
-setStartWorkTime & void & This sets startWorkTime to an input Time object \\
+setStartWorkTime & Time object & void & This sets startWorkTime to an input Time object \\
 \hline
-addEvent & void & This adds an event to createdEvents \\
+addEvent & Event & void & This adds an event to createdEvents \\
 \hline
 \end{longtable}
 \end{center}
@@ -456,7 +474,7 @@ This is the class which manages frequency of recurring events.
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-frequency & String & A descriptive String which explains how often an event occurs \\
+frequency & enum & A descriptive enum which explains how often an event occurs \\
 \hline
 exceptions & Time object[] & A list of exceptions to the prescribed frequency \\
 \hline
@@ -465,29 +483,33 @@ exceptions & Time object[] & A list of exceptions to the prescribed frequency \\
 
 \subsection{Public Methods}
 
+\textbf{Frequency Constructor} \\
+\textbf{Parameters:} frequency, exceptions \\
+This instantiates a Frequency object and sets all the Private fields to corresponding parameter values.
+
 \begin{center}
-\begin{longtable}{ | p{4cm} | p{5cm} | p{6cm} | }
+\begin{longtable}{ | p{3cm} | p{3cm} | p{3cm} | p{5cm} | }
 \hline
-\textbf{Method Name} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getFrequency & String & This returns frequency \\
+getFrequency & void & enum & This returns frequency \\
 \hline
-getExceptions & Time object[] & This returns exceptions \\
+getExceptions & void & Time object[] & This returns exceptions \\
 \hline
-setFrequency & void & This sets frequency to a string \\
+setFrequency & enum & void & This sets frequency to a string \\
 \hline
-setExceptions & void & This makes Exceptions equal to an input Time object[] \\
+setExceptions & Time object[] & void & This makes Exceptions equal to an input Time object[] \\
 \hline
-mirrorEvent & void & This interprets frequency creates mirrors of the event \\
+mirrorEvent & Event & Event[] & This interprets frequency to create mirrors of the event \\
 \hline
-addException & void & This adds an input Time to exceptions \\
+addException & Time obejct & void & This adds an input Time to exceptions \\
 \hline
 \end{longtable}
 \end{center}
 
 \section{Notifications Class}
 
-This is the class which manages frequency of recurring events.
+This is the class which tells the server when to send notifications for an event.
 
 \subsection{Private Fields}
 
@@ -496,7 +518,7 @@ This is the class which manages frequency of recurring events.
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-notificationType & String & The type of notification to display \\
+notificationType & enum & The type of notification to display \\
 \hline
 timeBefore & Number (in minutes) & The amount of time before an event to send a notification \\
 \hline
@@ -505,18 +527,22 @@ timeBefore & Number (in minutes) & The amount of time before an event to send a 
 
 \subsection{Public Methods}
 
+\textbf{Notifications Constructor} \\
+\textbf{Parameters:} notificationType, timeBefore \\
+This instantiates a Notifications object and sets all the Private fields to corresponding parameter values.
+
 \begin{center}
-\begin{longtable}{ | p{4cm} | p{5cm} | p{6cm} | }
+\begin{longtable}{ | p{4cm} | p{3cm} | p{3cm} | p{5cm} | }
 \hline
-\textbf{Method Name} & \textbf{Method Output Type} & \textbf{Method Description} \\
+\textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getNotificationType & String & This returns notificationType \\
+getNotificationType & void & enum & This returns notificationType \\
 \hline
-getTimeBefore & number (in minutes) & This returns timeBefore \\
+getTimeBefore & void & Number (in minutes) & This returns timeBefore \\
 \hline
-setNotificationType & void & This sets notificationType to an input String \\
+setNotificationType & enum & void & This sets notificationType to an input String \\
 \hline
-setTimeBefore & void & This sets timeBefore to an input number \\
+setTimeBefore & Number & void & This sets timeBefore to an input number \\
 \hline
 \end{longtable}
 \end{center}
