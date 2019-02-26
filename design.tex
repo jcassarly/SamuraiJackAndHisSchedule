@@ -235,7 +235,7 @@ Notifications & Drop Down with following choices & General Settings\\
 & - Email & Default\\
 & - Text & \\
 & - Banner & \\
-& - Pop-up & \\
+& - Push & \\
 & - None & \\
 \hline
 Notification Time & Number (in minutes) & General Settings \\
@@ -325,7 +325,6 @@ saveForm & void & void & Saves the changes the user made and adds the event to t
 \hline
 displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
 \hline
-\hline
 \end{longtable}
 \end{center}
 
@@ -370,7 +369,7 @@ Notifications & Drop Down with following choices & Settings.Events.Notifications
 & - Email & Default\\
 & - Text & \\
 & - Banner & \\
-& - Pop-up & \\
+& - Push & \\
 & - None & \\
 \hline
 Notification Time & Number (in minutes) & Settings.Events.Notifications. \\
@@ -408,7 +407,7 @@ accountSettings & Settings[] & Reference to the list of settings on the user's a
 The general settings menu will have all methods from the parent General Input Form class along with the following:
 
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{8cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
@@ -483,6 +482,10 @@ Toolbar - An element of the UI that allows the user to select different options 
 \\
 Banner Notification - A type of notification that appears on a phone across the top of the screen. \\
 \\
+Time Object - A standard Time object in JavaScript \\
+\\
+Date Object - A standard Date object in JavaScript \\
+\\
 \chapter{Appendix B: Figures}
 
 \section{Figure 1: Form Layout UI}
@@ -510,9 +513,7 @@ The following three figures show the skeleton for the Home Screen in the three v
 \hline
 \textbf{6} & Create Event \\
 \hline
-\textbf{7} & Edit Selected Event \\
-\hline
-\textbf{8} & Cycle View Mode \\
+\textbf{7} & Cycle View Mode \\
 \hline
 \end{longtable}
 \end{center}
