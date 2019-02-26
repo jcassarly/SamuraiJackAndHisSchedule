@@ -112,7 +112,8 @@ date & Date Object & the date being displayed on the Home Screen
 \hline
 hamburgerMenuState & Boolean & true if the Hamburger Menu is open, false if closed \\
 \hline
-selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected. Used to determine behavior when user clicks on schedule.\\
+selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected. Used to determine behavior when user clicks on schedule. Values include: CUT, COPY, PASTE, DRAGDROP, 
+RESIZE.\\
 \hline
 diffViewState & DiffView & The object that stores the state of the Auto Scheduler Diff View for newly generated schedules.\\
 \hline
@@ -401,7 +402,7 @@ DeclineButton & Button & Button that declines the new schedule when pressed.\\
 
 \subsection{Methods}
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{9cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
@@ -435,7 +436,7 @@ The tools' behaviors will be handled within the Home Screen's userClick() method
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-SelectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected on the toolbar.\\
+SelectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected on the toolbar. Values include CUT, COPY, PASTE, DRAGDROP, and RESIZE.\\
 \hline
 DragDropButton & Button & A button with the drag and drop tool icon on it. Changes SelectedTool to DragDrop.\\
 \hline
@@ -457,7 +458,7 @@ ViewButton & Button & A button labelled "View". Cycles through view modes.\\
 \subsection{Interface Methods}
 \begin{center}
 The toolbar object will be part of the Home Screen page, stored in the toolbarState attribute. Its interface consists of the following methods of notifying the Home Screen of events that occur within the toolbar.
-\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{9cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
