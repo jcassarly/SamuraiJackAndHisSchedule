@@ -147,7 +147,7 @@ hamburgerEventListener & void & void & Waits for the user to click on a button i
 
 The first 4 methods that display items on the Home Screen are called whenever the user moves to the Home Screen.
 
-\section{General Input Form}
+\section{Abstract Input Form}
 
 Whenever the application needs to get data based on Figure 1, the UI class will have the following methods:
 
@@ -191,7 +191,7 @@ When the user wants to create an event, they will be able to click the Create ev
 \\\\
 Additionally, the same form can be pulled up from any existing event by clicking on  it.  All the default values in the form will be the values stored in the chosen Event object.
 \\\\
-The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.  Thus, the event editing/creation menu will extend the General Input Form Class.
+The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.  Thus, the event editing/creation menu will extend the Abstract Input Form Class.
 \\\\
 Once the user finishes filling in the form, they can either save the form and go back to the Home Screen or discard the changes and return to the Home Screen.
 \\
@@ -296,7 +296,7 @@ Complete Task & & - Task Start Time \\
 
 \subsection{Attributes}
 
-The event editing and creation menu will have all attributes from the parent General Input Form class along with the following:
+The event editing and creation menu will have all attributes from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
@@ -312,7 +312,7 @@ Additionally, the edit/creation form will not use the SETTINGS field in the Fiel
 
 \subsection{Methods}
 
-The event editing and creation menu will have all methods from the parent General Input Form class along with the following:
+The event editing and creation menu will have all methods from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
@@ -386,11 +386,11 @@ The constraints specified in the Settings.AutoScheduling.* Requirements will be 
 \\\\
 Note that the Settings.AutoScheduling.MinOpenTime Requirement was merged with the Settings.AutoScheduling.Breaks Requirement since they represent the same thing.
 \\\\
-The general settings menu will extend the General Input Form Class
+The general settings menu will extend the Abstract Input Form Class
 
 \subsection{Attributes}
 
-The general settings menu will have all attributes from the parent General Input Form class along with the following:
+The general settings menu will have all attributes from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
@@ -404,7 +404,7 @@ accountSettings & Settings[] & Reference to the list of settings on the user's a
 
 \subsection{Methods}
 
-The general settings menu will have all methods from the parent General Input Form class along with the following:
+The general settings menu will have all methods from the parent Abstract Input Form class along with the following:
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{8cm} | }
