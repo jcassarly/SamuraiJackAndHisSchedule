@@ -86,8 +86,6 @@ http://uipatterns.io
 
 \chapter{User Interface}
 
-this section describes UI
-
 \section{Home Screen}
 
 The Home Screen will be the default page for the application.  It will display the current date, Toolbar, and a view of the user's calendar of events if logged in.  If the user is not logged in, the calendar will be empty. See Figure 2a-2c for a skeleton of the Home Screen on each view mode.\\
@@ -99,19 +97,59 @@ The Home Screen will also have a Hamburger Menu where the user can access their 
 In regards to account information, the user will be able to bring up fields to change their account email and password.  Additionally, the user will be able to bring up login, logout, and registration menus from the Hamburger Menu.  See Figure 3a for a skeleton of the Hamburger Menu when the user is logged in and Figure 3b for a skeleton of the Hamburger Menu when the user is logged out.\\
 \\
 
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{5cm} | p{5cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+events & Event[] & The list of events being displayed on the calendar \\
+\hline
+toolbarState & Toolbar & The object that stores the state of the Toolbar for the calendar \\
+\hline
+date & Date Object & the date being displayed on the Home Screen
+\hline
+hamburgerMenuState & Boolean & true if the Hamburger Menu is open, false if closed \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{5cm} | p{2cm} | p{3cm} | p{5cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+displayEvents & void & Event[] & Takes a list of events and displays the events appropriately on the calendar based on the view mode and Figure 2 \\
+\hline
+displayToolbar & void & void & Displays all the parts of the Toolbar defined below as per Figure 2 \\
+\hline
+displayDate & void & void & Displays the date at the top of the screen as per Figure 2 \\
+\hline
+displayHambuergerMenu & void & void & Displays the Hamburger Menu in the top right of the screen as per Figure 2 \\
+\hline
+openHamburgerMenu & void & void & Opens the Hamburger Menu overlay when the user clicks the button \\
+\hline
+closeHamburgerMenu & void & void & Closes the Hamburger Menu overlay when the user clicks off the menu when it is open \\
+\hline
+\end{longtable}
+\end{center}
+
 \section{Event Editing and Creation Menu}
 
-When the user wants to create an event, they will be able to click the Create Event button on the Toolbar.  When they do so, they will be presented with a choice of creating a Standard, Location, or Deadline event (from a drop down menu). Once the user makes their decision, a form with the necessary items to create an event will be displayed.  All of the items will have default values filled in based on the General Settings or global defaults.
+When the user wants to create an event, they will be able to click the Create event on the Toolbar.  When they do so, they will be presented with a choice of creating a Standard, Location, or Deadline event (from a drop down menu). Once the user makes their decision, a form with the necessary items to create an event will be displayed.  All of the items will have default values filled in based on the General Settings or global defaults.
 \\\\
 Additionally, the same form can be pulled up from any existing event by clicking on  it.  All the default values in the form will be the values stored in the chosen Event object.
 \\\\
 The form the user sees will have a skeleton matching figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
 Once the user finishes filling in the form, they can either save the form and go back to the Home Screen or discard the changes and return to the Home Screen.
+\\
+One exception to the aforementioned exiting process is with Deadline events.  Once the user clicks save on a Deadline event, they will be presented with a diff between their old calendar and the changes the auto scheduler proposes based on the information provided for the deadline event.  The user will be given the option to accept the changes or reject them (returning them to the input form).  Upon acceptance, the changes are saved and the user goes back to the home screen.
 \\\\
-One exception to the aforementioned exiting process is with Deadline Events.  Once the user clicks save on a Deadline event, they will be presented with a diff between their old calendar and the changes the auto scheduler is proposing based on the information provided for the Deadline Event.  The user will be given the option to accept the changes or reject them (returning them to the input form).  Upon acceptance, the changes are saved and the user goes back to the home screen.
-\\\\
-The following diagram shows the flow of this editing/creation process:
+The following diagram shows the flow of this editing/creation process.
 \\\\
 \begin{center}
 \includegraphics[scale=0.5]{edit.png}
@@ -208,6 +246,43 @@ Complete Task & & - Task Start Time \\
 \end{longtable}
 \end{center}
 
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+InputEnum & Final Enum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, and DEFAULT.  Default specifies a dropdown menu to load for choosing a different enum value. \\
+\hline
+accountEvents & Event[] & Reference to the list of events on the user's account \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+loadInputFields & void & EventEnum & Loads the proper input fields based on the Event type specifed by the EventEnum passed in.\\
+\hline
+waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+\hline
+displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
+\hline
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
+\hline
+exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+\hline
+\end{longtable}
+\end{center}
+
+Note that the loadInputFields method is called with the DEFAULT input when a event is being created. Once the user selects and event type, the same method is called again based on the chosen event type.\\\\
+If the user us editing an event, loadInputFields gets the event type based on teh type of event being edited.\\\\
+
 \section{General Settings Menu}
 
 The General Settings Menu will be accessible from the Hamburger Menu on the home screen.  When the user enters the General Settings Menu, the application will look up the settings and load them into a series of input fields they they can edit.  When the user saves their changes to the form, they will return to the Home Screen.  If the user clicks the back button without saving, they will be prompted with a pop-up that checks to make sure they really want to leave without saving.  If they say yes, their changes will not be saved and they will go back to the Home Screen.  Otherwise, they will not leave the General Settings and can continue editing.
@@ -219,7 +294,9 @@ The following state diagram depicts the above process:
 \end{center}
 The UI will utilize the skeleton depicted in Figure 1 where each field follows the format specified by \textit{UI Patterns}.
 \\\\
-The information on this page of the application will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
+The information on this page will include all items specified in the General Settings Requirements.  The following table describes the Input Fields in more detail:
+
+\subsection{Input Fields}
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
@@ -260,6 +337,36 @@ Location & Text Field with Suggestions & Settings.Events.Location.Default \\
 The constraints specified in the Settings.AutoScheduling.* Requirements will be checked while the user is entering the form and if the constraints are not met, the user will be unable to save their changes.
 \\\\
 Note that the Settings.AutoScheduling.MinOpenTime Requirement was merged with the Settings.AutoScheduling.Breaks Requirement since they represent the same thing.
+
+\subsection{Attributes}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{3cm} | p{9cm} | }
+\hline
+\textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+accountSettings & Settings[] & Reference to the list of settingss on the user's account \\
+\hline
+\end{longtable}
+\end{center}
+
+\subsection{Methods}
+
+\begin{center}
+\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\hline
+\textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
+\hline
+loadInputFields & void & void & Loads the input fields specified in the General Settings Input Field table above.\\
+\hline
+waitForUserInput & void & void & Waits for the user to fill out the form and click back or save. \\
+\hline
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
+\hline
+exitForm & void & void & Leaves the form and goes back to the Home Screen \\
+\hline
+\end{longtable}
+\end{center}
 
 \section{Auto Scheduler Diff View}
 
