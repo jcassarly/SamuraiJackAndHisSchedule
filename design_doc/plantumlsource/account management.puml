@@ -1,0 +1,40 @@
+@startuml
+
+hide empty description
+
+state "Log In" as login
+login : ui
+state "Sign Up" as signup
+signup : ui
+state "Send log in\nrequest to server" as reqlog
+reqlog : internet
+state "Send sign up\nrequest to server" as serversign
+serversign : internet
+state "Create a new account" as createacc
+createacc : server
+state "Reset password" as resetpass
+resetpass : ui
+state "Send a password\nreset email" as serverreset
+serverreset : server
+state "Log the user in" as serverlog
+serverlog : server
+
+[*] -> signup
+signup --> login
+signup --> serversign
+serversign --> signup : invalid input
+serversign --> createacc
+createacc --> [*]
+
+login --> signup
+login --> reqlog
+reqlog --> login : incorrect\n password
+reqlog --> serverlog : correct\n password
+serverlog --> [*]
+
+login -> resetpass
+resetpass -> login
+resetpass --> serverreset
+serverreset --> [*]
+
+@enduml
