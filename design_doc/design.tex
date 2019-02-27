@@ -23,6 +23,7 @@
 \usepackage[english]{babel}
 \usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{rotating}
 \graphicspath{ {./images/} }
 \hypersetup{
     colorlinks=true,
@@ -100,7 +101,9 @@ as previously submitted
 
 The following sections explain the key modules in the product. Those modules are represented below by a model made in PlantUML. Only one of AutoschedulerDiff, HamburgerMenu, or any input forms will be visible at a time.
 
+\begin{sidewaysfigure}
 \includegraphics[width=\textwidth]{classdiagram.png}
+\end{sidewaysfigure}
 
 \chapter{User Interface}
 
@@ -357,7 +360,7 @@ The event editing and creation menu will have all methods from the parent Abstra
 \hline
 loadInputFields & void & FieldEnum & Loads the proper input fields based on the Input Field type specifed by the FieldEnum passed in. STANDARD, LOCATION, and DEADLINE specify the corresponding input fields from above.  DEFAULT specifies that a drop-down menu to get ask for a different FieldEnum should be used. \\
 \hline
-saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
 \hline
 displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
 \hline
@@ -577,7 +580,7 @@ viewButton & Button & A button labelled "View". Cycles through view modes.\\
 \end{center}
 
 \subsection{Interface Methods}
-\begin{center}
+
 The toolbar object will be part of the Home Screen page, stored in the toolbarState attribute. Its interface consists of the following methods of notifying the Home Screen of events that occur within the toolbar.\\\\
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{9cm} | }
