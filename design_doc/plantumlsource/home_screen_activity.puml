@@ -1,0 +1,43 @@
+@startuml
+
+hide empty description
+
+title Home Screen Activity Diagram
+
+state "Load Home Screen" as hs
+state "User Logged in?" as hm
+state "Open General Settings Form" as genset
+
+[*] --> hs
+hs --> hm : Hamburger Menu clicked
+
+hm -right-> 3a : Yes
+state "Figure 3a" as 3a {
+  state "Open Change Email Form" as email
+  state "Open Change Password Form" as pass
+  state "Unload all user account info" as logout
+  
+  [*] -left-> genset : Click "General Settings"
+  [*] -down-> email : Click "Change Email"
+  [*] -right-> pass : Click "Change Password"
+  [*] -up-> logout : Click "Logout"
+}
+
+hm -down-> 3b : No
+state "Figure 3b" as 3b {
+  state "Open Login Form" as login
+  state "Open Registration Form" as register
+  
+  [*] --> genset : Click "General Settings"
+  [*] -up-> login : Click "Login"
+  [*] -down-> register : Click "Register"
+}
+
+state "Open Event Editing Menu" as event
+event : Menu is populated using info from event that was clicked on
+hs -right-> event : Double Click on an event
+
+state "See Toolbar Section" as toolbar
+hs -left-> toolbar : Click on Toolbar
+
+@enduml

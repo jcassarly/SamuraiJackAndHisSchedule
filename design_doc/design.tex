@@ -116,6 +116,9 @@ In regards to account information, the user will be able to bring up fields to c
 \\
 Finally, the Home Screen will need to load in less than 3 seconds. \\
 \\
+\\
+Below is the activity diagram of a typical user's actions from the home screen:\\
+\includegraphics[width=\textwidth]{homescreen.png}
 
 \subsection{Attributes}
 
@@ -132,7 +135,7 @@ date & Date Object & the date being displayed on the Home Screen
 \hline
 hamburgerMenuState & Boolean & true if the Hamburger Menu is open, false if closed \\
 \hline
-selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected. Used to determine behavior when user clicks on schedule. Values include: CUT, COPY, PASTE, DRAGDROP, 
+selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected. Used to determine behavior when user clicks on schedule. Values include: CUT, COPY, PASTE, DRAGDROP,
 RESIZE.\\
 \hline
 diffViewState & DiffView & The object that stores the state of the Auto Scheduler Diff View for newly generated schedules.\\
