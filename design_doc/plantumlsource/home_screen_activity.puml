@@ -1,5 +1,7 @@
 @startuml
 
+hide empty description
+
 title Home Screen Activity Diagram
 
 state "Load Home Screen" as hs
