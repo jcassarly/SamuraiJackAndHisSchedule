@@ -1,0 +1,206 @@
+@startuml
+
+class UIObject {
+    Generic UI Object
+}
+
+class HomeScreen {
+    {field} Event[] events
+    {field} Date date
+    {field} bool hamburgerMenuState
+    {field} ToolEnum selectedTool
+    {field} DiffView diffViewState
+
+    {field} AccountManager account
+
+    {field} UIObject calendarComponent
+    {field} Toolbar toolbarComponent
+    {field} TextBox dateComponent
+    {field} Button hamburgerMenuButton
+
+    {method} void displayEvents()
+    {method} void displayToolbar()
+    {method} void displayDate()
+    {method} void displayHamburgerMenu()
+    {method} void toolbarEventListener()
+    {method} void openHamburgerMenu()
+    {method} void closeHamburgerMenu()
+    {method} void hamburgerEventListener()
+    {method} void userClick(UIEvent)
+}
+
+abstract class AbstractInputForm {
+    {field} FieldEnum inputType
+    {field} UIObject[] inputFields
+
+    {abstract} abstract void loadInputFields(FieldEnum)
+    {abstract} abstract void saveForm()
+    {method} void waitForUserInput()
+    {method} void back()
+    {method} void exitForm()
+}
+
+class EventEditCreateMenu {
+    {field} Event[] accountEvents
+
+    {method} void loadInputFields(FieldEnum)
+    {method} void saveForm()
+    {method} void displayDiff()
+}
+
+class GeneralSettingsMenu {
+    {field} Settings accountSettings
+
+    {method} void loadInputFields(FieldEnum)
+    {method} void saveForm()
+}
+
+class AccountManager {
+    {field} TextField email
+    {field} PasswordField password
+    {field} PasswordField secondPassword
+
+    {method} void login()
+    {method} void resetpass()
+    {method} void signup()
+}
+
+class DiffView {
+    {field} Event[] originalEvents
+    {field} Event[] newEvents
+    {field} Button acceptButton
+    {field} Button declineButton
+
+    {method} void show()
+    {method} void close()
+    {method} void setOriginalSchedule(Event[])
+    {method} void setNewSchedule(Event[])
+    {method} void accept()
+}
+
+class Toolbar {
+    {field} ToolEnum SelectedTool
+    {field} Button DragDropButton
+    {field} Button ResizeButton
+    {field} Button CutButton
+    {field} Button CopyButton
+    {field} Button PasteButton
+    {field} Button CreateButton
+    {field} Button ViewButton
+
+    {method} void listen()
+    {method} ToolEnum currentTool()
+    {method} void notifyUIEvent(UIEvent)
+}
+
+class Event {
+    {field} String name
+    {field} String description
+    {field} Time startTime
+    {field} Time endTime
+    {field} String location
+    {field} bool locked
+    {field} Notification[] notificiations
+    {field} Deadline parent
+
+    ..Getters for all fields..
+    ..Setters for all Fields..
+}
+
+class LocationEvent
+
+class Deadline {
+    {field} Event[] createdEvents
+    {field} Time deadline
+    {field} int totalDuration
+    {field} int minChildEventTime
+    {field} int maxChildEventTime
+    {field} int breakTime
+    {field} Time startWorkTime
+    {field} String location
+
+    ..Getters for all fields..
+    ..Setters for all Fields..
+}
+
+class Frequency {
+    {field} FreqEnum frequencyType
+    {field} Time[] exceptions
+
+    ..Getters for all fields..
+    ..Setters for all Fields..
+
+    {method} Event[] mirrorEvent(Event)
+    {method} void addException(Time)
+}
+
+class Notification {
+    {field} NotificationEnum notificationType
+    {field} int timeBefore
+
+    ..Getters for all fields..
+    ..Setters for all Fields..
+}
+
+enum FieldEnum {
+    STANDARD
+    LOCATION
+    DEADLINE
+    SETTINGS
+    DEFAULT
+}
+
+enum ToolEnum {
+    CUT
+    COPY
+    PASTE
+    DRAGDROP
+    RESIZE
+}
+
+enum FreqEnum {
+    DAILY
+    WEEKLY
+    MONTHLY
+    YEARLY
+    CUSTOM
+}
+
+enum NotificationEnum {
+    EMAIL
+    TEXT
+    PUSH
+    BANNER
+}
+
+AbstractInputForm <|-- EventEditCreateMenu
+AbstractInputForm <|-- GeneralSettingsMenu
+
+HomeScreen o-- EventEditCreateMenu
+HomeScreen o-- GeneralSettingsMenu
+HomeScreen *- DiffView : displays on\ndeadline event\nsave
+HomeScreen *-left- Toolbar
+HomeScreen o- AccountManager : uses when\nHamburger\nMenu is open
+HomeScreen "1" *-- "0+" Event
+HomeScreen -- ToolEnum
+
+UIObject <|-- HomeScreen
+UIObject <|-- Toolbar
+UIObject <|-- DiffView
+
+Deadline "1" *-- "0+" Event
+
+Event *-- Notification
+Event *-- Frequency
+
+Event <|-- LocationEvent
+
+Toolbar o- ToolEnum
+
+Frequency o- FreqEnum
+
+Notification o- NotificationEnum
+
+AbstractInputForm o- FieldEnum
+
+@enduml
