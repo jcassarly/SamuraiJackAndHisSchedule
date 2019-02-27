@@ -23,6 +23,7 @@
 \usepackage[english]{babel}
 \usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{rotating}
 \graphicspath{ {./images/} }
 \hypersetup{
     colorlinks=true,
@@ -100,6 +101,10 @@ as previously submitted
 
 The following sections explain the key modules in the product. Those modules are represented below by a model made in PlantUML. Only one of AutoschedulerDiff, HamburgerMenu, or any input forms will be visible at a time.
 
+\begin{sidewaysfigure}
+\includegraphics[width=\textwidth]{classdiagram.png}
+\end{sidewaysfigure}
+
 \chapter{User Interface}
 
 This section explains the design for the requirements mentioned in section 3.1 of the Software Requirements Specification document.
@@ -127,13 +132,21 @@ Below is the activity diagram of a typical user's actions from the home screen:\
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
+account & AccountManager & The object that handles the account, specifically when the Hamburger Menu is open. \\
+\hline
 events & Event[] & The list of events being displayed on the calendar \\
 \hline
-toolbarState & Toolbar & The object that stores the state of the Toolbar for the calendar \\
+calendarComponent & UIObject & The UI view of the calendar that is displayed to the user \\
+\hline
+toolbarComponent & Toolbar & The object that stores the state of the Toolbar for the calendar \\
 \hline
 date & Date Object & the date being displayed on the Home Screen
 \hline
+dateComponent & TextBox & The UI object that displays the date at the top of the screen \\
+\hline
 hamburgerMenuState & Boolean & true if the Hamburger Menu is open, false if closed \\
+\hline
+hamburgerMenuButton & Button & The button the user can click to open the Hamburger Menu \\
 \hline
 selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected. Used to determine behavior when user clicks on schedule. Values include: CUT, COPY, PASTE, DRAGDROP,
 RESIZE.\\
@@ -184,7 +197,7 @@ Whenever the application needs to get data based on Figure 1, the UI class will 
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-FieldEnum & Final Enum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, SETTINGS, and EVENT.  EVENT specifies a drop-down menu to load for choosing a different enum value. \\
+inputType & FieldEnum & Enum object that specifies the choices for the type of input field to load: STANDARD, LOCATION, DEADLINE, SETTINGS, and EVENT.  EVENT specifies a drop-down menu to load for choosing a different enum value. \\
 \hline
 \end{longtable}
 \end{center}
@@ -341,13 +354,13 @@ Additionally, the edit/creation form will not use the SETTINGS field in the Fiel
 The event editing and creation menu will have all methods from the parent Abstract Input Form class along with the following:
 
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{1cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{8cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
 loadInputFields & void & FieldEnum & Loads the proper input fields based on the Input Field type specifed by the FieldEnum passed in. STANDARD, LOCATION, and DEADLINE specify the corresponding input fields from above.  DEFAULT specifies that a drop-down menu to get ask for a different FieldEnum should be used. \\
 \hline
-saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list
+saveForm & void & void & Saves the changes the user made and adds the event to the account's Event list \\
 \hline
 displayDiff & void & void & Displays the auto-scheduler diff for Deadline Events when the user finishes filling out the form. Also waits for the user to accept or reject the diff. \\
 \hline
@@ -423,7 +436,7 @@ The general settings menu will have all attributes from the parent Abstract Inpu
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-accountSettings & Settings[] & Reference to the list of settings on the user's account \\
+accountSettings & Settings & Reference to the list of settings on the user's account \\
 \hline
 \end{longtable}
 \end{center}
@@ -466,21 +479,21 @@ second password & Password Field & second password field to verify the user's pa
 \end{center}
 
 \subsection{Account Management Interfaces}
-There are 3 user interfaces related to account management:\\
+There are 3 user interfaces related to account management:\\\\
 \textbf{Log In:}
-logs the user in.  Uses the email and password fields.
+logs the user in.  Uses the email and password fields.\\\\
 \begin{center}
 \includegraphics[scale=0.4]{login.png}
 \end{center}
-
+\\\\
 \textbf{Reset Password:}
-Tells the server to send a reset password email.  Uses email field.
+Tells the server to send a reset password email.  Uses email field.\\\\
 \begin{center}
 \includegraphics[scale=0.4]{resetpass.png}
 \end{center}
-
+\\\\
 \textbf{Sign Up:}
-Requests the server to sign the user up.  Uses the email, password, and second password fields.
+Requests the server to sign the user up.  Uses the email, password, and second password fields.\\\\
 \begin{center}
 \includegraphics[scale=0.4]{signup.png}
 \end{center}
@@ -500,20 +513,20 @@ This view opens and replaces the normal schedule in the home screen whenever the
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-OriginalEvents & Event[] & Original list of events on the user's calendar.\\
+originalEvents & Event[] & Original list of events on the user's calendar.\\
 \hline
-NewEvents & Event[] & New list of events generated by Auto Scheduler.\\
+newEvents & Event[] & New list of events generated by Auto Scheduler.\\
 \hline
-AcceptButton & Button & Button that accepts the new schedule when pressed.\\
+acceptButton & Button & Button that accepts the new schedule when pressed.\\
 \hline
-DeclineButton & Button & Button that declines the new schedule when pressed.\\
+declineButton & Button & Button that declines the new schedule when pressed.\\
 \hline
 \end{longtable}
 \end{center}
 
 \subsection{Methods}
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{9cm} | }
+\begin{longtable}{ | p{4cm} | p{2cm} | p{2cm} | p{7cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
@@ -547,37 +560,38 @@ The tools' behaviors will be handled within the Home Screen's userClick() method
 \hline
 \textbf{Attribute Name} & \textbf{Type} & \textbf{Description} \\
 \hline
-SelectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected on the toolbar. Values include CUT, COPY, PASTE, DRAGDROP, and RESIZE.\\
+selectedTool & ToolEnum & Enermerated value that indicates which tool is currently selected on the toolbar. Values include CUT, COPY, PASTE, DRAGDROP, and RESIZE.\\
 \hline
-DragDropButton & Button & A button with the drag and drop tool icon on it. Changes SelectedTool to DragDrop.\\
+dragDropButton & Button & A button with the drag and drop tool icon on it. Changes SelectedTool to DragDrop.\\
 \hline
-ResizeButton & Button & A button with the re-size tool icon on it. Changes SelectedTool to Resize.\\
+resizeButton & Button & A button with the re-size tool icon on it. Changes SelectedTool to Resize.\\
 \hline
-CutButton & Button & A button with the cut tool icon on it. Changes SelectedTool to Cut.\\
+cutButton & Button & A button with the cut tool icon on it. Changes SelectedTool to Cut.\\
 \hline
-CopyButton & Button & A button with the copy tool icon on it. Changes SelectedTool to Copy.\\
+copyButton & Button & A button with the copy tool icon on it. Changes SelectedTool to Copy.\\
 \hline
-PasteButton & Button & A button with the paste tool icon on it. Changes SelectedTool to Paste.\\
+pasteButton & Button & A button with the paste tool icon on it. Changes SelectedTool to Paste.\\
 \hline
-CreateButton & Button & A button labelled "Create". Opens event creation form.\\
+createButton & Button & A button labelled "Create". Opens event creation form.\\
 \hline
-ViewButton & Button & A button labelled "View". Cycles through view modes.\\
+viewButton & Button & A button labelled "View". Cycles through view modes.\\
 \hline
 \end{longtable}
 \end{center}
 
 \subsection{Interface Methods}
+
+The toolbar object will be part of the Home Screen page, stored in the toolbarState attribute. Its interface consists of the following methods of notifying the Home Screen of events that occur within the toolbar.\\\\
 \begin{center}
-The toolbar object will be part of the Home Screen page, stored in the toolbarState attribute. Its interface consists of the following methods of notifying the Home Screen of events that occur within the toolbar.
 \begin{longtable}{ | p{3cm} | p{2cm} | p{2cm} | p{9cm} | }
 \hline
 \textbf{Method Name} & \textbf{Return Type} & \textbf{Parameters} & \textbf{Description} \\
 \hline
 listen & void & void & Toolbar waits for user to click a button on the toolbar.\\
 \hline
-currentTool & enum & void & Toolbar indicates which tool is currently selected on it.\\
+currentTool & ToolEnum & void & Toolbar indicates which tool is currently selected on it.\\
 \hline
-notifyUIEvent & UIEvent & void & This function is called internally to notify any objects subscribed to the toolbar of an event that occurred. This will generally be used when the user clicks on a button.\\
+notifyUIEvent & void & UIEvent & This function is called internally to notify any objects subscribed to the toolbar of an event that occurred. This will generally be used when the user clicks on a button.\\
 \hline
 \end{longtable}
 \end{center}
@@ -861,7 +875,7 @@ This is the class which manages frequency of recurring events.
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-frequency & enum & An enum with the values DAILY, WEEKLY, MONTHLY, YEARLY, and CUSTOM. \\
+frequencyType & FreqEnum & An enum with the values DAILY, WEEKLY, MONTHLY, YEARLY, and CUSTOM. \\
 \hline
 exceptions & Time object[] & A list of exceptions to the prescribed frequency \\
 \hline
@@ -879,7 +893,7 @@ This instantiates a Frequency object and sets all the Private fields to correspo
 \hline
 \textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getFrequency & void & enum & This returns frequency \\
+getFrequency & void & FreqEnum & This returns frequency \\
 \hline
 getExceptions & void & Time object[] & This returns exceptions \\
 \hline
@@ -905,7 +919,7 @@ This is the class which tells the server when to send notifications for an event
 \hline
 \textbf{Field Name} & \textbf{Field Type} & \textbf{Field Description} \\
 \hline
-notificationType & enum & An enum with the values EMAIL, TEXT, PUSH, and BANNER \\
+notificationType & NotificationEnum & An enum with the values EMAIL, TEXT, PUSH, and BANNER \\
 \hline
 timeBefore & Number (in minutes) & The amount of time before an event to send a notification \\
 \hline
@@ -923,7 +937,7 @@ This instantiates a Notifications object and sets all the Private fields to corr
 \hline
 \textbf{Method Name} & \textbf{Parameters} & \textbf{Method Output Type} & \textbf{Method Description} \\
 \hline
-getNotificationType & void & enum & This returns notificationType \\
+getNotificationType & void & NotificationEnum & This returns notificationType \\
 \hline
 getTimeBefore & void & Number (in minutes) & This returns timeBefore \\
 \hline
@@ -967,7 +981,7 @@ user settings & userSettings & A data structure containing the account settings 
 \end{longtable}
 \end{center}
 
-\subsection{userSettings data struct}
+\subsection{Settings Object}
 
 \begin{center}
 \begin{longtable}{ | p{3cm} | p{6cm} | }
