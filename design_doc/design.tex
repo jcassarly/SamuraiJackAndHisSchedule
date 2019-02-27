@@ -466,6 +466,11 @@ Requests the server to sign the user up.  Uses the email, password, and second p
 \includegraphics[scale=0.4]{signup.png}
 \end{center}
 
+\subsection{Activities Diagram}
+\begin{center}
+\includegraphics[scale=0.7]{accmanage.png}
+\end{center}
+
 \section{Auto Scheduler Diff View}
 The Auto Scheduler Diff view allows the user to view both the old calendar with all existing events in their original state and the new calendar with new events created for the user's deadlines along with updated times for unlocked events.\\
 This view opens and replaces the normal schedule in the home screen whenever the Auto Scheduler generates a new schedule.
@@ -946,33 +951,32 @@ user settings & userSettings & A data structure containing the account settings 
 \subsection{userSettings data struct}
 
 \begin{center}
-\begin{longtable}{ | p{3cm} | p{6cm} | p{6cm} | }
+\begin{longtable}{ | p{3cm} | p{6cm} | }
 \hline
-\textbf{Field Name} & \textbf{Field Type} & \textbf{Default from Requirements} \\
+\textbf{Field Name} & \textbf{Field Type} \\
 \hline
-Snap to Grid & int & Settings.Toolbar.SnapToGrid.Default \\
+Snap to Grid & int \\
 \hline
-Break Time & int & Settings.AutoScheduling. \\
+Break Time & int \\
 \hline
-Min Event Time & int & MinTime.Default\\
+Min Event Time & int \\
 \hline
-Max Event Time & int & MaxTime.Default\\
+Max Event Time & int \\
 \hline
-Language & enum (languages) & Settings.Language.Default \\
+Language & enum (languages) \\
 \hline
-Notifications &  enum of values: & \\
-& - Email &\\
-& - Text & \\
-& - Push & \\
-& - None & \\
+Notifications &  enum of values:  \\
+& - Email \\
+& - Text \\
+& - Push \\
+& - None \\
 \hline
-Notification Time & Number (in minutes) & Settings.Events.Notifications. \\
-Before Event & & Time.Default \\
+Notification Time & int \\
+Before Event & \\
 \hline
-Event Duration & Number (in minutes) & Settings.Events.Duration.Default \\
+Event Duration & int \\
 \hline
-Location & Text Field with Suggestions & Settings.Events.Location.Default \\
-& based on other event locations & \\
+Location & string \\
 \hline
 \end{longtable}
 \end{center}
@@ -1032,6 +1036,24 @@ Error Handling: & No user data may be sent if the session id is not valid\\
 Description: & A logged in user sends the server new schedule and/or settings data\\
 Behavior: & The server replaces the user's schedule and settings data in the database with the recieved data\\
 Error Handling: & No user data may be modified if the session id is not valid\\
+\end{tabular}
+\end{center}
+
+\subsection{Request Reset Password}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & A user requests to reset the password to their email account\\
+Behavior: & The server checks if the email is registered in the database and if so, sends an email
+to the user containing a link with a reset token to reset their password\\
+\end{tabular}
+\end{center}
+
+\subsection{Reset Password}
+\begin{center}
+\begin{tabular}{ p{2cm} p{13cm} }
+Description: & A user clicks the link to reset their password from their email as specified in Request Reset Password\\
+Behavior: & A new password is requested from the user and the database is updated with the salted and hashed version
+of the new password for that user corresponding to the reset token sent in Request Reset Password\\
 \end{tabular}
 \end{center}
 
