@@ -6,19 +6,21 @@ import endOfWeek from 'date-fns/end_of_week';
 import addWeeks from 'date-fns/add_weeks';
 import eachDay from 'date-fns/each_day';
 
-function createDayList(date, elem) {
-    calDates = [];
-    startDate = startOfWeek(startOfMonth(date));
-    return eachDay(
+function createDayList(date, Elem) {
+    let startDate = startOfWeek(startOfMonth(date));
+    let dayList = eachDay(
         startDate,
         endOfWeek(addWeeks(startDate, 5)) // 6 weeks total, covering an entire calendar
-    ).map(day => <elem key={day} date={day} /> );
+    ).map(day => <Elem key={day} date={day} />);
+    return dayList
 }
 
-Calendar = props => {
+const Calendar = props => {
     return (
         <div>
-            {createDayList(props.date, props.children[0])}
+            {createDayList(props.month, props.cell)}
         </div>
     );
 }
+
+export default Calendar
