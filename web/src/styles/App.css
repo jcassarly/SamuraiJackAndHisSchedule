@@ -1,0 +1,21 @@
+.monthHome {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 3em 1fr;
+}
+
+.calendars {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    right: 100%;
+}
+
+.calendarSlider {
+    position: relative;
+    width: 300%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}

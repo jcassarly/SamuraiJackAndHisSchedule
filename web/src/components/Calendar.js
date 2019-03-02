@@ -13,13 +13,21 @@ function createDayList(date, Elem) {
     let dayList = eachDay(
         startDate,
         endOfWeek(addWeeks(startDate, 5)) // 6 weeks total, covering an entire calendar
-    ).map(day => <Elem key={day} date={day} />);
+    ).map(day => {
+        return (
+            <Elem
+                key={day}
+                date={day}
+                current={day.getMonth()===date.getMonth()}
+            />
+        )
+    });
     return dayList
 }
 
 const Calendar = props => {
     return (
-        <div className="calendar" style={{width: props.width, height: props.height}}>
+        <div className="calendar">
             {createDayList(props.month, props.cell)}
         </div>
     );

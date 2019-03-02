@@ -1,4 +1,5 @@
 .monthCell {
+    color: #bdbdbd;
     border: solid #bdbdbd;
     border-width: 1px 0 0 1px;
 }
@@ -7,4 +8,8 @@
     width: 100%;
     height: 1em;
     text-align:center;
+}
+
+.monthCell.current {
+    color: black;
 }
