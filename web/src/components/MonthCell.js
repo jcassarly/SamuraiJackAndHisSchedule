@@ -1,9 +1,11 @@
 import React from 'react';
 
+import '../styles/MonthCell.css';
+
 const MonthCell = props => {
     return (
-        <div>
-            {props.date.toString()}
+        <div className="monthCell">
+            <div className="monthDay">{props.date.getDate()}</div>
         </div>
     );
 }

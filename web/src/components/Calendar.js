@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../styles/Calendar.css'
+
 import startOfMonth from 'date-fns/start_of_month';
 import startOfWeek from 'date-fns/start_of_week';
 import endOfWeek from 'date-fns/end_of_week';
@@ -17,7 +19,7 @@ function createDayList(date, Elem) {
 
 const Calendar = props => {
     return (
-        <div>
+        <div className="calendar" style={{width: props.width, height: props.height}}>
             {createDayList(props.month, props.cell)}
         </div>
     );

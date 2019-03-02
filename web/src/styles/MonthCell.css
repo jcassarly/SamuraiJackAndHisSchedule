@@ -1,0 +1,10 @@
+.monthCell {
+    border: solid #bdbdbd;
+    border-width: 1px 0 0 1px;
+}
+
+.monthCell .monthDay {
+    width: 100%;
+    height: 1em;
+    text-align:center;
+}

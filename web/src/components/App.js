@@ -6,7 +6,7 @@ import MonthCell from './MonthCell'
 class App extends Component {
   render() {
     return (
-        <Calendar month={new Date()} cell={MonthCell} />
+        <Calendar width="100%" height="100%" month={new Date()} cell={MonthCell} />
     );
   }
 }
