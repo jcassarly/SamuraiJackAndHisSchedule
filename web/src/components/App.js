@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import '../styles/App.css';
-import MainCalendar from './MainCalendar'
-import MonthHeader from './MonthHeader'
 
-import addMonths from 'date-fns/add_months'
-import subMonths from 'date-fns/sub_months'
+import addMonths from 'date-fns/add_months';
+import subMonths from 'date-fns/sub_months';
+
+import '../styles/App.css';
+import MainCalendar from './MainCalendar';
+import MonthHeader from './MonthHeader';
 
 class App extends Component {
     state = {
         month: new Date(),
-        pos: 0,
+        pos: 0, // eslint-disable-line no-unused-state
     };
 
     onLeft = () => {
-        this.setState({month: subMonths(this.state.month, 1)})
+        const { month } = this.state;
+        this.setState({ month: subMonths(month, 1) });
     }
 
     onRight = () => {
-       this.setState({month: addMonths(this.state.month, 1)}) 
+        const { month } = this.state;
+        this.setState({ month: addMonths(month, 1) });
     }
-    
+
     render() {
         return (
             <div className="monthHome">
