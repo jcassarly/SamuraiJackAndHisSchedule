@@ -1,0 +1,17 @@
+.left {
+    float:left;
+
+}
+
+.center {
+    display: table;
+    margin: 0 auto;
+}
+
+.right {
+    float:right;
+}
+
+.clear {
+    clear:both;
+}

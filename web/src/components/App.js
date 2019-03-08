@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
+import StandardEventForm from './StandardEventForm'
 import MainCalendar from './MainCalendar'
 import MonthHeader from './MonthHeader'
 
@@ -7,7 +8,7 @@ import addMonths from 'date-fns/add_months'
 import subMonths from 'date-fns/sub_months'
 
 class App extends Component {
-    state = {
+    /*state = {
         month: new Date(),
         pos: 0,
     };
@@ -17,11 +18,12 @@ class App extends Component {
     }
 
     onRight = () => {
-       this.setState({month: addMonths(this.state.month, 1)}) 
-    }
-    
+       this.setState({month: addMonths(this.state.month, 1)})
+    }*/
+
     render() {
-        return (
+        return <StandardEventForm />;
+        /*return (
             <div className="monthHome">
                 <MonthHeader month={this.state.month} onLeft={this.onLeft} onRight={this.onRight} />
                 <div className="calendars">
@@ -32,8 +34,8 @@ class App extends Component {
                     </div>
                 </div>
             </div>
-        );
-  }
+        );*/
+    }
 }
 
 export default App;
