@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import addMonths from 'date-fns/add_months';
-import subMonths from 'date-fns/sub_months';
+import moment from 'moment';
 
 import '../styles/App.css';
 import MainCalendar from './MainCalendar';
@@ -9,18 +8,18 @@ import MonthHeader from './MonthHeader';
 
 class App extends Component {
     state = {
-        month: new Date(),
+        month: moment(),
         pos: 0, // eslint-disable-line react/no-unused-state
     };
 
     onLeft = () => {
         const { month } = this.state;
-        this.setState({ month: subMonths(month, 1) });
+        this.setState({ month: month.clone().subtract(1, 'months') });
     }
 
     onRight = () => {
         const { month } = this.state;
-        this.setState({ month: addMonths(month, 1) });
+        this.setState({ month: month.clone().add(1, 'months') });
     }
 
     render() {
@@ -30,9 +29,9 @@ class App extends Component {
                 <MonthHeader month={month} onLeft={this.onLeft} onRight={this.onRight} />
                 <div className="calendars">
                     <div className="calendarSlider">
-                        <MainCalendar id={month.getMonth() - 1} month={subMonths(month, 1)} />
-                        <MainCalendar id={month.getMonth()} month={month} />
-                        <MainCalendar id={month.getMonth() + 1} month={addMonths(month, 1)} />
+                        <MainCalendar id={month.month() - 1} month={month.clone().subtract(1, 'months')} />
+                        <MainCalendar id={month.month()} month={month} />
+                        <MainCalendar id={month.month() + 1} month={month.clone().add(1, 'months')} />
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import format from 'date-fns/format';
+import moment from 'moment';
 
 import '../styles/MonthHeader.css';
 
@@ -10,7 +10,7 @@ const MonthCell = (props) => {
     return (
         <div className="monthHeader">
             <button type="button" className="nav" onClick={onLeft}>&lt;</button>
-            <div className="">{format(month, 'MMMM')}</div>
+            <div className="">{month.format('MMMM')}</div>
             <button type="button" className="nav" onClick={onRight}>&gt;</button>
         </div>
     );
@@ -19,7 +19,7 @@ const MonthCell = (props) => {
 MonthCell.propTypes = {
     onLeft: propTypes.func.isRequired,
     onRight: propTypes.func.isRequired,
-    month: propTypes.instanceOf(Date).isRequired,
+    month: propTypes.instanceOf(moment).isRequired,
 };
 
 export default MonthCell;
