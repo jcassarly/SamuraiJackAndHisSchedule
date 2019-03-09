@@ -12,7 +12,7 @@ function createDayList(date) {
     for (let i = 0; i < 3 * 6 * 7; i += 1) {
         dates.push(<MonthCell
             key={currDate.toDate()}
-            date={currDate.clone()}
+            date={currDate.date()}
             current={currDate.month() === date.month()}
         />);
         currDate.add(1, 'day');
