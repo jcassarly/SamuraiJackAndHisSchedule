@@ -1,5 +1,10 @@
 html {
     height: 100%;
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
 }
 
 #root {
@@ -21,4 +26,11 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+button, input[type="button"] {
+    border: 0;
+    background: none;
+    color: inherit;
+    outline: none;
 }

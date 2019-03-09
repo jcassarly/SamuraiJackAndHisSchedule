@@ -10,7 +10,7 @@ import MonthHeader from './MonthHeader';
 class App extends Component {
     state = {
         month: new Date(),
-        pos: 0, // eslint-disable-line no-unused-state
+        pos: 0, // eslint-disable-line react/no-unused-state
     };
 
     onLeft = () => {
@@ -24,19 +24,20 @@ class App extends Component {
     }
 
     render() {
+        const { month } = this.state;
         return (
             <div className="monthHome">
-                <MonthHeader month={this.state.month} onLeft={this.onLeft} onRight={this.onRight} />
+                <MonthHeader month={month} onLeft={this.onLeft} onRight={this.onRight} />
                 <div className="calendars">
                     <div className="calendarSlider">
-                        <MainCalendar id={this.state.month.getMonth() - 1} month={subMonths(this.state.month, 1)} />
-                        <MainCalendar id={this.state.month.getMonth()} month={this.state.month} />
-                        <MainCalendar id={this.state.month.getMonth() + 1} month={addMonths(this.state.month, 1)} />
+                        <MainCalendar id={month.getMonth() - 1} month={subMonths(month, 1)} />
+                        <MainCalendar id={month.getMonth()} month={month} />
+                        <MainCalendar id={month.getMonth() + 1} month={addMonths(month, 1)} />
                     </div>
                 </div>
             </div>
         );
-  }
+    }
 }
 
 export default App;
