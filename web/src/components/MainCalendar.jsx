@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
 import MonthHeader from './MonthHeader';
@@ -10,7 +10,7 @@ class MainCalendar extends Component {
     startPos = 0;
 
     state = {
-        month: moment(),
+        month: moment().tz(moment.tz.guess()),
         pos: 0, // eslint-disable-line react/no-unused-state
     };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import '../styles/MonthHeader.css';
 
