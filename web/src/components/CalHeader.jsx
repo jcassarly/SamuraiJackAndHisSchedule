@@ -9,6 +9,7 @@ const CalHeader = (props) => {
     const {
         onLeft,
         onRight,
+        onSwitch,
         date,
         type,
     } = props;
@@ -25,7 +26,7 @@ const CalHeader = (props) => {
     return (
         <div className="calHeader">
             <button type="button" className="nav" onClick={onLeft}>&lt;</button>
-            <div className="">{date.format(format)}</div>
+            <button type="button" onClick={onSwitch}>{date.format(format)}</button>
             <button type="button" className="nav" onClick={onRight}>&gt;</button>
         </div>
     );
@@ -34,6 +35,7 @@ const CalHeader = (props) => {
 CalHeader.propTypes = {
     onLeft: PropTypes.func.isRequired,
     onRight: PropTypes.func.isRequired,
+    onSwitch: PropTypes.func.isRequired,
     date: PropTypes.instanceOf(moment).isRequired,
     type: PropTypes.oneOf([
         'month',

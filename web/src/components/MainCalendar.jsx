@@ -10,10 +10,12 @@ import Day from './Day';
 class MainCalendar extends Component {
     startPos = 0;
 
+    types = ['month', 'day'];
+
     state = {
         date: moment().tz(moment.tz.guess()),
         pos: 0,
-        type: 'day',
+        type: this.types[0],
     };
 
     onLeft = () => {
@@ -24,6 +26,11 @@ class MainCalendar extends Component {
     onRight = () => {
         const { date, type } = this.state;
         this.setState({ date: date.clone().add(1, type) });
+    }
+
+    onSwitch = () => {
+        const { type } = this.state;
+        this.setState({ type: this.types[(this.types.indexOf(type) + 1) % 2] });
     }
 
     beginScroll = (e) => {
@@ -40,11 +47,16 @@ class MainCalendar extends Component {
 
     render() {
         const { date, pos, type } = this.state;
-        return (
-            <div className="calHome">
-                <CalHeader type={type} date={date} onLeft={this.onLeft} onRight={this.onRight} />
-                <Day day={date} />
-                <div className="calendarSlider" style={{ display: 'none' }}>
+        let calElem;
+
+        switch (type) {
+        case 'day':
+            calElem = <Day day={date} />;
+            break;
+        default:
+        case 'month':
+            calElem = (
+                <div className="calendarSlider" style={{ display: 'block' }}>
                     <div
                         className="slideContainer"
                         onTouchStart={this.beginScroll}
@@ -57,6 +69,18 @@ class MainCalendar extends Component {
                         </div>
                     </div>
                 </div>
+            );
+        }
+        return (
+            <div className="calHome">
+                <CalHeader
+                    type={type}
+                    date={date}
+                    onLeft={this.onLeft}
+                    onRight={this.onRight}
+                    onSwitch={this.onSwitch}
+                />
+                {calElem}
             </div>
         );
     }

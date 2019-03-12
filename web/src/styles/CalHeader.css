@@ -5,11 +5,11 @@
     line-height: 3em;
 }
 
-.calHeader > div {
+.calHeader > button {
+    cursor: pointer;
     text-align: center;
 }
 
 .calHeader .nav:hover {
-    cursor: pointer;
     background: #bdbdbd;
 }
