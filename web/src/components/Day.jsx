@@ -13,7 +13,7 @@ class Day extends Component {
     static generateHours(day) {
         const hours = [];
         const current = day.clone().startOf('day');
-        const end = day.clone().endOf('day');
+        const end = day.clone().add(1, 'day').startOf('day');
         while (end.diff(current, 'hours') > 0) {
             hours.push((
                 <div key={`l-${current.unix()}`} className="hour">
