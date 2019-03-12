@@ -3,25 +3,27 @@ import React, { Component } from 'react';
 import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
-import MonthHeader from './MonthHeader';
+import CalHeader from './CalHeader';
 import Month from './Month';
+import Day from './Day';
 
 class MainCalendar extends Component {
     startPos = 0;
 
     state = {
-        month: moment().tz(moment.tz.guess()),
-        pos: 0, // eslint-disable-line react/no-unused-state
+        date: moment().tz(moment.tz.guess()),
+        pos: 0,
+        type: 'day',
     };
 
     onLeft = () => {
-        const { month } = this.state;
-        this.setState({ month: month.clone().subtract(1, 'months') });
+        const { date, type } = this.state;
+        this.setState({ date: date.clone().subtract(1, type) });
     }
 
     onRight = () => {
-        const { month } = this.state;
-        this.setState({ month: month.clone().add(1, 'months') });
+        const { date, type } = this.state;
+        this.setState({ date: date.clone().add(1, type) });
     }
 
     beginScroll = (e) => {
@@ -37,11 +39,12 @@ class MainCalendar extends Component {
     }
 
     render() {
-        const { month, pos } = this.state;
+        const { date, pos, type } = this.state;
         return (
-            <div className="monthHome">
-                <MonthHeader month={month} onLeft={this.onLeft} onRight={this.onRight} />
-                <div className="calendarSlider">
+            <div className="calHome">
+                <CalHeader type={type} date={date} onLeft={this.onLeft} onRight={this.onRight} />
+                <Day day={date} />
+                <div className="calendarSlider" style={{ display: 'none' }}>
                     <div
                         className="slideContainer"
                         onTouchStart={this.beginScroll}
@@ -50,7 +53,7 @@ class MainCalendar extends Component {
                         onTouchCancel={this.endScroll}
                     >
                         <div className="calContainer" style={{ top: `${pos}px` }}>
-                            <Month id={month.month()} month={month} />
+                            <Month id={date.month()} month={date} />
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ class Month extends Component {
     render() {
         const { month } = this.props;
         return (
-            <div className="calendar">
+            <div className="calMonth">
                 {createDayList(month)}
             </div>
         );
