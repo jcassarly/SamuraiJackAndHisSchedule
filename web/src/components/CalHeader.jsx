@@ -10,14 +10,18 @@ const CalHeader = (props) => {
         onLeft,
         onRight,
         onSwitch,
-        date,
         type,
     } = props;
+    let { date } = props;
 
     let format = '';
     switch (type) {
     case 'day':
         format = 'MMM Do (ddd)';
+        break;
+    case 'week':
+        format = '[Week of] MMM Do';
+        date = date.clone().startOf('week');
         break;
     case 'month':
     default:

@@ -5,12 +5,13 @@ import moment from 'moment-timezone';
 import '../styles/MainCalendar.css';
 import CalHeader from './CalHeader';
 import Month from './Month';
+import Week from './Week';
 import Day from './Day';
 
 class MainCalendar extends Component {
     startPos = 0;
 
-    types = ['month', 'day'];
+    types = ['month', 'week', 'day'];
 
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -30,7 +31,7 @@ class MainCalendar extends Component {
 
     onSwitch = () => {
         const { type } = this.state;
-        this.setState({ type: this.types[(this.types.indexOf(type) + 1) % 2] });
+        this.setState({ type: this.types[(this.types.indexOf(type) + 1) % this.types.length] });
     }
 
     beginScroll = (e) => {
@@ -52,6 +53,9 @@ class MainCalendar extends Component {
         switch (type) {
         case 'day':
             calElem = <Day day={date} />;
+            break;
+        case 'week':
+            calElem = <Week week={date} />;
             break;
         default:
         case 'month':
