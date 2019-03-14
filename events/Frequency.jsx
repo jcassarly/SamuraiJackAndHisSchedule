@@ -11,11 +11,11 @@ class Frequency {
         CUSTOM: 'custom'
     }
 
-    // Constructor should recieve two strings. 
+    // Constructor should recieve an event object and two strings. 
     // optionalCustomOptions should be null is value is not 'custom'
-    constructor(value, optionalCustomOptions) {
+    constructor(event, timing, optionalCustomOptions) {
         
-        let timing = value;
+        this._eventPattern = event;
 
         switch(timing) {
             case freqEnum.DAILY:
@@ -38,7 +38,10 @@ class Frequency {
         }
 
         if (this._timing == freqEnum.CUSTOM && optionalCustomOptions != null) {
-            Frequency.customParse(optionalCustomOptions);
+            this._customSettings = Frequency.customParse(optionalCustomOptions);
+        }
+        else {
+            this._customSettings = null;
         }
     }
 
@@ -68,7 +71,10 @@ class Frequency {
         }
 
         if (this._timing == freqEnum.CUSTOM && optionalCustomOptions != null) {
-            Frequency.customParse(optionalCustomOptions);
+            this._customSettings = Frequency.customParse(optionalCustomOptions);
+        }
+        else {
+            this._customSettings = null;
         }
     }
 

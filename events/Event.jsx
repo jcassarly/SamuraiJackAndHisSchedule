@@ -94,10 +94,10 @@ class LocationEvent extends Event {
 
 // Class for recurring events
 class RecurringEvent extends Event {
-    
-    constructor(name, description, startTime, endTime, location, locked, notifications, frequency) {
+
+    constructor(name, description, startTime, endTime, location, locked, notifications, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null);
-        this._frequency = frequency;
+        this._frequency = new Frequency(this, value, optionalCustomFrequency);
     }
 
     get frequency() {
@@ -105,6 +105,6 @@ class RecurringEvent extends Event {
     }
 
     set frequency(value) {
-        this._frequency = value;
+        this._frequency = new Frequency(this, value, optionalCustomFrequency);
     }
 }
