@@ -82,13 +82,29 @@ class Event {
     set parent(value) {
         this._parent = value;
     }
-
 }
 
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
+
     constructor(name, description, startTime, endTime, notifications) {
         super(name, description, startTime, endTime, name, false, notifications, null);
     }
+}
+
+// Class for recurring events
+class RecurringEvent extends Event {
     
+    constructor(name, description, startTime, endTime, location, locked, notifications, frequency) {
+        super(name, description, startTime, endTime, location, locked, notifications, null);
+        this._frequency = frequency;
+    }
+
+    get frequency() {
+        return this._frequency;
+    }
+
+    set frequency(value) {
+        this._frequency = value;
+    }
 }
