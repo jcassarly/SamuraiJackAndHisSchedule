@@ -1,4 +1,4 @@
-import { combinReducers } from 'redux';
+import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
 
