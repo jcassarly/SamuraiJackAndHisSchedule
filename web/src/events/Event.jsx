@@ -1,8 +1,7 @@
-"use strict";
+import Frequency from './Frequency';
 
 // Class for events
 class Event {
-
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this._name = name;
         this._description = description;
@@ -54,17 +53,17 @@ class Event {
         this._description = value;
     }
 
-    //this takes a String as input
+    // this takes a String as input
     set startTime(value) {
         this._startTime = Date.parse(value);
     }
 
-    //this takes a String as input
+    // this takes a String as input
     set endTime(value) {
-        if (Date.parse(value).getTime() < startTime.getTime()) {
-            throw new Error("End time before start time");
+        if (Date.parse(value).getTime() < this.startTime.getTime()) {
+            throw new Error('End time before start time');
         }
-        this._endTime = Data.parse(value);
+        this._endTime = Date.parse(value);
     }
 
     set location(value) {
@@ -86,7 +85,6 @@ class Event {
 
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
-
     constructor(name, description, startTime, endTime, notifications) {
         super(name, description, startTime, endTime, name, false, notifications, null);
     }
@@ -94,8 +92,8 @@ class LocationEvent extends Event {
 
 // Class for recurring events
 class RecurringEvent extends Event {
-
-    constructor(name, description, startTime, endTime, location, locked, notifications, frequency, optionalCustomFrequency) {
+    constructor(name, description, startTime, endTime, location, locked,
+        notifications, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null);
         this._frequency = new Frequency(this, value, optionalCustomFrequency);
     }
@@ -108,3 +106,5 @@ class RecurringEvent extends Event {
         this._frequency = new Frequency(this, value, optionalCustomFrequency);
     }
 }
+
+export { Event, LocationEvent, RecurringEvent };
