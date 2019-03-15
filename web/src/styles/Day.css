@@ -1,18 +1,37 @@
 .calDay {
-    display: grid;
-    grid-template-columns: 2em 1fr;
-    grid-auto-rows: minmax(3em, 1fr);
     overflow: scroll;
 }
 
-.calDay > * {
+.calDay .dayEvents {
+    position: relative;
+    width: 100%;
+}
+
+.calDay .dayEvents > * {
+    padding-left: 0.5em;
+    padding-top: 0.2em;
+    margin-left: 2em;
+    position: absolute;
+    width: calc(100% - 2em);
+    background-color: blue;
+    color: white;
+    border-radius: 0.5em;
+}
+
+.calHours {
+    display: grid;
+    grid-template-columns: 2em 1fr;
+    grid-auto-rows: 3em;
+}
+
+.calHours > * {
     line-height: 3em;
 }
 
-.calDay > .hour {
+.calHours > .hour {
     text-align: right;
 }
 
-.calDay > .evHour {
+.calHours > .evHour {
     border-top: 1px solid #bdbdbd;
 }

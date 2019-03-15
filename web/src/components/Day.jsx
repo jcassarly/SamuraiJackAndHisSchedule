@@ -8,6 +8,7 @@ import '../styles/Day.css';
 class Day extends Component {
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
+        events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
     }
 
     static generateHours(day) {
@@ -27,10 +28,28 @@ class Day extends Component {
     }
 
     render() {
-        const { day } = this.props;
+        const { day, events } = this.props;
+        const dayStart = day.clone().startOf('day');
+        const dayEnd = day.clone().endOf('day');
+        const currEvents = events.filter(event => (
+            moment(event.startTime).isBetween(dayStart, dayEnd)
+            || moment(event.endTime).isBetween(dayStart, dayEnd)
+        ));
         return (
             <div className="calDay">
-                { Day.generateHours(day) }
+                <div className="dayEvents">
+                    {currEvents.map((event) => {
+                        const virtualStart = moment.max(moment(event.startTime), dayStart);
+                        const virtualEnd = moment.min(moment(event.endTime), dayEnd);
+                        // convert to hours, then ems
+                        const startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
+                        const length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
+                        return <div key={event.name} style={{ top: `${startPos}em`, height: `${length}em` }}>{event.name}</div>;
+                    })}
+                </div>
+                <div className="calHours">
+                    { Day.generateHours(day) }
+                </div>
             </div>
         );
     }
