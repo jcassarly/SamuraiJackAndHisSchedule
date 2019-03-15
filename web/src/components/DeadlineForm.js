@@ -9,41 +9,37 @@ import {NameInput,
         NotificationTime,
         FrequencySelect,
         LockEventInput,
+        UseLocationInput,
         FreqEnum,
-        NotificationEnum} from './EventFormComponents'
+        NumberInput,
+        TextInput,
+        CheckboxInput,
+        NotificationEnum,} from './EventFormComponents'
 import EventForm from './EventForm'
 import '../styles/StandardInputForm.css';
 
-class StandardEventForm extends React.Component {
+class DeadlineForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: (this.props.title) ? this.props.title : "Standard Event Form",
+            title: "Deadline Form",
             name: "",
             description: "",
             eventStart: moment(),
             eventEnd: moment().add(1, 'hour'),
             location: "",
-            frequency: null,
-            notifications: NotificationEnum.NONE,
-            notificationTime: "",
-            locked: true,
+            useLocation: true,
+            minTime: 0,
+            maxTime: 0,
+            minBreak: 0,
+            totalTime: 0,
         }
 
-        this.frequencySelectChange = this.frequencySelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.returnHome = this.returnHome.bind(this);
-    }
-
-    frequencySelectChange(event) {
-        this.setState({frequency: event.target.value});
-
-        if (event.target.value == FreqEnum.CUSTOM) {
-            alert("TODO: open custom choice menu");
-        }
     }
 
     handleInputChange(event) {
@@ -57,13 +53,13 @@ class StandardEventForm extends React.Component {
 
     handleStartDateChange(time) {
         this.setState({
-            eventStart: time
+            taskStart: time
         })
     }
 
     handleEndDateChange(time) {
         this.setState({
-            eventEnd: time
+            taskDeadline: time
         })
     }
 
@@ -75,10 +71,11 @@ class StandardEventForm extends React.Component {
             Start Time:        ${this.state.eventStart}
             End Time:          ${this.state.eventEnd}
             Location:          ${this.state.location}
-            Frequency:         ${this.state.frequency}
-            Notifications:     ${this.state.notifications}
-            Notification Time: ${this.state.notificationTime}
-            Locked:            ${this.state.locked}
+            Use Location:      ${this.state.useLocation}
+            Min Time:          ${this.state.minTime}
+            Max Time:          ${this.state.maxTime}
+            Min Break Time:    ${this.state.minBreak}
+            Total Time:        ${this.state.totalTime}
         `);
         event.preventDefault();
     }
@@ -101,10 +98,10 @@ class StandardEventForm extends React.Component {
                     onChange={this.handleInputChange}
                 />
                 <StartEndInput
-                    start={this.state.eventStart}
-                    end={this.state.eventEnd}
-                    startDescription="Event Start Time"
-                    endDescription="Event End Time"
+                    start={this.state.taskStart}
+                    end={this.state.taskDeadline}
+                    startDescription="Task Start Time"
+                    endDescription="Task Deadline"
                     onStartChange={this.handleStartDateChange}
                     onEndChange={this.handleEndDateChange}
                 />
@@ -113,29 +110,49 @@ class StandardEventForm extends React.Component {
                     value={this.state.location}
                     onChange={this.handleInputChange}
                 />
-                <FrequencySelect
-                    name="frequency"
-                    value={this.state.frequency}
-                    onChange={this.frequencySelectChange}
-                />
-                <NotificationSelect
-                    name="notifications"
-                    value={this.state.notifications}
+                <UseLocationInput
+                    name="useLocation"
+                    checked={this.state.useLocation}
                     onChange={this.handleInputChange}
                 />
-                <NotificationTime
-                    name="notificationTime"
-                    value={this.state.notificationTime}
+                <NumberInput
+                    name="minTime"
+                    value={this.state.minTime}
+                    description="Min Scheduled Event Time"
                     onChange={this.handleInputChange}
-                />
-                {!this.props.hideLock && <LockEventInput
-                    name="locked"
-                    checked={this.state.locked}
+                >
+                    in Hours
+                </NumberInput>
+                <NumberInput
+                    name="maxTime"
+                    value={this.state.maxTime}
+                    description="Max Scheduled Event Time"
                     onChange={this.handleInputChange}
-                />}
+                >
+                    in Hours
+                </NumberInput>
+                <NumberInput
+                    name="minBreak"
+                    value={this.state.minBreak}
+                    description="Min Time Between Events"
+                    onChange={this.handleInputChange}
+                >
+                    in Hours
+                </NumberInput>
+                <NumberInput
+                    name="totalTime"
+                    value={this.state.totalTime}
+                    description="Total Time to Complete"
+                    onChange={this.handleInputChange}
+                >
+                    in Hours
+                </NumberInput>
+                <div>
+                    <input type="submit" value="Submit" />
+                </div>
             </EventForm>
         )
     }
 }
 
-export default StandardEventForm
+export default DeadlineForm

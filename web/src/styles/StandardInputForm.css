@@ -15,3 +15,13 @@
 .clear {
     clear:both;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+li {
+    display: inline;
+}
