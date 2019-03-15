@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
+import { Event } from '../events/Event';
+
 import CalHeader from './CalHeader';
 import Month from './Month';
 import Week from './Week';
@@ -12,6 +16,10 @@ class MainCalendar extends Component {
     startPos = 0;
 
     types = ['month', 'week', 'day'];
+
+    static propTypes = {
+        events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
+    };
 
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -48,14 +56,15 @@ class MainCalendar extends Component {
 
     render() {
         const { date, pos, type } = this.state;
+        const { events } = this.props;
         let calElem;
 
         switch (type) {
         case 'day':
-            calElem = <Day day={date} />;
+            calElem = <Day events={events} day={date} />;
             break;
         case 'week':
-            calElem = <Week week={date} />;
+            calElem = <Week events={events} week={date} />;
             break;
         default:
         case 'month':
@@ -69,7 +78,7 @@ class MainCalendar extends Component {
                         onTouchCancel={this.endScroll}
                     >
                         <div className="calContainer" style={{ top: `${pos}px` }}>
-                            <Month id={date.month()} month={date} />
+                            <Month events={events} id={date.month()} month={date} />
                         </div>
                     </div>
                 </div>
@@ -90,4 +99,10 @@ class MainCalendar extends Component {
     }
 }
 
-export default MainCalendar;
+const mapStateToProps = ({ events }) => (
+    {
+        events,
+    }
+);
+
+export default connect(mapStateToProps)(MainCalendar);

@@ -3,17 +3,23 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
+import { Event } from '../events/Event';
 import MonthCell from './MonthCell';
 import '../styles/Month.css';
 
-function createDayList(date) {
+function createDayList(date, events) {
     const currDate = date.clone().startOf('month').subtract(6, 'weeks').startOf('week');
     const dates = [];
     for (let i = 0; i < 3 * 6 * 7; i += 1) {
+        const currEvents = events.filter(event => (
+            moment(event.startTime).isBetween(currDate, currDate.clone().endOf('day'))
+            || moment(event.endTime).isBetween(currDate, currDate.clone().endOf('day'))
+        ));
         dates.push(<MonthCell
             key={currDate.toDate()}
             date={currDate.date()}
             current={currDate.month() === date.month()}
+            events={currEvents}
         />);
         currDate.add(1, 'day');
     }
@@ -27,10 +33,10 @@ class Month extends Component {
     }
 
     render() {
-        const { month } = this.props;
+        const { month, events } = this.props;
         return (
             <div className="calMonth">
-                {createDayList(month)}
+                {createDayList(month, events)}
             </div>
         );
     }
@@ -38,6 +44,7 @@ class Month extends Component {
 
 Month.propTypes = {
     month: PropTypes.instanceOf(moment).isRequired,
+    events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
 };
 
 export default Month;

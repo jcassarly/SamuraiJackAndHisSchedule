@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Frequency from './Frequency';
 
 // Class for events
