@@ -1,46 +1,41 @@
-"use strict";
-
-//Class for Frequency
+// Class for Frequency
 class Frequency {
-
     static freqEnum = {
         DAILY: 'daily',
         WEEKLY: 'weekly',
         MONTHLY: 'monthly',
         YEARLY: 'yearly',
-        CUSTOM: 'custom'
+        CUSTOM: 'custom',
     }
 
-    // Constructor should recieve an event object and two strings. 
+    // Constructor should recieve an event object and two strings.
     // optionalCustomOptions should be null is value is not 'custom'
     constructor(event, timing, optionalCustomOptions) {
-        
         this._eventPattern = event;
 
-        switch(timing) {
-            case freqEnum.DAILY:
-            this._timing = freqEnum.DAILY;
+        switch (timing) {
+        case Frequency.freqEnum.DAILY:
+            this._timing = Frequency.freqEnum.DAILY;
             break;
-            case freqEnum.WEEKLY:
-            this._timing = freqEnum.WEEKLY;
+        case Frequency.freqEnum.WEEKLY:
+            this._timing = Frequency.freqEnum.WEEKLY;
             break;
-            case freqEnum.MONTHLY:
-            this._timing = freqEnum.MONTHLY;
+        case Frequency.freqEnum.MONTHLY:
+            this._timing = Frequency.freqEnum.MONTHLY;
             break;
-            case freqEnum.YEARLY:
-            this._timing = freqEnum.YEARLY;
+        case Frequency.freqEnum.YEARLY:
+            this._timing = Frequency.freqEnum.YEARLY;
             break;
-            case freqEnum.CUSTOM:
-            this._timing = freqEnum.CUSTOM;
+        case Frequency.freqEnum.CUSTOM:
+            this._timing = Frequency.freqEnum.CUSTOM;
             break;
-            default:
-            throw new Error("not a valid frequency");
+        default:
+            throw new Error('not a valid frequency');
         }
 
-        if (this._timing == freqEnum.CUSTOM && optionalCustomOptions != null) {
+        if (this._timing === Frequency.freqEnum.CUSTOM && optionalCustomOptions != null) {
             this._customSettings = Frequency.customParse(optionalCustomOptions);
-        }
-        else {
+        } else {
             this._customSettings = null;
         }
     }
@@ -49,34 +44,33 @@ class Frequency {
         return this._timing;
     }
 
-    set timing(value, optionalCustomOptions) {
-        switch(value) {
-            case freqEnum.DAILY:
-            this._timing = freqEnum.DAILY;
+    set timing(value) {
+        switch (value) {
+        case Frequency.freqEnum.DAILY:
+            this._timing = Frequency.freqEnum.DAILY;
             break;
-            case freqEnum.WEEKLY:
-            this._timing = freqEnum.WEEKLY;
+        case Frequency.freqEnum.WEEKLY:
+            this._timing = Frequency.freqEnum.WEEKLY;
             break;
-            case freqEnum.MONTHLY:
-            this._timing = freqEnum.MONTHLY;
+        case Frequency.freqEnum.MONTHLY:
+            this._timing = Frequency.freqEnum.MONTHLY;
             break;
-            case freqEnum.YEARLY:
-            this._timing = freqEnum.YEARLY;
+        case Frequency.freqEnum.YEARLY:
+            this._timing = Frequency.freqEnum.YEARLY;
             break;
-            case freqEnum.CUSTOM:
-            this._timing = freqEnum.CUSTOM;
+        case Frequency.freqEnum.CUSTOM:
+            this._timing = Frequency.freqEnum.CUSTOM;
             break;
-            default:
-            throw new Error("not a valid frequency");
+        default:
+            throw new Error('not a valid frequency');
         }
 
-        if (this._timing == freqEnum.CUSTOM && optionalCustomOptions != null) {
+        if (this._timing === Frequency.freqEnum.CUSTOM && optionalCustomOptions != null) {
             this._customSettings = Frequency.customParse(optionalCustomOptions);
-        }
-        else {
+        } else {
             this._customSettings = null;
         }
     }
-
-
 }
+
+export default Frequency;
