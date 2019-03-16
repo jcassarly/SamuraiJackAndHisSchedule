@@ -1,18 +1,10 @@
 import React from 'react';
 import DateTime from 'react-datetime';
+import Frequency from "../events/Frequency"
 import moment from 'moment'
 
-import '../styles/StandardInputForm.css';
+import '../styles/StandardEventForm.css';
 import '../styles/InputFields.css'
-
-var FreqEnum = {
-    ONETIME: "One Time",
-    DAILY: "Daily",
-    WEEKLY: "Weekly",
-    MONTHLY: "Monthly",
-    YEARLY: "Yearly",
-    CUSTOM: "Custom",
-}
 
 var NotificationEnum = {
     NONE: "None",
@@ -103,24 +95,26 @@ function DescriptionInput(props) {
 
 function StartEndInput(props) {
     return (
-        <div class="center">
-            <div class="left">
-                <label>
-                    {props.startDescription}
-                </label>
-                <DateTime inputProps={{placeHolder: props.startDescription,}}
-                          value={props.start}
-                          onChange={props.onStartChange}
-                />
-            </div>
-            <div class="left">
-                <label>
-                    {props.endDescription}
-                </label>
-                <DateTime inputProps={{placeHolder: props.endDescription,}}
-                          value={props.end}
-                          onChange={props.onEndChange}
-                />
+        <div class="baseBorder">
+            <div class="center">
+                <div class="left">
+                    <label>
+                        {props.startDescription}
+                    </label>
+                    <DateTime inputProps={{placeHolder: props.startDescription,}}
+                            value={props.start}
+                            onChange={props.onStartChange}
+                    />
+                </div>
+                <div class="left">
+                    <label>
+                        {props.endDescription}
+                    </label>
+                    <DateTime inputProps={{placeHolder: props.endDescription,}}
+                            value={props.end}
+                            onChange={props.onEndChange}
+                    />
+                </div>
             </div>
         </div>
     );
@@ -163,12 +157,12 @@ function NotificationSelect(props) {
 function FrequencySelect(props) {
     return (
         <SelectInput prompt="Event Frequency" name={props.name} value={props.value} onChange={props.onChange}>
-            <option value={null}>{FreqEnum.ONETIME}</option>
-            <option value={FreqEnum.DAILY}>{FreqEnum.DAILY}</option>
-            <option value={FreqEnum.WEEKLY}>{FreqEnum.WEEKLY}</option>
-            <option value={FreqEnum.MONTHLY}>{FreqEnum.MONTHLY}</option>
-            <option value={FreqEnum.YEARLY}>{FreqEnum.YEARLY}</option>
-            <option value={FreqEnum.CUSTOM}>{FreqEnum.CUSTOM}</option>
+            <option value={null}>One Time</option>
+            <option value={Frequency.freqEnum.DAILY}>Daily</option>
+            <option value={Frequency.freqEnum.WEEKLY}>Weekly</option>
+            <option value={Frequency.freqEnum.MONTHLY}>Monthly</option>
+            <option value={Frequency.freqEnum.YEARLY}>Yearly</option>
+            <option value={Frequency.freqEnum.CUSTOM}>Custom</option>
         </SelectInput>
     );
 }

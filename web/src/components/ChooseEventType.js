@@ -1,10 +1,10 @@
 import React from 'react';
-import StandardInputForm from './StandardEventForm'
+import StandardEventForm from './StandardEventForm'
 
-import '../styles/StandardInputForm.css';
+import '../styles/StandardEventForm.css';
 import LocationEventForm from './LocationEventForm';
 import DeadlineForm from './DeadlineForm'
-import EventForm from './EventForm'
+import InputForm from './InputForm'
 
 var EventEnum = {
     STANDARD: "Standard",
@@ -17,8 +17,8 @@ class ChooseEventTypeForm extends React.Component {
         super(props);
         this.state = {
             title: "Choose Event Type",
-            choice: this.loadChooseEventForm,
-            form: this.loadChooseEventForm,
+            choice: this.loadChooseInputForm,
+            form: this.loadChooseInputForm,
             submitted: false,
         }
 
@@ -38,7 +38,7 @@ class ChooseEventTypeForm extends React.Component {
     }
 
     loadStandardEventForm = () => {
-        return <StandardInputForm />;
+        return <StandardEventForm />;
     }
 
     loadLocationEventForm = () => {
@@ -49,9 +49,9 @@ class ChooseEventTypeForm extends React.Component {
         return <DeadlineForm />;
     }
 
-    loadChooseEventForm = () => {
+    loadChooseInputForm = () => {
         return (
-            <EventForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
                 <div>
                     <label>
                         Choose Event Type:
@@ -63,7 +63,7 @@ class ChooseEventTypeForm extends React.Component {
                         <option value={EventEnum.DEADLINE}>{EventEnum.DEADLINE}</option>
                     </select>
                 </div>
-            </EventForm>
+            </InputForm>
         )
     }
 
@@ -87,7 +87,7 @@ class ChooseEventTypeForm extends React.Component {
             default:
                 alert("Please select an event type");
                 this.setState({
-                    form: this.loadChooseEventForm
+                    form: this.loadChooseInputForm
                 })
                 break;
         }

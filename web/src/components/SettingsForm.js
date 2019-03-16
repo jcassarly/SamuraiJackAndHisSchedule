@@ -14,8 +14,8 @@ import {NameInput,
         CheckboxInput,
         SelectInput,
         FreqEnum,
-        NotificationEnum} from './EventFormComponents'
-import InputForm from './EventForm'
+        NotificationEnum} from './InputFormComponents'
+import InputForm from './InputForm'
 import '../styles/SettingsForm.css';
 
 function SettingsSection(props) {

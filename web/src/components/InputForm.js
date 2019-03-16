@@ -1,6 +1,6 @@
 import React from 'react';
 
-function EventForm(props) {
+function InputForm(props) {
     return (
         <div overflow="scroll">
             <center>
@@ -19,4 +19,4 @@ function EventForm(props) {
     );
 }
 
-export default EventForm
+export default InputForm

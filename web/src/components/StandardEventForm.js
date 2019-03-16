@@ -10,9 +10,11 @@ import {NameInput,
         FrequencySelect,
         LockEventInput,
         FreqEnum,
-        NotificationEnum} from './EventFormComponents'
-import EventForm from './EventForm'
-import '../styles/StandardInputForm.css';
+        NotificationEnum} from './InputFormComponents'
+import InputForm from './InputForm'
+import {Event, RecurringEvent} from '../events/Event'
+import Frequency from '../events/Frequency'
+import '../styles/StandardEventForm.css';
 
 class StandardEventForm extends React.Component {
     constructor(props) {
@@ -68,7 +70,7 @@ class StandardEventForm extends React.Component {
     }
 
     handleSubmit(event) {
-        alert(`
+        /*alert(`
             Adding a new standard event with the following info:
             Name:              ${this.state.name}
             Description:       ${this.state.description}
@@ -79,7 +81,43 @@ class StandardEventForm extends React.Component {
             Notifications:     ${this.state.notifications}
             Notification Time: ${this.state.notificationTime}
             Locked:            ${this.state.locked}
+        `);*/
+        var evt = null;
+        if (this.state.frequency === null) {
+            const start = this.state.eventStart;
+            evt = new Event(this.state.name,
+                            this.state.description,
+                            start,
+                            this.state.eventEnd.clone(),
+                            this.state.location,
+                            this.state.locked,
+                            this.state.notifications, // TODO: use notification object here so notification time can be incorporated
+                            null);
+        }
+        else {
+            evt = new RecurringEvent(this.state.name,
+                                     this.state.description,
+                                     this.state.eventStart,
+                                     this.state.eventEnd,
+                                     this.state.location,
+                                     this.state.locked,
+                                     this.state.notifications,
+                                     this.state.frequency,
+                                     null); // TODO: handle custom frequency
+        }
+
+        alert(`
+            Adding a new standard event with the following info:
+            Name:              ${evt.name}
+            Description:       ${evt.description}
+            Start Time:        ${evt.eventStart}
+            End Time:          ${evt.eventEnd}
+            Location:          ${evt.location}
+            Frequency:         ${evt.frequency}
+            Notifications:     ${evt.notifications}
+            Locked:            ${evt.locked}
         `);
+
         event.preventDefault();
     }
 
@@ -89,7 +127,7 @@ class StandardEventForm extends React.Component {
 
     render() {
         return (
-            <EventForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
                 <NameInput
                     name="name"
                     value={this.state.name}
@@ -133,7 +171,7 @@ class StandardEventForm extends React.Component {
                     checked={this.state.locked}
                     onChange={this.handleInputChange}
                 />}
-            </EventForm>
+            </InputForm>
         )
     }
 }

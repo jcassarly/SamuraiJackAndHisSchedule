@@ -10,7 +10,7 @@ import {NameInput,
         FrequencySelect,
         LockEventInput,
         FreqEnum,
-        NotificationEnum} from './EventFormComponents'
+        NotificationEnum} from './InputFormComponents'
 import StandardEventForm from './StandardEventForm'
 
 class LocationEventForm extends StandardEventForm {

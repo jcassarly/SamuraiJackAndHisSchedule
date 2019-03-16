@@ -95,7 +95,7 @@ class RecurringEvent extends Event {
     constructor(name, description, startTime, endTime, location, locked,
         notifications, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null);
-        this._frequency = new Frequency(this, value, optionalCustomFrequency);
+        this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
     }
 
     get frequency() {

@@ -14,9 +14,9 @@ import {NameInput,
         NumberInput,
         TextInput,
         CheckboxInput,
-        NotificationEnum,} from './EventFormComponents'
-import EventForm from './EventForm'
-import '../styles/StandardInputForm.css';
+        NotificationEnum,} from './InputFormComponents'
+import InputForm from './InputForm'
+import '../styles/StandardEventForm.css';
 
 class DeadlineForm extends React.Component {
     constructor(props) {
@@ -86,7 +86,7 @@ class DeadlineForm extends React.Component {
 
     render() {
         return (
-            <EventForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
                 <NameInput
                     name="name"
                     value={this.state.name}
@@ -147,10 +147,7 @@ class DeadlineForm extends React.Component {
                 >
                     in Hours
                 </NumberInput>
-                <div>
-                    <input type="submit" value="Submit" />
-                </div>
-            </EventForm>
+            </InputForm>
         )
     }
 }
