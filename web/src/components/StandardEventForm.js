@@ -84,11 +84,10 @@ class StandardEventForm extends React.Component {
         `);*/
         var evt = null;
         if (this.state.frequency === null) {
-            const start = this.state.eventStart;
             evt = new Event(this.state.name,
                             this.state.description,
-                            start,
-                            this.state.eventEnd.clone(),
+                            this.state.eventStart,
+                            this.state.eventEnd,
                             this.state.location,
                             this.state.locked,
                             this.state.notifications, // TODO: use notification object here so notification time can be incorporated
@@ -110,8 +109,8 @@ class StandardEventForm extends React.Component {
             Adding a new standard event with the following info:
             Name:              ${evt.name}
             Description:       ${evt.description}
-            Start Time:        ${evt.eventStart}
-            End Time:          ${evt.eventEnd}
+            Start Time:        ${evt.startTime}
+            End Time:          ${evt.endTime}
             Location:          ${evt.location}
             Frequency:         ${evt.frequency}
             Notifications:     ${evt.notifications}

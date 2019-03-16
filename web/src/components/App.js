@@ -24,7 +24,7 @@ class App extends Component {
     }*/
 
     render() {
-        return <StandardEventForm />;
+        return <ChooseEventTypeForm />;
         /*return (
             <div className="monthHome">
                 <MonthHeader month={this.state.month} onLeft={this.onLeft} onRight={this.onRight} />
