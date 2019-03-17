@@ -89,3 +89,5 @@ class Deadline {
         this._createdEvents.splice(toRemove);
     }
 }
+
+export default Deadline;
