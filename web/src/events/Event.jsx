@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Frequency from './Frequency';
 import Notifications from './Notifications';
-import isEqual from './underscore-min';
 
 // Class for events
 class Event {
