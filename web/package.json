@@ -8,8 +8,10 @@
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.7.0",
+    "react-datetime": "^2.16.3",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.1",
+    "react-testing-library": "^6.0.0",
     "redux": "^4.0.1"
   },
   "scripts": {
