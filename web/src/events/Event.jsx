@@ -57,12 +57,15 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
+        if (Date.parse(value).getTime() > this._endTime.getTime()) {
+            throw new Error('Start time after end time');
+        }
         this._startTime = Date.parse(value);
     }
 
     // this takes a String as input
     set endTime(value) {
-        if (Date.parse(value).getTime() < this.startTime.getTime()) {
+        if (Date.parse(value).getTime() < this._startTime.getTime()) {
             throw new Error('End time before start time');
         }
         this._endTime = Date.parse(value);
@@ -89,8 +92,32 @@ class Event {
     }
 
     removeNotification(notification) {
-        let toRemove = this._notifications.findIndex(item => item == notification);
+        let toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
+    }
+
+    equals(event) {
+        // Create arrays of property names
+        let aProps = Object.getOwnPropertyNames(this);
+        let bProps = Object.getOwnPropertyNames(event);
+    
+        // If number of properties is different,
+        // objects are not equivalent
+        if (aProps.length != bProps.length) {
+            return false;
+        }
+    
+        for (let i = 0; i < aProps.length; i++) {
+            let propName = aProps[i];
+    
+            // If values of same property are not equal,
+            // objects are not equivalent
+            if (a[propName] !== b[propName]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
