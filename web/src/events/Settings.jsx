@@ -2,20 +2,20 @@
 class Settings {
     constructor() {
         //the below value is in minutes
-        this._eventLength = 60;
-        this._defaultLocation = "anywhere";
+        this.eventLength = 60;
+        this.defaultLocation = "anywhere";
         //the below value is in minutes
-        this._defaultNotificationTimeBefore = 15;
-        this._defaultNotificationType = "email";
-        this._locked = true;
+        this.defaultNotificationTimeBefore = 15;
+        this.defaultNotificationType = "email";
+        this.locked = true;
         //the below value is in hours.
-        this._timeBeforeDue = 168;
+        this.timeBeforeDue = 168;
         //the following three values are in minutes
-        this._minWorkTime = 15;
-        this._maxWorkTime = 120;
-        this._minBreakTime = 15;
+        this.minWorkTime = 15;
+        this.maxWorkTime = 120;
+        this.minBreakTime = 15;
         //the below value is in hours
-        this._timeToComplete = 42;
+        this.timeToComplete = 42;
     }
 
     get eventLength() {

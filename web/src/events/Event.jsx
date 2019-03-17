@@ -6,14 +6,14 @@ import isEqual from './underscore-min';
 // Class for events
 class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
-        this._name = name;
-        this._description = description;
-        this._startTime = startTime;
-        this._endTime = endTime;
-        this._location = location;
-        this._locked = locked;
-        this._notifications = notifications;
-        this._parent = parent;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.locked = locked;
+        this.notifications = notifications;
+        this.parent = parent;
     }
 
     get name() {
