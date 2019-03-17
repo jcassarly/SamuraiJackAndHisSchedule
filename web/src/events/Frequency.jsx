@@ -6,7 +6,7 @@ class Frequency {
         WEEKLY: 'weekly',
         MONTHLY: 'monthly',
         YEARLY: 'yearly',
-        CUSTOM: 'custom',
+        CUSTOM: 'custom'
     }
 
     // Constructor should recieve an event object and two strings.

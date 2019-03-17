@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Frequency from './Frequency';
+import Notifications from './Notifications';
 
 // Class for events
 class Event {
@@ -82,6 +83,15 @@ class Event {
     set parent(value) {
         this._parent = value;
     }
+
+    addNotification(timeBefore, type) {
+        this._notifications.push(new Notifications(type, timeBefore, this._startTime));
+    }
+
+    removeNotification(notification) {
+        let toRemove = this._notifications.findIndex(item => item == notification);
+        this._notifications.splice(toRemove);
+    }
 }
 
 // Class for events denoting only location which extends Event
@@ -96,7 +106,7 @@ class RecurringEvent extends Event {
     constructor(name, description, startTime, endTime, location, locked,
         notifications, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null);
-        this._frequency = new Frequency(this, value, optionalCustomFrequency);
+        this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
     }
 
     get frequency() {
