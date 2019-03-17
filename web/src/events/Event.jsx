@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Frequency from './Frequency';
 import Notifications from './Notifications';
+import isEqual from './underscore-min';
 
 // Class for events
 class Event {
@@ -94,30 +95,6 @@ class Event {
     removeNotification(notification) {
         let toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
-    }
-
-    equals(event) {
-        // Create arrays of property names
-        let aProps = Object.getOwnPropertyNames(this);
-        let bProps = Object.getOwnPropertyNames(event);
-    
-        // If number of properties is different,
-        // objects are not equivalent
-        if (aProps.length != bProps.length) {
-            return false;
-        }
-    
-        for (let i = 0; i < aProps.length; i++) {
-            let propName = aProps[i];
-    
-            // If values of same property are not equal,
-            // objects are not equivalent
-            if (a[propName] !== b[propName]) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
 

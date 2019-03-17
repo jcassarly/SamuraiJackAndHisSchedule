@@ -85,7 +85,7 @@ class Deadline {
     }
 
     removeEvent(event) {
-        let toRemove = this._createdEvents.findIndex(item => item.equals(event));
+        let toRemove = this._createdEvents.findIndex(item => item == event);
         this._createdEvents.splice(toRemove);
     }
 }
