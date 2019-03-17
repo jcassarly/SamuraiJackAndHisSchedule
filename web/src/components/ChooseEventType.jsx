@@ -37,11 +37,11 @@ class ChooseEventTypeForm extends React.Component {
     }
 
     loadLocationEventForm = () => {
-        return <LocationEventForm />;
+        return <LocationEventForm returnHome={this.props.returnHome} />;
     }
 
     loadDeadlineForm = () => {
-        return <DeadlineForm />;
+        return <DeadlineForm returnHome={this.props.returnHome} />;
     }
 
     loadChooseInputForm = () => {

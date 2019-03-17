@@ -13,13 +13,9 @@ import {NameInput,
 import StandardEventForm from './StandardEventForm'
 
 class LocationEventForm extends StandardEventForm {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
-            <StandardEventForm title="Location Event Form" hideLock="true" />
+            <StandardEventForm title="Location Event Form" hideLock="true" returnHome={this.props.returnHome} />
         )
     }
 }

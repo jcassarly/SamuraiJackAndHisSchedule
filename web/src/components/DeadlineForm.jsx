@@ -79,13 +79,9 @@ class DeadlineForm extends React.Component {
         event.preventDefault();
     }
 
-    returnHome(event) {
-        alert("TODO: return to home screen")
-    }
-
     render() {
         return (
-            <InputForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={this.props.returnHome} title={this.state.title}>
                 <NameInput
                     name="name"
                     value={this.state.name}
