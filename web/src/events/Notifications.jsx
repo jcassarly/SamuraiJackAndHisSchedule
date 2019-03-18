@@ -3,12 +3,14 @@
 
 
 class Notifications {
+    
     static noteEnum = {
         EMAIL: 'email',
         TEXT: 'text',
         PUSH: 'push',
         BANNER: 'banner'
     }
+
     constructor(notificationType, timeBefore, eventTime) {
         this.notificationTime = EventTime.setMinutes(eventTime.getMinutes() - timeBefore);
 

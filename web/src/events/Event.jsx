@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 
@@ -117,7 +116,7 @@ class RecurringEvent extends Event {
     }
 
     set frequency(value) {
-        this._frequency = new Frequency(this, value, optionalCustomFrequency);
+        this._frequency = value;
     }
 }
 
