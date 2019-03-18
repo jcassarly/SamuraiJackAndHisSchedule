@@ -155,4 +155,9 @@ class RecurringEvent extends Event {
     }
 }
 
-export { Event, LocationEvent, RecurringEvent, verifyTimes };
+export {
+    Event,
+    LocationEvent,
+    RecurringEvent,
+    verifyTimes,
+};

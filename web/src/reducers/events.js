@@ -1,4 +1,3 @@
-import { Event } from '../events/Event';
 import { CREATE_EVENT } from '../actions/createEvent';
 
 const initialState = { maxId: 0, events: {} };
@@ -8,7 +7,6 @@ const reducer = (state = initialState, action) => {
     if (action) {
         switch (action.type) {
         case CREATE_EVENT:
-            //alert("hello")
             newState.events[state.maxId] = action.payload.event;
             newState.maxId += 1;
             break;

@@ -71,11 +71,11 @@ class DeadlineForm extends React.Component {
 
         const {
             name,
-            description,
+            description, // eslint-disable-line 
             taskStart,
             taskDeadline,
             location,
-            useLocation,
+            useLocation, // eslint-disable-line
             minTime,
             maxTime,
             minBreak,

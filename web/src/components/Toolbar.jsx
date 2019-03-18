@@ -1,16 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import '../styles/Toolbar.css';
 
-class Toolbar extends Component {
-    render() {
-        const { navNewEvent } = this.props;
-        return (
-            <div className="toolbar">
-                <button onClick={navNewEvent}>New Event</button>
-            </div>
-        );
-    }
-}
+const Toolbar = (props) => {
+    const { navNewEvent } = props;
+    return (
+        <div className="toolbar">
+            <button type="button" onClick={navNewEvent}>New Event</button>
+        </div>
+    );
+};
+
+Toolbar.propTypes = {
+    navNewEvent: PropTypes.func.isRequired,
+};
 
 export default Toolbar;
