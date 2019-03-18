@@ -11,7 +11,6 @@
     "react-datetime": "^2.16.3",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.1",
-    "react-testing-library": "^6.0.0",
     "redux": "^4.0.1"
   },
   "scripts": {
@@ -33,6 +32,8 @@
     "babel-jest": "^24.3.1",
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.2",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-loader": "^2.1.2",
@@ -43,6 +44,7 @@
     "jest": "^24.3.1",
     "moment-locales-webpack-plugin": "^1.0.7",
     "react-test-renderer": "^16.8.4",
+    "react-testing-library": "^6.0.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",

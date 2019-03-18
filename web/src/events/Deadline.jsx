@@ -3,7 +3,7 @@
 class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime, minBreak, startWorkTime, location) {
         this.name = name;
-        this.createdEvents = new Array();
+        this._createdEvents = new Array();
         this.deadline = deadline;
         this.totalWorkTime = totalWorkTime;
         this.minEventTime = minEventTime;

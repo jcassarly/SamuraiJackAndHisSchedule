@@ -7,8 +7,8 @@ class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this.name = name;
         this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this._startTime = startTime;
+        this._endTime = endTime;
         this.location = location;
         this.locked = locked;
         this.notifications = notifications;

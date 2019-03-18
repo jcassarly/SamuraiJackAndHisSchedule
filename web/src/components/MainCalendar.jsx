@@ -18,9 +18,9 @@ class MainCalendar extends Component {
 
     types = ['month', 'week', 'day'];
 
-    /*static propTypes = {
+    /* static propTypes = {
         events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
-    };*/
+    }; */
 
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -102,7 +102,7 @@ class MainCalendar extends Component {
     }
 }
 
-const mapStateToProps = (state) => (
+const mapStateToProps = state => (
     {
         events: state.events.events,
     }

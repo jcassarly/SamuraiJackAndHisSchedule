@@ -27,7 +27,7 @@ function BaseInput(props) {
                 name={name}
                 value={value}
                 checked={checked}
-                placeHolder={description}
+                placeholder={description}
                 onChange={onChange}
             />
             {children}
@@ -41,14 +41,15 @@ BaseInput.propTypes = {
     name: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     value: PropTypes.any,
-    checked: PropTypes.string,
+    checked: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
 };
 
 BaseInput.defaultProps = {
-    value: null,
-    checked: '',
+    value: undefined,
+    checked: false,
+    children: null,
 };
 
 function TextInput(props) {
@@ -77,7 +78,11 @@ TextInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+};
+
+TextInput.defaultProps = {
+    children: null,
 };
 
 function NumberInput(props) {
@@ -106,7 +111,11 @@ NumberInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+};
+
+NumberInput.defaultProps = {
+    children: null,
 };
 
 function CheckboxInput(props) {
@@ -133,9 +142,13 @@ function CheckboxInput(props) {
 CheckboxInput.propTypes = {
     description: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    checked: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+};
+
+CheckboxInput.defaultProps = {
+    children: null,
 };
 
 function NameInput(props) {
@@ -200,7 +213,7 @@ function StartEndInput(props) {
                         {startDescription}
                     </div>
                     <DateTime
-                        inputProps={{ placeHolder: startDescription }}
+                        inputProps={{ placeholder: startDescription }}
                         value={start}
                         onChange={onStartChange}
                     />
@@ -210,7 +223,7 @@ function StartEndInput(props) {
                         {endDescription}
                     </div>
                     <DateTime
-                        inputProps={{ placeHolder: endDescription }}
+                        inputProps={{ placeholder: endDescription }}
                         value={end}
                         onChange={onEndChange}
                     />
@@ -277,7 +290,11 @@ SelectInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+};
+
+SelectInput.defaultProps = {
+    children: null,
 };
 
 function NotificationSelect(props) {
@@ -288,7 +305,7 @@ function NotificationSelect(props) {
     } = props;
     return (
         <SelectInput prompt="Notification Type" name={name} value={value} onChange={onChange}>
-            <option value={null}>None</option>
+            <option value="">None</option>
             <option value={Notifications.noteEnum.EMAIL}>Email</option>
             <option value={Notifications.noteEnum.TEXT}>Text Message</option>
             <option value={Notifications.noteEnum.BANNER}>Banner</option>
@@ -299,8 +316,12 @@ function NotificationSelect(props) {
 
 NotificationSelect.propTypes = {
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+};
+
+NotificationSelect.defaultProps = {
+    value: '',
 };
 
 function FrequencySelect(props) {
@@ -311,7 +332,7 @@ function FrequencySelect(props) {
     } = props;
     return (
         <SelectInput prompt="Event Frequency" name={name} value={value} onChange={onChange}>
-            <option value={null}>One Time</option>
+            <option value="">One Time</option>
             <option value={Frequency.freqEnum.DAILY}>Daily</option>
             <option value={Frequency.freqEnum.WEEKLY}>Weekly</option>
             <option value={Frequency.freqEnum.MONTHLY}>Monthly</option>
@@ -323,8 +344,12 @@ function FrequencySelect(props) {
 
 FrequencySelect.propTypes = {
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+};
+
+FrequencySelect.defaultProps = {
+    value: '',
 };
 
 function NotificationTime(props) {
@@ -367,7 +392,7 @@ function LockEventInput(props) {
 
 LockEventInput.propTypes = {
     name: PropTypes.string.isRequired,
-    checked: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
@@ -389,7 +414,7 @@ function UseLocationInput(props) {
 
 UseLocationInput.propTypes = {
     name: PropTypes.string.isRequired,
-    checked: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 

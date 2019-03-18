@@ -29,9 +29,9 @@ class StandardEventForm extends React.Component {
             eventStart: moment(),
             eventEnd: moment().add(1, 'hour'),
             location: '',
-            frequency: null,
-            notifications: null,
-            notificationTime: '',
+            frequency: '',
+            notifications: '',
+            notificationTime: 0,
             locked: true,
         };
 
@@ -88,6 +88,7 @@ class StandardEventForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         const {
             name,
             description,
@@ -104,7 +105,7 @@ class StandardEventForm extends React.Component {
         } = this.props;
 
         let evt = null;
-        if (frequency === null) {
+        if (frequency === '') {
             evt = new Event(
                 name,
                 description,
@@ -142,7 +143,7 @@ class StandardEventForm extends React.Component {
             Locked:            ${evt.locked}
         `); */
 
-        event.preventDefault();
+
         // eslint-disable-next-line react/destructuring-assignment
         this.props.createEvent(evt);
         returnHome();
@@ -196,6 +197,7 @@ class StandardEventForm extends React.Component {
                     name="frequency"
                     value={frequency}
                     onChange={this.frequencySelectChange}
+                    data-testid="frq"
                 />
                 <NotificationSelect
                     name="notifications"

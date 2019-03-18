@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import InputForm from './InputForm';
@@ -11,6 +12,7 @@ import {
     NumberInput,
 } from './InputFormComponents';
 import '../styles/StandardEventForm.css';
+import Deadline from '../events/Deadline';
 
 class DeadlineForm extends React.Component {
     constructor(props) {
@@ -33,12 +35,13 @@ class DeadlineForm extends React.Component {
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.returnHome = this.returnHome.bind(this);
     }
 
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
+            // eslint-disable-next-line react/forbid-prop-types
+            events: PropTypes.object.isRequired,
         };
     }
 
@@ -64,20 +67,63 @@ class DeadlineForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
+
+        const {
+            name,
+            description,
+            taskStart,
+            taskDeadline,
+            location,
+            useLocation,
+            minTime,
+            maxTime,
+            minBreak,
+            totalTime,
+        } = this.state;
+
+        const {
+            returnHome,
+        } = this.props;
+
+        const deadline = new Deadline(
+            name,
+            // TODO: add description to deadline
+            taskDeadline,
+            totalTime,
+            minTime,
+            maxTime,
+            minBreak,
+            taskStart,
+            location,
+            // TODO: add uselocation to deadline
+        );
+
+        // eslint-disable-next-line no-alert
         alert(`
             Adding a new standard event with the following info:
-            Name:              ${this.state.name}
-            Description:       ${this.state.description}
-            Start Time:        ${this.state.eventStart}
-            End Time:          ${this.state.eventEnd}
-            Location:          ${this.state.location}
-            Use Location:      ${this.state.useLocation}
-            Min Time:          ${this.state.minTime}
-            Max Time:          ${this.state.maxTime}
-            Min Break Time:    ${this.state.minBreak}
-            Total Time:        ${this.state.totalTime}
+            Name:              ${deadline.name}
+            Description:       TODO
+            Task Start:        ${deadline.startWorkTime}
+            Task Deadline:     ${deadline.deadline}
+            Location:          ${deadline.location}
+            Use Location:      TODO
+            Min Time:          ${deadline.minEventTime}
+            Max Time:          ${deadline.maxEventTime}
+            Min Break Time:    ${deadline.minBreak}
+            Total Time:        ${deadline.totalWorkTime}
         `);
-        event.preventDefault();
+
+        // eslint-disable-next-line react/destructuring-assignment
+        Object.values(this.props.events).forEach((e) => {
+            alert(e.toString());
+        });
+
+        // call the autoscheduler to get the new calendar
+
+        // set the calendar to the new event list created by the autoscheduler
+
+        returnHome();
     }
 
     render() {
@@ -95,6 +141,7 @@ class DeadlineForm extends React.Component {
             minBreak,
             totalTime,
         } = this.state;
+
         return (
             <InputForm
                 onSubmit={this.handleSubmit}
@@ -166,4 +213,10 @@ class DeadlineForm extends React.Component {
     }
 }
 
-export default DeadlineForm;
+const mapStateToProps = state => (
+    {
+        events: state.events.events,
+    }
+);
+
+export default connect(mapStateToProps)(DeadlineForm);
