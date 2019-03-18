@@ -33,4 +33,5 @@ button, input[type="button"] {
     background: none;
     color: inherit;
     outline: none;
+    cursor: pointer;
 }

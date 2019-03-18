@@ -8,6 +8,7 @@ import '../styles/MainCalendar.css';
 import { Event } from '../events/Event';
 
 import CalHeader from './CalHeader';
+import Toolbar from './Toolbar';
 import Month from './Month';
 import Week from './Week';
 import Day from './Day';
@@ -17,9 +18,9 @@ class MainCalendar extends Component {
 
     types = ['month', 'week', 'day'];
 
-    static propTypes = {
+    /* static propTypes = {
         events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
-    };
+    }; */
 
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -56,7 +57,8 @@ class MainCalendar extends Component {
 
     render() {
         const { date, pos, type } = this.state;
-        const { events } = this.props;
+        const { navNewEvent } = this.props;
+        const events = Object.values(this.props.events);
         let calElem;
 
         switch (type) {
@@ -93,15 +95,16 @@ class MainCalendar extends Component {
                     onRight={this.onRight}
                     onSwitch={this.onSwitch}
                 />
+                <Toolbar navNewEvent={navNewEvent} />
                 {calElem}
             </div>
         );
     }
 }
 
-const mapStateToProps = ({ events }) => (
+const mapStateToProps = state => (
     {
-        events,
+        events: state.events.events,
     }
 );
 
