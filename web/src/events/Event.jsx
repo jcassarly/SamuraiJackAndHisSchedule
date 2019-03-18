@@ -100,6 +100,23 @@ class Event {
         const toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
     }
+
+    static overlap(event1, event2) {
+        if (event1.startTime.valueOf() > event2.startTime.valueOf()
+        && event1.startTime.valueOf() < event2.endTime.valueOf()) {
+            return true;
+        } if (event2.startTime.valueOf() > event1.startTime.valueOf()
+        && event2.startTime.valueOf() < event1.endTime.valueOf()) {
+            return true;
+        } if (event1.endTime.valueOf() > event2.startTime.valueOf()
+        && event1.endTime.valueOf() < event2.endTime.valueOf()) {
+            return true;
+        } if (event2.endTime.valueOf() > event1.startTime.valueOf()
+        && event2.endTime.valueOf() < event1.endTime.valueOf()) {
+            return true;
+        }
+        return false;
+    }
 }
 
 // Class for events denoting only location which extends Event
