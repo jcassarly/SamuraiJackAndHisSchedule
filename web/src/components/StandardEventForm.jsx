@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import {
     NameInput,
@@ -179,7 +179,6 @@ class StandardEventForm extends React.Component {
             locked,
             error,
         } = this.state;
-        console.log(hideLock);
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <NameInput

@@ -1,11 +1,23 @@
-/* disable-eslint */
 // ADD overlap function
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 moment().format();
+
+function verifyTimes(start, end) {
+    if (!(start instanceof moment)) {
+        console.log('start');
+        throw new Error('Invalid Start Time');
+    } else if (!(end instanceof moment)) {
+        console.log('end');
+        throw new Error('Invalid End Time');
+    } else if (start.isAfter(end)) {
+        console.log('error thing');
+        throw new Error('Start time after end time');
+    }
+}
 
 // Class for events
 class Event {
@@ -16,9 +28,7 @@ class Event {
         this._startTime = startTime.clone();
         this._endTime = endTime.clone();
 
-        if (this._startTime.isAfter(this._endTime)) {
-            throw new Error('Start time after end time');
-        }
+        verifyTimes(this._startTime, this._endTime);
 
         this.location = location;
         this.locked = locked;
@@ -68,17 +78,13 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
-        if (this._endTime !== null && value.isAfter(this._endTime)) {
-            throw new Error('Start time after end time');
-        }
+        verifyTimes(value, this._endTime);
         this._startTime = value;
     }
 
     // this takes a String as input
     set endTime(value) {
-        if (this._startTime !== null && value.isBefore(this._startTime)) {
-            throw new Error('End time before start time');
-        }
+        verifyTimes(this._startTime, value);
         this._endTime = value;
     }
 
@@ -108,17 +114,17 @@ class Event {
     }
 
     static overlap(event1, event2) {
-        if (event1.startTime.valueOf() > event2.startTime.valueOf()
-        && event1.startTime.valueOf() < event2.endTime.valueOf()) {
+        if (event1.startTime.isAfter(event2.startTime)
+        && event1.startTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.startTime.valueOf() > event1.startTime.valueOf()
-        && event2.startTime.valueOf() < event1.endTime.valueOf()) {
+        } if (event2.startTime.isAfter(event1.startTime)
+        && event2.startTime.isBefore(event1.endTime)) {
             return true;
-        } if (event1.endTime.valueOf() > event2.startTime.valueOf()
-        && event1.endTime.valueOf() < event2.endTime.valueOf()) {
+        } if (event1.endTime.isAfter(event2.startTime)
+        && event1.endTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.endTime.valueOf() > event1.startTime.valueOf()
-        && event2.endTime.valueOf() < event1.endTime.valueOf()) {
+        } if (event2.endTime.isAfter(event1.startTime)
+        && event2.endTime.isBefore(event1.endTime)) {
             return true;
         }
         return false;
@@ -128,7 +134,7 @@ class Event {
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
     constructor(name, description, startTime, endTime, notifications) {
-        super(name, description, startTime, endTime, name, false, notifications, null);
+        super(name, description, startTime, endTime, name, true, notifications, null);
     }
 }
 
@@ -149,4 +155,4 @@ class RecurringEvent extends Event {
     }
 }
 
-export { Event, LocationEvent, RecurringEvent };
+export { Event, LocationEvent, RecurringEvent, verifyTimes };

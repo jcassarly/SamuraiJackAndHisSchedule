@@ -1,4 +1,3 @@
-/* disable-eslint */
 // Class which contains the settings information of the user
 class Settings {
     constructor() {

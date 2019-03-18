@@ -1,16 +1,20 @@
-/* disable-eslint */
 // the class for handling deadlines
+import { verifyTimes } from './Event';
+
 class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime,
         minBreak, startWorkTime, location) {
         this.name = name;
         this.createdEvents = [];
-        this.deadline = deadline;
+        this._deadline = deadline;
+        this._startWorkTime = startWorkTime;
+
+        verifyTimes(this._startWorkTime, this._deadline);
+
         this.totalWorkTime = totalWorkTime;
         this.minEventTime = minEventTime;
         this.maxEventTime = maxEventTime;
         this.minBreak = minBreak;
-        this.startWorkTime = startWorkTime;
         this.location = location;
     }
 
@@ -55,7 +59,8 @@ class Deadline {
     }
 
     set deadline(value) {
-        this._deadline = value;
+        verifyTimes(this._startWorkTime, value);
+        this._startWorkTime = value;
     }
 
     set totalWorkTime(value) {
@@ -75,6 +80,7 @@ class Deadline {
     }
 
     set startWorkTime(value) {
+        verifyTimes(value, this._deadline);
         this._startWorkTime = value;
     }
 

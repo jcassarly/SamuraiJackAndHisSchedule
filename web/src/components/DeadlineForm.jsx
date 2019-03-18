@@ -182,7 +182,7 @@ class DeadlineForm extends React.Component {
                     description="Min Scheduled Event Time"
                     onChange={this.handleInputChange}
                 >
-                    in Hours
+                    in Minutes
                 </NumberInput>
                 <NumberInput
                     name="maxTime"
@@ -190,7 +190,7 @@ class DeadlineForm extends React.Component {
                     description="Max Scheduled Event Time"
                     onChange={this.handleInputChange}
                 >
-                    in Hours
+                    in Minutes
                 </NumberInput>
                 <NumberInput
                     name="minBreak"
@@ -198,7 +198,7 @@ class DeadlineForm extends React.Component {
                     description="Min Time Between Events"
                     onChange={this.handleInputChange}
                 >
-                    in Hours
+                    in Minutes
                 </NumberInput>
                 <NumberInput
                     name="totalTime"
@@ -206,7 +206,7 @@ class DeadlineForm extends React.Component {
                     description="Total Time to Complete"
                     onChange={this.handleInputChange}
                 >
-                    in Hours
+                    in Minutes
                 </NumberInput>
             </InputForm>
         );
