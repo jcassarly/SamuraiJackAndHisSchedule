@@ -1,32 +1,22 @@
+/* disable-eslint */
+
 // Notifications Class, stores the time at which the notification should be issued and 
 // the type of notification.
 
 
 class Notifications {
+
     static noteEnum = {
         EMAIL: 'email',
         TEXT: 'text',
         PUSH: 'push',
         BANNER: 'banner'
     }
-    constructor(notificationType, timeBefore, eventTime) {
-        this._notificationTime = EventTime.setMinutes(eventTime.getMinutes() - timeBefore);
 
-        switch (notificationType) {
-            case Notifications.noteEnum.EMAIL:
-                this._notificationType = Notifications.noteEnum.EMAIL;
-                break;
-            case Notifications.noteEnum.TEXT:
-                this._notificationType = Notifications.noteEnum.TEXT;
-            case Notifications.noteEnum.PUSH:
-                this._notificationType = Notifications.noteEnum.PUSH;
-                break;
-            case Notifications.noteEnum.BANNER:
-                this._notificationType = Notifications.noteEnum.BANNER;
-                break;
-            default:
-                throw new Error('not a valid notification type');
-        }
+    constructor(notificationType, timeBefore, eventTime) {
+        this.notificationTime = EventTime.setMinutes(eventTime.getMinutes() - timeBefore);
+
+        this.notificationType = notificationType;
     }
 
     get notificationType () {

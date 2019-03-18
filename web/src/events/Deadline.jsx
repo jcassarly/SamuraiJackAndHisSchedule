@@ -1,15 +1,16 @@
+/* disable-eslint */
 //the class for handling deadlines
 class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime, minBreak, startWorkTime, location) {
-        this._name = name;
-        this._createdEvents = new Array();
-        this._deadline = deadline;
-        this._totalWorkTime = totalWorkTime;
-        this._minEventTime = minEventTime;
-        this._maxEventTime = maxEventTime;
-        this._minBreak = minBreak;
-        this._startWorkTime = startWorkTime;
-        this._location = location;
+        this.name = name;
+        this.createdEvents = new Array();
+        this.deadline = deadline;
+        this.totalWorkTime = totalWorkTime;
+        this.minEventTime = minEventTime;
+        this.maxEventTime = maxEventTime;
+        this.minBreak = minBreak;
+        this.startWorkTime = startWorkTime;
+        this.location = location;
     }
 
     get name() {
@@ -85,7 +86,9 @@ class Deadline {
     }
 
     removeEvent(event) {
-        let toRemove = this._createdEvents.findIndex(item => item.equals(event));
+        let toRemove = this._createdEvents.findIndex(item => item == event);
         this._createdEvents.splice(toRemove);
     }
 }
+
+export default Deadline;

@@ -1,18 +1,18 @@
-/* eslint-disable */
+/* disable-eslint */
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 
 // Class for events
 class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
-        this._name = name;
-        this._description = description;
-        this._startTime = startTime;
-        this._endTime = endTime;
-        this._location = location;
-        this._locked = locked;
-        this._notifications = notifications;
-        this._parent = parent;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.locked = locked;
+        this.notifications = notifications;
+        this.parent = parent;
     }
 
     get name() {
@@ -95,30 +95,6 @@ class Event {
         let toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
     }
-
-    equals(event) {
-        // Create arrays of property names
-        let aProps = Object.getOwnPropertyNames(this);
-        let bProps = Object.getOwnPropertyNames(event);
-    
-        // If number of properties is different,
-        // objects are not equivalent
-        if (aProps.length != bProps.length) {
-            return false;
-        }
-    
-        for (let i = 0; i < aProps.length; i++) {
-            let propName = aProps[i];
-    
-            // If values of same property are not equal,
-            // objects are not equivalent
-            if (a[propName] !== b[propName]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }
 
 // Class for events denoting only location which extends Event
@@ -141,7 +117,7 @@ class RecurringEvent extends Event {
     }
 
     set frequency(value) {
-        this._frequency = new Frequency(this, value, optionalCustomFrequency);
+        this._frequency = value;
     }
 }
 
