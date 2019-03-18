@@ -1,5 +1,3 @@
-/* disable-eslint */
-
 // Class for Frequency
 class Frequency {
     static freqEnum = {
@@ -7,28 +5,21 @@ class Frequency {
         WEEKLY: 'weekly',
         MONTHLY: 'monthly',
         YEARLY: 'yearly',
-        CUSTOM: 'custom'
+        CUSTOM: 'custom',
     }
 
     // Constructor should recieve an event object and two strings.
     // optionalCustomOptions should be null is value is not 'custom'
     constructor(event, timing, optionalCustomOptions) {
         this.eventPattern = event;
-
-        this.timing = timing;
-
-        if (this.timing === Frequency.freqEnum.CUSTOM && optionalCustomOptions != null) {
-            this.customSettings = Frequency.customParse(optionalCustomOptions);
-        } else {
-            this.customSettings = null;
-        }
+        this.setTiming(timing, optionalCustomOptions);
     }
 
     get timing() {
         return this._timing;
     }
 
-    set timing(value) {
+    setTiming(value, optionalCustomOptions) {
         switch (value) {
         case Frequency.freqEnum.DAILY:
             this._timing = Frequency.freqEnum.DAILY;
@@ -50,7 +41,7 @@ class Frequency {
         }
 
         if (this._timing === Frequency.freqEnum.CUSTOM && optionalCustomOptions != null) {
-            this._customSettings = Frequency.customParse(optionalCustomOptions);
+            this._customSettings = optionalCustomOptions;
         } else {
             this._customSettings = null;
         }

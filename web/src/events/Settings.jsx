@@ -2,20 +2,20 @@
 // Class which contains the settings information of the user
 class Settings {
     constructor() {
-        //the below value is in minutes
+        // the below value is in minutes
         this.eventLength = 60;
-        this.defaultLocation = "anywhere";
-        //the below value is in minutes
+        this.defaultLocation = 'anywhere';
+        // the below value is in minutes
         this.defaultNotificationTimeBefore = 15;
-        this.defaultNotificationType = "email";
+        this.defaultNotificationType = 'email';
         this.locked = true;
-        //the below value is in hours.
+        // the below value is in hours.
         this.timeBeforeDue = 168;
-        //the following three values are in minutes
+        // the following three values are in minutes
         this.minWorkTime = 15;
         this.maxWorkTime = 120;
         this.minBreakTime = 15;
-        //the below value is in hours
+        // the below value is in hours
         this.timeToComplete = 42;
     }
 
@@ -60,7 +60,7 @@ class Settings {
     }
 
     set eventLength(value) {
-        this_eventLength = value;
+        this._eventLength = value;
     }
 
     set defaultLocation(value) {
@@ -71,7 +71,7 @@ class Settings {
         this._defaultNotificationTimeBefore = value;
     }
 
-    set defaultNotificationType() {
+    set defaultNotificationType(value) {
         this._defaultNotificationType = value;
     }
 
@@ -84,19 +84,17 @@ class Settings {
     }
 
     set minWorkTime(value) {
-        if (value > maxWorkTime) {
-            throw new Error("minimum must be less than maximum");
-        }
-        else {
+        if (value.valueOf() > this.maxWorkTime().valueOf()) {
+            throw new Error('minimum must be less than maximum');
+        } else {
             this._minWorkTime = value;
         }
     }
 
     set maxWorkTime(value) {
-        if (value < minWorkTime) {
-            throw new Error("maximum must be greater than minimum");
-        }
-        else {
+        if (value.valueOf() < this.minWorkTime().valueOf()) {
+            throw new Error('maximum must be greater than minimum');
+        } else {
             this._maxWorkTime = value;
         }
     }
@@ -106,10 +104,9 @@ class Settings {
     }
 
     set timeToComplete(value) {
-        if (value > timeBeforeDue) {
-            throw new Error("not enough time to work before deadline")
-        }
-        else {
+        if (value > this.timeBeforeDue) {
+            throw new Error('not enough time to work before deadline');
+        } else {
             this._timeToComplete = value;
         }
     }
