@@ -1,7 +1,7 @@
 /* disable-eslint */
 
 import React from 'react';
-import { render, fireEvent, cleanup } from 'react-testing-library';
+import { render, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import LocationEventForm from './LocationEventForm';

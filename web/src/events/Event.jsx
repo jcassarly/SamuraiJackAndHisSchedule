@@ -8,13 +8,10 @@ moment().format();
 
 function verifyTimes(start, end) {
     if (!(start instanceof moment)) {
-        console.log('start');
         throw new Error('Invalid Start Time');
     } else if (!(end instanceof moment)) {
-        console.log('end');
         throw new Error('Invalid End Time');
     } else if (start.isAfter(end)) {
-        console.log('error thing');
         throw new Error('Start time after end time');
     }
 }
