@@ -12,7 +12,13 @@ class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this.name = name;
         this.description = description;
+        if (startTime === null) {
+            throw new Error('Null start time is invalid');
+        }
         this.startTime = startTime.clone();
+        if (endTime === null) {
+            throw new Error('Null end time is invalid');
+        }
         this.endTime = endTime.clone();
         this.location = location;
         this.locked = locked;
@@ -62,7 +68,10 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
-        if (moment(value).valueOf() > moment(this._endTime).valueOf()) {
+        if (value === null) {
+            throw new Error('Null start time is invalid');
+        }
+        if (moment(value).isAfter(moment(this._endTime))) {
             throw new Error('Start time after end time');
         }
         this._startTime = value;
@@ -70,7 +79,10 @@ class Event {
 
     // this takes a String as input
     set endTime(value) {
-        if (moment(value).valueOf() < moment(this._startTime).valueOf()) {
+        if (value === null) {
+            throw new Error('Null end time is invalid');
+        }
+        if (moment(value).isBefore(moment(this._startTime))) {
             throw new Error('End time before start time');
         }
         this._endTime = Date.parse(value);
@@ -102,17 +114,17 @@ class Event {
     }
 
     static overlap(event1, event2) {
-        if (event1.startTime.valueOf() > event2.startTime.valueOf()
-        && event1.startTime.valueOf() < event2.endTime.valueOf()) {
+        if (event1.startTime.isAfter(event2.startTime)
+        && event1.startTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.startTime.valueOf() > event1.startTime.valueOf()
-        && event2.startTime.valueOf() < event1.endTime.valueOf()) {
+        } if (event2.startTime.isAfter(event1.startTime)
+        && event2.startTime.isBefore(event1.endTime)) {
             return true;
-        } if (event1.endTime.valueOf() > event2.startTime.valueOf()
-        && event1.endTime.valueOf() < event2.endTime.valueOf()) {
+        } if (event1.endTime.isAfter(event2.startTime)
+        && event1.endTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.endTime.valueOf() > event1.startTime.valueOf()
-        && event2.endTime.valueOf() < event1.endTime.valueOf()) {
+        } if (event2.endTime.isAfter(event1.startTime)
+        && event2.endTime.isBefore(event1.endTime)) {
             return true;
         }
         return false;
