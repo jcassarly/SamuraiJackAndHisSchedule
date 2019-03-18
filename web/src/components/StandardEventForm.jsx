@@ -1,37 +1,39 @@
 import React from 'react';
-import DateTime from 'react-datetime';
 import { connect } from 'react-redux';
-import moment from 'moment'
-import {NameInput,
-        DescriptionInput,
-        StartEndInput,
-        LocationInput,
-        NotificationSelect,
-        NotificationTime,
-        FrequencySelect,
-        LockEventInput,
-        NotificationEnum} from './InputFormComponents'
-import InputForm from './InputForm'
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import {
+    NameInput,
+    DescriptionInput,
+    StartEndInput,
+    LocationInput,
+    NotificationSelect,
+    NotificationTime,
+    FrequencySelect,
+    LockEventInput,
+} from './InputFormComponents';
+import InputForm from './InputForm';
 import createEvent from '../actions/createEvent';
-import {Event, RecurringEvent} from '../events/Event'
-import Frequency from '../events/Frequency'
+import { Event, RecurringEvent } from '../events/Event';
+import Frequency from '../events/Frequency';
 import '../styles/StandardEventForm.css';
 
 class StandardEventForm extends React.Component {
     constructor(props) {
         super(props);
+        const { title } = this.props;
         this.state = {
-            title: (this.props.title) ? this.props.title : "Standard Event Form",
-            name: "",
-            description: "",
+            title,
+            name: '',
+            description: '',
             eventStart: moment(),
             eventEnd: moment().add(1, 'hour'),
-            location: "",
+            location: '',
             frequency: null,
-            notifications: NotificationEnum.NONE,
-            notificationTime: "",
+            notifications: null,
+            notificationTime: '',
             locked: true,
-        }
+        };
 
         this.frequencySelectChange = this.frequencySelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,11 +42,27 @@ class StandardEventForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    frequencySelectChange(event) {
-        this.setState({frequency: event.target.value});
+    static get propTypes() {
+        return {
+            returnHome: PropTypes.func.isRequired,
+            createEvent: PropTypes.func.isRequired,
+            title: PropTypes.string,
+            hideLock: PropTypes.bool,
+        };
+    }
 
-        if (event.target.value == FreqEnum.CUSTOM) {
-            alert("TODO: open custom choice menu");
+    static get defaultProps() {
+        return {
+            title: 'Standard Event Form',
+            hideLock: false,
+        };
+    }
+
+    frequencySelectChange(event) {
+        this.setState({ frequency: event.target.value });
+
+        if (event.target.value === Frequency.freqEnum.CUSTOM) {
+            alert('TODO: open custom choice menu');
         }
     }
 
@@ -59,53 +77,60 @@ class StandardEventForm extends React.Component {
 
     handleStartDateChange(time) {
         this.setState({
-            eventStart: time
-        })
+            eventStart: time,
+        });
     }
 
     handleEndDateChange(time) {
         this.setState({
-            eventEnd: time
-        })
+            eventEnd: time,
+        });
     }
 
     handleSubmit(event) {
-        /*alert(`
-            Adding a new standard event with the following info:
-            Name:              ${this.state.name}
-            Description:       ${this.state.description}
-            Start Time:        ${this.state.eventStart}
-            End Time:          ${this.state.eventEnd}
-            Location:          ${this.state.location}
-            Frequency:         ${this.state.frequency}
-            Notifications:     ${this.state.notifications}
-            Notification Time: ${this.state.notificationTime}
-            Locked:            ${this.state.locked}
-        `);*/
-        var evt = null;
-        if (this.state.frequency === null) {
-            evt = new Event(this.state.name,
-                            this.state.description,
-                            this.state.eventStart,
-                            this.state.eventEnd,
-                            this.state.location,
-                            this.state.locked,
-                            this.state.notifications, // TODO: use notification object here so notification time can be incorporated
-                            null);
-        }
-        else {
-            evt = new RecurringEvent(this.state.name,
-                                     this.state.description,
-                                     this.state.eventStart,
-                                     this.state.eventEnd,
-                                     this.state.location,
-                                     this.state.locked,
-                                     this.state.notifications,
-                                     this.state.frequency,
-                                     null); // TODO: handle custom frequency
+        const {
+            name,
+            description,
+            eventStart,
+            eventEnd,
+            location,
+            locked,
+            notifications,
+            frequency,
+        } = this.state;
+
+        const {
+            returnHome,
+        } = this.props;
+
+        let evt = null;
+        if (frequency === null) {
+            evt = new Event(
+                name,
+                description,
+                eventStart,
+                eventEnd,
+                location,
+                locked,
+                notifications, // TODO: use notification object here instead
+                null,
+            );
+        } else {
+            evt = new RecurringEvent(
+                name,
+                description,
+                eventStart,
+                eventEnd,
+                location,
+                locked,
+                notifications,
+                frequency,
+                null,
+            ); // TODO: handle custom frequency
         }
 
-        /*alert(`
+        // uncomment for debugging
+        /* alert(`
             Adding a new standard event with the following info:
             Name:              ${evt.name}
             Description:       ${evt.description}
@@ -115,29 +140,48 @@ class StandardEventForm extends React.Component {
             Frequency:         ${evt.frequency}
             Notifications:     ${evt.notifications}
             Locked:            ${evt.locked}
-        `);*/
-        event.preventDefault();
-        this.props.createEvent(evt);
-        this.props.returnHome();
+        `); */
 
+        event.preventDefault();
+        // eslint-disable-next-line react/destructuring-assignment
+        this.props.createEvent(evt);
+        returnHome();
     }
 
     render() {
+        const {
+            returnHome,
+            hideLock,
+        } = this.props;
+
+        const {
+            title,
+            name,
+            description,
+            eventStart,
+            eventEnd,
+            location,
+            frequency,
+            notifications,
+            notificationTime,
+            locked,
+        } = this.state;
+
         return (
-            <InputForm onSubmit={this.handleSubmit} onBack={this.props.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <NameInput
                     name="name"
-                    value={this.state.name}
+                    value={name}
                     onChange={this.handleInputChange}
                 />
                 <DescriptionInput
                     name="description"
-                    value={this.state.description}
+                    value={description}
                     onChange={this.handleInputChange}
                 />
                 <StartEndInput
-                    start={this.state.eventStart}
-                    end={this.state.eventEnd}
+                    start={eventStart}
+                    end={eventEnd}
                     startDescription="Event Start Time"
                     endDescription="Event End Time"
                     onStartChange={this.handleStartDateChange}
@@ -145,32 +189,34 @@ class StandardEventForm extends React.Component {
                 />
                 <LocationInput
                     name="location"
-                    value={this.state.location}
+                    value={location}
                     onChange={this.handleInputChange}
                 />
                 <FrequencySelect
                     name="frequency"
-                    value={this.state.frequency}
+                    value={frequency}
                     onChange={this.frequencySelectChange}
                 />
                 <NotificationSelect
                     name="notifications"
-                    value={this.state.notifications}
+                    value={notifications}
                     onChange={this.handleInputChange}
                 />
                 <NotificationTime
                     name="notificationTime"
-                    value={this.state.notificationTime}
+                    value={notificationTime}
                     onChange={this.handleInputChange}
                 />
-                {!this.props.hideLock && <LockEventInput
-                    name="locked"
-                    checked={this.state.locked}
-                    onChange={this.handleInputChange}
-                />}
+                {!hideLock && (
+                    <LockEventInput
+                        name="locked"
+                        checked={locked}
+                        onChange={this.handleInputChange}
+                    />
+                )}
             </InputForm>
-        )
+        );
     }
 }
 
-export default connect(null, {createEvent})(StandardEventForm);
+export default connect(null, { createEvent })(StandardEventForm);

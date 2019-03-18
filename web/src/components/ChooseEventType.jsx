@@ -1,56 +1,59 @@
 import React from 'react';
-import StandardEventForm from './StandardEventForm'
+import PropTypes from 'prop-types';
+import StandardEventForm from './StandardEventForm';
+import LocationEventForm from './LocationEventForm';
+import DeadlineForm from './DeadlineForm';
+import InputForm from './InputForm';
 
 import '../styles/StandardEventForm.css';
-import LocationEventForm from './LocationEventForm';
-import DeadlineForm from './DeadlineForm'
-import InputForm from './InputForm'
 
-var EventEnum = {
-    STANDARD: "Standard",
-    LOCATION: "Location",
-    DEADLINE: "Deadline",
-}
+const EventEnum = {
+    STANDARD: 'Standard',
+    LOCATION: 'Location',
+    DEADLINE: 'Deadline',
+};
 
 class ChooseEventTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: "Choose Event Type",
+            title: 'Choose Event Type',
             choice: this.loadChooseInputForm,
             form: this.loadChooseInputForm,
-            submitted: false,
-        }
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) {
-        this.setState({
-            choice: event.target.value,
-        });
+    static get propTypes() {
+        return {
+            returnHome: PropTypes.func.isRequired,
+        };
     }
 
     loadStandardEventForm = () => {
-        return <StandardEventForm returnHome={this.props.returnHome} />;
+        const { returnHome } = this.props;
+        return <StandardEventForm returnHome={returnHome} />;
     }
 
     loadLocationEventForm = () => {
-        return <LocationEventForm returnHome={this.props.returnHome} />;
+        const { returnHome } = this.props;
+        return <LocationEventForm returnHome={returnHome} />;
     }
 
     loadDeadlineForm = () => {
-        return <DeadlineForm returnHome={this.props.returnHome} />;
+        const { returnHome } = this.props;
+        return <DeadlineForm returnHome={returnHome} />;
     }
 
     loadChooseInputForm = () => {
+        const { returnHome } = this.props;
+        const { title } = this.state;
         return (
-            <InputForm onSubmit={this.handleSubmit} onBack={this.props.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <div>
-                    <label>
-                        Choose Event Type:
-                    </label>
+                    {'Choose Event Type: '}
                     <select onChange={this.handleInputChange}>
                         <option value="Choose">Choose</option>
                         <option value={EventEnum.STANDARD}>{EventEnum.STANDARD}</option>
@@ -59,39 +62,47 @@ class ChooseEventTypeForm extends React.Component {
                     </select>
                 </div>
             </InputForm>
-        )
+        );
+    }
+
+    handleInputChange(event) {
+        this.setState({
+            choice: event.target.value,
+        });
     }
 
     handleSubmit(event) {
-        switch (this.state.choice) {
-            case EventEnum.STANDARD:
-                this.setState({
-                    form: this.loadStandardEventForm
-                })
-                break;
-            case EventEnum.LOCATION:
-                this.setState({
-                    form: this.loadLocationEventForm
-                })
-                break;
-            case EventEnum.DEADLINE:
-                this.setState({
-                    form: this.loadDeadlineForm
-                })
-                break;
-            default:
-                alert("Please select an event type");
-                this.setState({
-                    form: this.loadChooseInputForm
-                })
-                break;
+        const { choice } = this.state;
+        switch (choice) {
+        case EventEnum.STANDARD:
+            this.setState({
+                form: this.loadStandardEventForm,
+            });
+            break;
+        case EventEnum.LOCATION:
+            this.setState({
+                form: this.loadLocationEventForm,
+            });
+            break;
+        case EventEnum.DEADLINE:
+            this.setState({
+                form: this.loadDeadlineForm,
+            });
+            break;
+        default:
+            alert('Please select an event type');
+            this.setState({
+                form: this.loadChooseInputForm,
+            });
+            break;
         }
         event.preventDefault();
     }
 
     render() {
-        return this.state.form()
+        const { form } = this.state;
+        return form();
     }
 }
 
-export default ChooseEventTypeForm
+export default ChooseEventTypeForm;

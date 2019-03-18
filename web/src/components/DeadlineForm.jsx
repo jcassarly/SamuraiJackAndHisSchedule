@@ -1,44 +1,45 @@
 import React from 'react';
-import DateTime from 'react-datetime';
-import moment from 'moment'
-import {NameInput,
-        DescriptionInput,
-        StartEndInput,
-        LocationInput,
-        NotificationSelect,
-        NotificationTime,
-        FrequencySelect,
-        LockEventInput,
-        UseLocationInput,
-        NumberInput,
-        TextInput,
-        CheckboxInput,
-        NotificationEnum,} from './InputFormComponents'
-import InputForm from './InputForm'
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import InputForm from './InputForm';
+import {
+    NameInput,
+    DescriptionInput,
+    StartEndInput,
+    LocationInput,
+    UseLocationInput,
+    NumberInput,
+} from './InputFormComponents';
 import '../styles/StandardEventForm.css';
 
 class DeadlineForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: "Deadline Form",
-            name: "",
-            description: "",
-            eventStart: moment(),
-            eventEnd: moment().add(1, 'hour'),
-            location: "",
+            title: 'Deadline Form',
+            name: '',
+            description: '',
+            taskStart: moment(),
+            taskDeadline: moment().add(1, 'hour'),
+            location: '',
             useLocation: true,
             minTime: 0,
             maxTime: 0,
             minBreak: 0,
             totalTime: 0,
-        }
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.returnHome = this.returnHome.bind(this);
+    }
+
+    static get propTypes() {
+        return {
+            returnHome: PropTypes.func.isRequired,
+        };
     }
 
     handleInputChange(event) {
@@ -52,14 +53,14 @@ class DeadlineForm extends React.Component {
 
     handleStartDateChange(time) {
         this.setState({
-            taskStart: time
-        })
+            taskStart: time,
+        });
     }
 
     handleEndDateChange(time) {
         this.setState({
-            taskDeadline: time
-        })
+            taskDeadline: time,
+        });
     }
 
     handleSubmit(event) {
@@ -80,21 +81,39 @@ class DeadlineForm extends React.Component {
     }
 
     render() {
+        const { returnHome } = this.props;
+        const {
+            title,
+            name,
+            description,
+            taskStart,
+            taskDeadline,
+            location,
+            useLocation,
+            minTime,
+            maxTime,
+            minBreak,
+            totalTime,
+        } = this.state;
         return (
-            <InputForm onSubmit={this.handleSubmit} onBack={this.props.returnHome} title={this.state.title}>
+            <InputForm
+                onSubmit={this.handleSubmit}
+                onBack={returnHome}
+                title={title}
+            >
                 <NameInput
                     name="name"
-                    value={this.state.name}
+                    value={name}
                     onChange={this.handleInputChange}
                 />
                 <DescriptionInput
                     name="description"
-                    value={this.state.description}
+                    value={description}
                     onChange={this.handleInputChange}
                 />
                 <StartEndInput
-                    start={this.state.taskStart}
-                    end={this.state.taskDeadline}
+                    start={taskStart}
+                    end={taskDeadline}
                     startDescription="Task Start Time"
                     endDescription="Task Deadline"
                     onStartChange={this.handleStartDateChange}
@@ -102,17 +121,17 @@ class DeadlineForm extends React.Component {
                 />
                 <LocationInput
                     name="location"
-                    value={this.state.location}
+                    value={location}
                     onChange={this.handleInputChange}
                 />
                 <UseLocationInput
                     name="useLocation"
-                    checked={this.state.useLocation}
+                    checked={useLocation}
                     onChange={this.handleInputChange}
                 />
                 <NumberInput
                     name="minTime"
-                    value={this.state.minTime}
+                    value={minTime}
                     description="Min Scheduled Event Time"
                     onChange={this.handleInputChange}
                 >
@@ -120,7 +139,7 @@ class DeadlineForm extends React.Component {
                 </NumberInput>
                 <NumberInput
                     name="maxTime"
-                    value={this.state.maxTime}
+                    value={maxTime}
                     description="Max Scheduled Event Time"
                     onChange={this.handleInputChange}
                 >
@@ -128,7 +147,7 @@ class DeadlineForm extends React.Component {
                 </NumberInput>
                 <NumberInput
                     name="minBreak"
-                    value={this.state.minBreak}
+                    value={minBreak}
                     description="Min Time Between Events"
                     onChange={this.handleInputChange}
                 >
@@ -136,15 +155,15 @@ class DeadlineForm extends React.Component {
                 </NumberInput>
                 <NumberInput
                     name="totalTime"
-                    value={this.state.totalTime}
+                    value={totalTime}
                     description="Total Time to Complete"
                     onChange={this.handleInputChange}
                 >
                     in Hours
                 </NumberInput>
             </InputForm>
-        )
+        );
     }
 }
 
-export default DeadlineForm
+export default DeadlineForm;

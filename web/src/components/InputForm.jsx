@@ -1,22 +1,36 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function InputForm(props) {
+    const {
+        onSubmit,
+        onBack,
+        children,
+        title,
+    } = props;
     return (
         <div overflow="scroll">
             <center>
-                <form onSubmit={props.onSubmit}>
+                <form onSubmit={onSubmit}>
                     <div>
                         <ul>
-                            <li class="left"><button type="button" onClick={props.onBack}>Back</button></li>
-                            <li><b>{props.title}</b></li>
-                            <li class="right"><input type="submit" value="Submit" /></li>
+                            <li className="left"><button type="button" onClick={onBack}>Back</button></li>
+                            <li><b>{title}</b></li>
+                            <li className="right"><input type="submit" value="Submit" /></li>
                         </ul>
                     </div>
-                    {props.children}
+                    {children}
                 </form>
             </center>
         </div>
     );
 }
 
-export default InputForm
+InputForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
+    title: PropTypes.string.isRequired,
+};
+
+export default InputForm;

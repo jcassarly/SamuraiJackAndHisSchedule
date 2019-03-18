@@ -2,26 +2,26 @@ import React, { Component } from 'react';
 
 import '../styles/App.css';
 import MainCalendar from './MainCalendar';
-import ChooseEventType from './ChooseEventType'
+import ChooseEventType from './ChooseEventType';
 
 class App extends Component {
     state = {
-        nav: "main",
+        nav: 'main',
     }
 
     navNewEvent = () => {
-        this.setState({ nav: "createEvent" });
+        this.setState({ nav: 'createEvent' });
     }
 
     returnHome = () => {
-        this.setState({ nav: "main" });
+        this.setState({ nav: 'main' });
     }
 
     pickComp = (nav) => {
-        switch(nav) {
-        case "createEvent":
+        switch (nav) {
+        case 'createEvent':
             return <ChooseEventType returnHome={this.returnHome} />;
-        case "main":
+        case 'main':
         default:
             return <MainCalendar navNewEvent={this.navNewEvent} />;
         }
@@ -31,7 +31,7 @@ class App extends Component {
         const { nav } = this.state;
         return (
             <div className="app">
-               {this.pickComp(nav)}
+                {this.pickComp(nav)}
             </div>
         );
     }

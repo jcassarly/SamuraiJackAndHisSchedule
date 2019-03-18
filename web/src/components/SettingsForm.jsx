@@ -1,50 +1,58 @@
 import React from 'react';
-import DateTime from 'react-datetime';
-import moment from 'moment'
-import {NameInput,
-        DescriptionInput,
-        StartEndInput,
-        LocationInput,
-        NotificationSelect,
-        NotificationTime,
-        FrequencySelect,
-        LockEventInput,
-        NumberInput,
-        TextInput,
-        CheckboxInput,
-        SelectInput,
-        NotificationEnum} from './InputFormComponents'
-import InputForm from './InputForm'
+import PropTypes from 'prop-types';
+import {
+    LocationInput,
+    NotificationSelect,
+    NotificationTime,
+    NumberInput,
+    SelectInput,
+} from './InputFormComponents';
+import InputForm from './InputForm';
+import Frequency from '../events/Frequency';
+import Settings from '../events/Settings';
 import '../styles/SettingsForm.css';
 
 function SettingsSection(props) {
+    const {
+        title,
+        children,
+    } = props;
     return (
-        <div class="sectionBorder">
-            <label class="titleLine">
-                <i>{props.title}</i>
-            </label>
+        <div className="sectionBorder">
+            <div className="titleLine">
+                <i>{title}</i>
+            </div>
             <div>
-                {props.children}
+                {children}
             </div>
         </div>
-    )
+    );
 }
+
+SettingsSection.propTypes = {
+    title: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
+};
 
 class SettingsForm extends React.Component {
     constructor(props) {
         super(props);
+
+        const defaults = new Settings();
         this.state = {
-            title: "General Settings",
-            name: "",
-            description: "",
-            eventStart: moment(),
-            eventEnd: moment().add(1, 'hour'),
-            location: "",
-            frequency: null,
-            notifications: NotificationEnum.NONE,
-            notificationTime: "",
-            locked: true,
-        }
+            title: 'General Settings',
+            location: defaults.defaultLocation,
+            notifications: defaults.defaultNotificationType,
+            notificationTime: defaults.defaultNotificationTimeBefore,
+            snapToGrid: defaults.defaultSnapToGrid,
+            minBreak: defaults.minBreakTime,
+            minTime: defaults.minWorkTime,
+            maxTime: defaults.maxWorkTime,
+            language: defaults.defaultLanguage,
+            duration: defaults.eventLength,
+            timeBeforeDue: defaults.timeBeforeDue,
+            timeToComplete: defaults.timeToComplete,
+        };
 
         this.frequencySelectChange = this.frequencySelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -54,11 +62,17 @@ class SettingsForm extends React.Component {
         this.returnHome = this.returnHome.bind(this);
     }
 
-    frequencySelectChange(event) {
-        this.setState({frequency: event.target.value});
+    static get propTypes() {
+        return {
+            returnHome: PropTypes.func.isRequired,
+        };
+    }
 
-        if (event.target.value == FreqEnum.CUSTOM) {
-            alert("TODO: open custom choice menu");
+    frequencySelectChange(event) {
+        this.setState({ frequency: event.target.value });
+
+        if (event.target.value === Frequency.freqEnum.CUSTOM) {
+            alert('TODO: open custom choice menu');
         }
     }
 
@@ -73,14 +87,14 @@ class SettingsForm extends React.Component {
 
     handleStartDateChange(time) {
         this.setState({
-            eventStart: time
-        })
+            eventStart: time,
+        });
     }
 
     handleEndDateChange(time) {
         this.setState({
-            eventEnd: time
-        })
+            eventEnd: time,
+        });
     }
 
     handleSubmit(event) {
@@ -99,52 +113,97 @@ class SettingsForm extends React.Component {
         event.preventDefault();
     }
 
-    returnHome(event) {
-        alert("TODO: return to home screen")
-    }
-
     render() {
+        const {
+            returnHome,
+        } = this.props;
+
+        const {
+            title,
+            snapToGrid,
+            location,
+            notifications,
+            notificationTime,
+            minBreak,
+            minTime,
+            maxTime,
+            language,
+            duration,
+            timeBeforeDue,
+            timeToComplete,
+        } = this.state;
+
         return (
-            <InputForm onSubmit={this.handleSubmit} onBack={this.returnHome} title={this.state.title}>
+            <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <SettingsSection title="Home Screen">
                     <NumberInput
                         name="snapToGrid"
-                        value={this.state.snapToGrid}
+                        value={snapToGrid}
                         description="Snap to Grid"
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>Length of time to be used when moving events on the Calendar</div>
+                        <div>
+                            Length of time to be used when moving events on the Calendar
+                        </div>
                     </NumberInput>
                 </SettingsSection>
 
                 <SettingsSection title="Auto-Scheduler">
                     <NumberInput
                         name="minBreak"
-                        value={this.state.minBreak}
+                        value={minBreak}
                         description="Min Break Time"
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>Minimum period of time between events created by the Auto-Scheduler.</div>
+                        <div>
+                            Minimum period of time between events created by the Auto-Scheduler.
+                        </div>
                     </NumberInput>
                     <NumberInput
                         name="minTime"
-                        value={this.state.minTime}
+                        value={minTime}
                         description="Min Event Time"
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>Minimum time of an event created by the Auto-Scheduler.</div>
+                        <div>
+                            Minimum time of an event created by the Auto-Scheduler.
+                        </div>
                     </NumberInput>
                     <NumberInput
                         name="maxTime"
-                        value={this.state.maxTime}
+                        value={maxTime}
                         description="Max Event Time"
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>Maximum time of an event created by the Auto-Scheduler.</div>
+                        <div>
+                            Maximum time of an event created by the Auto-Scheduler.
+                        </div>
+                    </NumberInput>
+                    <NumberInput
+                        name="timeBeforeDue"
+                        value={timeBeforeDue}
+                        description="Time Before Due"
+                        onChange={this.handleInputChange}
+                    >
+                        in Hours
+                        <div>
+                            Default amount of time before a task is due when using Auto-Scheduler
+                        </div>
+                    </NumberInput>
+                    <NumberInput
+                        name="timeToComplete"
+                        value={timeToComplete}
+                        description="Time to Complete"
+                        onChange={this.handleInputChange}
+                    >
+                        in Hours
+                        <div>
+                            Default total work time to complete a task used by the Auto-Scheduler
+                        </div>
                     </NumberInput>
                 </SettingsSection>
 
@@ -152,7 +211,7 @@ class SettingsForm extends React.Component {
                     <SelectInput
                         prompt="Default Language"
                         name="language"
-                        value={this.state.language}
+                        value={language}
                         onChange={this.handleInputChange}
                     >
                         <option value="English">English</option>
@@ -162,17 +221,17 @@ class SettingsForm extends React.Component {
                 <SettingsSection title="Events">
                     <NotificationSelect
                         name="notifications"
-                        value={this.state.notifications}
+                        value={notifications}
                         onChange={this.handleInputChange}
                     />
                     <NotificationTime
                         name="notificationTime"
-                        value={this.state.notificationTime}
+                        value={notificationTime}
                         onChange={this.handleInputChange}
                     />
                     <NumberInput
                         name="duration"
-                        value={this.state.duration}
+                        value={duration}
                         description="Event Duration"
                         onChange={this.handleInputChange}
                     >
@@ -181,13 +240,13 @@ class SettingsForm extends React.Component {
                     </NumberInput>
                     <LocationInput
                         name="location"
-                        value={this.state.location}
+                        value={location}
                         onChange={this.handleInputChange}
                     />
                 </SettingsSection>
             </InputForm>
-        )
+        );
     }
 }
 
-export default SettingsForm
+export default SettingsForm;

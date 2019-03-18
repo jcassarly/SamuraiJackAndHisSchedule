@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
@@ -7,6 +7,6 @@ module.exports = merge(common, {
     devtool: 'source-map',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'build')
+        path: path.resolve(__dirname, 'build'),
     },
 });

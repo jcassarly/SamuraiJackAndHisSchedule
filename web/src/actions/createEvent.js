@@ -5,8 +5,8 @@ function createEvent(event) {
         type: CREATE_EVENT,
         payload: {
             event,
-        }
-    }
+        },
+    };
 }
 
 export default createEvent;
