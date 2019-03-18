@@ -118,8 +118,19 @@ class BinaryTimeRangeHeap {
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) {
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
     // eslint-disable-next-line prefer-const
-    let validTimes = [workRange];
-                                                                                                                // TODO: split initial work Range into work times per day based on workHoursStart and workHoursFin
+    let validTimes = [];                     
+
+    // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
+    let dailyStart = deadline.startWorkTime.hour(workHoursStart.hour().minute(workHoursStart.minute()));
+    let start = moment.max(deadline.startWorkTime, dailyStart);
+    let dailyEnd = deadline.startWorkTime.hour(workHoursFin.hour()).minute(workHoursFin.minute());
+    const finalEnd = moment.min(deadline.deadline, deadline.deadline.hour(workHoursFin.hour()).minute(workHoursFin.minute()));
+    while (dailyEnd.isBefore(finalEnd)) {
+        validTimes.push(new TimeRange(start, dailyEnd));
+        start = dailyStart.add(1, 'days');
+        dailyEnd.add(1, 'days');
+    }
+    validTimes.push(new TimeRange(start, finalEnd));
 
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
@@ -127,10 +138,8 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) {
     for (let j = 0; j < oldSchedule.length; j += 1) {
         const event = oldSchedule[j];
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
-
             /* Check if the event overlaps with a currently valid time range */
                                                                                                                 // TODO: Find a more efficient method to do this.
-            // let overlap = false;
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
                     const prevEnd = validTimes[i].end;
