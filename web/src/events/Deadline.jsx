@@ -1,3 +1,4 @@
+/* disable-eslint */
 //the class for handling deadlines
 class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime, minBreak, startWorkTime, location) {

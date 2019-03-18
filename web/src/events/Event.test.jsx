@@ -1,3 +1,5 @@
+/* disable-eslint */
+
 import Event from './Event';
 import Frequency from './Frequency';
 import Notifications from './Notifications';

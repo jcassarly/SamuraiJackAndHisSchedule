@@ -1,9 +1,11 @@
+/* disable-eslint */
+
 // Notifications Class, stores the time at which the notification should be issued and 
 // the type of notification.
 
 
 class Notifications {
-    
+
     static noteEnum = {
         EMAIL: 'email',
         TEXT: 'text',

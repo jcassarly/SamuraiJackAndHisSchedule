@@ -1,3 +1,5 @@
+/* disable-eslint */
+
 // Class for Frequency
 class Frequency {
     static freqEnum = {
