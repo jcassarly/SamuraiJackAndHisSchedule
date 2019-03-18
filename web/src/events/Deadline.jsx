@@ -5,7 +5,7 @@ class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime,
         minBreak, startWorkTime, location) {
         this.name = name;
-        this.createdEvents = [];
+        this._createdEvents = [];
         this._deadline = deadline;
         this._startWorkTime = startWorkTime;
 
