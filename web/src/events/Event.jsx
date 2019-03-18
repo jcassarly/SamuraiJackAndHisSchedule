@@ -1,14 +1,19 @@
 /* disable-eslint */
+// ADD overlap function
 import Frequency from './Frequency';
 import Notifications from './Notifications';
+
+const moment = require('moment');
+
+moment().format();
 
 // Class for events
 class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this.name = name;
         this.description = description;
-        this._startTime = startTime;
-        this._endTime = endTime;
+        this.startTime = startTime.clone();
+        this.endTime = endTime.clone();
         this.location = location;
         this.locked = locked;
         this.notifications = notifications;
@@ -57,15 +62,15 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
-        if (Date.parse(value).getTime() > this._endTime.getTime()) {
+        if (moment(value).valueOf() > moment(this._endTime).valueOf()) {
             throw new Error('Start time after end time');
         }
-        this._startTime = Date.parse(value);
+        this._startTime = value;
     }
 
     // this takes a String as input
     set endTime(value) {
-        if (Date.parse(value).getTime() < this._startTime.getTime()) {
+        if (moment(value).valueOf() < moment(this._startTime).valueOf()) {
             throw new Error('End time before start time');
         }
         this._endTime = Date.parse(value);
@@ -92,8 +97,25 @@ class Event {
     }
 
     removeNotification(notification) {
-        let toRemove = this._notifications.findIndex(item => item.equals(notification));
+        const toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
+    }
+
+    static overlap(event1, event2) {
+        if (event1.startTime.valueOf() > event2.startTime.valueOf()
+        && event1.startTime.valueOf() < event2.endTime.valueOf()) {
+            return true;
+        } if (event2.startTime.valueOf() > event1.startTime.valueOf()
+        && event2.startTime.valueOf() < event1.endTime.valueOf()) {
+            return true;
+        } if (event1.endTime.valueOf() > event2.startTime.valueOf()
+        && event1.endTime.valueOf() < event2.endTime.valueOf()) {
+            return true;
+        } if (event2.endTime.valueOf() > event1.startTime.valueOf()
+        && event2.endTime.valueOf() < event1.endTime.valueOf()) {
+            return true;
+        }
+        return false;
     }
 }
 
