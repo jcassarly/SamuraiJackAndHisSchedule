@@ -22,9 +22,7 @@ test('changes name', () => {
     const input = getByPlaceholderText('Event Name');
     expect(input.value).toEqual('');
 
-    input.value = 'test';
-
-    fireEvent.change(input);
+    fireEvent.input(input, { target: { value: 'test' } });
 
     expect(input.value).toEqual('test');
 });
@@ -37,27 +35,46 @@ test('changes description', () => {
     const input = getByPlaceholderText('Event Description');
     expect(input.value).toEqual('');
 
-    input.value = 'test';
-
-    fireEvent.change(input);
+    fireEvent.change(input, { target: { value: 'test' } });
 
     expect(input.value).toEqual('test');
 });
 
-test('changes start date correctly', () => {
-    const { getByPlaceholderText } = render(
+test('changes start date to first of month correctly', () => {
+    const { getByPlaceholderText, getByText } = render(
         <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
-    const input = getByPlaceholderText('Event Start Time');
+    // find the start date and set it to be the first day of
+    // the month at the current time
+    const startDateInput = getByPlaceholderText('Event Start Time');
 
-    const date = moment();
-    input.start = date;
+    const firstDayOfMonth = getByText('1');
 
-    fireEvent.change(input);
+    fireEvent.click(firstDayOfMonth);
 
-    expect(input.start).toEqual(date);
+    const startDate = moment().date(1);
+
+    expect(startDateInput.value).toEqual(startDate.format('L LT'));
 });
+
+test('changes end date to third of month plus 1 hour from current time correctly', () => {
+    const { getByPlaceholderText, getByText, getAllByText } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
+    );
+
+    // find the end date and set it to be the third date of
+    // the month at the current time plus an hour
+    const endDateInput = getByPlaceholderText('Event End Time');
+
+    const thirdDayOfMonth = getAllByText('3')[2]; // third is the first in endDateInput
+
+    fireEvent.click(thirdDayOfMonth);
+
+    const endDate = moment().date(1).add(2, 'day').add(1, 'hour');
+
+    expect(endDateInput.value).toEqual(endDate.format('L LT'));
+})
 
 test('changes location correctly', () => {
     const { getByPlaceholderText } = render(
@@ -67,9 +84,7 @@ test('changes location correctly', () => {
     const input = getByPlaceholderText('Event Location');
     expect(input.value).toEqual('');
 
-    input.value = 'test';
-
-    fireEvent.change(input);
+    fireEvent.change(input, { target: { value: 'test' } });
 
     expect(input.value).toEqual('test');
 });
@@ -82,9 +97,7 @@ test('changes frequency to weekly correctly', () => {
     const input = getByText('Event Frequency:').children.frequency;
     expect(input.value).toEqual('');
 
-    input.value = Frequency.freqEnum.WEEKLY;
-
-    fireEvent.change(input);
+    fireEvent.change(input, { target: { value: Frequency.freqEnum.WEEKLY } });
 
     expect(input.value).toEqual(Frequency.freqEnum.WEEKLY);
 });
@@ -97,9 +110,7 @@ test('changes notifications to email correctly', () => {
     const input = getByText('Notification Type:').children.notifications;
     expect(input.value).toEqual('');
 
-    input.value = Notifications.noteEnum.EMAIL;
-
-    fireEvent.change(input);
+    fireEvent.change(input, { target: { value: Notifications.noteEnum.EMAIL } });
 
     expect(input.value).toEqual(Notifications.noteEnum.EMAIL);
 });
@@ -114,7 +125,7 @@ test('changes notification time correctly', () => {
 
     input.value = 123;
 
-    fireEvent.change(input);
+    fireEvent.change(input, { target: { value: 123 } });
 
     expect(input.value).toEqual('123');
 });

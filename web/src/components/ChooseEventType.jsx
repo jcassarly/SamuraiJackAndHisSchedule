@@ -106,3 +106,4 @@ class ChooseEventTypeForm extends React.Component {
 }
 
 export default ChooseEventTypeForm;
+export { EventEnum };

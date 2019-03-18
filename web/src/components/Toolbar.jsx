@@ -7,7 +7,7 @@ class Toolbar extends Component {
         const { navNewEvent } = this.props;
         return (
             <div className="toolbar">
-               <button onClick={navNewEvent}>New Event</button>
+                <button onClick={navNewEvent}>New Event</button>
             </div>
         );
     }
