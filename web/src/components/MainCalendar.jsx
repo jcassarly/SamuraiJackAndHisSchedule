@@ -18,9 +18,10 @@ class MainCalendar extends Component {
 
     types = ['month', 'week', 'day'];
 
-    /* static propTypes = {
-        events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
-    }; */
+    static propTypes = {
+        events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
+        navNewEvent: PropTypes.func.isRequired,
+    };
 
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -58,7 +59,8 @@ class MainCalendar extends Component {
     render() {
         const { date, pos, type } = this.state;
         const { navNewEvent } = this.props;
-        const events = Object.values(this.props.events);
+        let { events } = this.props;
+        events = Object.values(events);
         let calElem;
 
         switch (type) {

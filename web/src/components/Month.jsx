@@ -11,10 +11,8 @@ function createDayList(date, events) {
     const currDate = date.clone().startOf('month').subtract(6, 'weeks').startOf('week');
     const dates = [];
     for (let i = 0; i < 3 * 6 * 7; i += 1) {
-        const currEvents = events.filter(event => (
-            moment(event.startTime).isBetween(currDate, currDate.clone().endOf('day'))
-            || moment(event.endTime).isBetween(currDate, currDate.clone().endOf('day'))
-        ));
+        const day = new Event(null, null, currDate, currDate.clone().endOf('day'));
+        const currEvents = events.filter(event => Event.overlap(day, event));
         dates.push(<MonthCell
             key={currDate.toDate()}
             date={currDate.date()}

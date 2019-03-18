@@ -379,21 +379,29 @@ function LockEventInput(props) {
         name,
         checked,
         onChange,
+        hide,
     } = props;
-    return (
-        <CheckboxInput
-            name={name}
-            checked={checked}
-            description="Lock Event"
-            onChange={onChange}
-        />
-    );
+
+    let retval = null;
+    if (hide === false) {
+        retval = (
+            <CheckboxInput
+                name={name}
+                checked={checked}
+                description="Lock Event"
+                onChange={onChange}
+            />
+        );
+    }
+
+    return retval;
 }
 
 LockEventInput.propTypes = {
     name: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
+    hide: PropTypes.bool.isRequired,
 };
 
 function UseLocationInput(props) {

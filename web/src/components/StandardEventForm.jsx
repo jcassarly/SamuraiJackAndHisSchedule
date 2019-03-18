@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import {
     NameInput,
@@ -33,6 +33,7 @@ class StandardEventForm extends React.Component {
             notifications: '',
             notificationTime: 0,
             locked: true,
+            error: false,
         };
 
         this.frequencySelectChange = this.frequencySelectChange.bind(this);
@@ -105,48 +106,58 @@ class StandardEventForm extends React.Component {
         } = this.props;
 
         let evt = null;
-        if (frequency === '') {
-            evt = new Event(
-                name,
-                description,
-                eventStart,
-                eventEnd,
-                location,
-                locked,
-                notifications, // TODO: use notification object here instead
-                null,
-            );
-        } else {
-            evt = new RecurringEvent(
-                name,
-                description,
-                eventStart,
-                eventEnd,
-                location,
-                locked,
-                notifications,
-                frequency,
-                null,
-            ); // TODO: handle custom frequency
+        try {
+            if (frequency === '') {
+                evt = new Event(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications, // TODO: use notification object here instead
+                    null,
+                );
+            } else {
+                evt = new RecurringEvent(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications,
+                    frequency,
+                    null,
+                ); // TODO: handle custom frequency
+            }
+
+            // uncomment for debugging
+            /* alert(`
+                Adding a new standard event with the following info:
+                Name:              ${evt.name}
+                Description:       ${evt.description}
+                Start Time:        ${evt.startTime}
+                End Time:          ${evt.endTime}
+                Location:          ${evt.location}
+                Frequency:         ${evt.frequency}
+                Notifications:     ${evt.notifications}
+                Locked:            ${evt.locked}
+            `); */
+
+
+            // eslint-disable-next-line react/destructuring-assignment
+            this.props.createEvent(evt);
+            returnHome();
+        } catch (e) {
+            /* alert(`
+                The values entered for the dates are invalid.
+                ${e.message}
+            `); */
+            this.setState({
+                error: true,
+            });
         }
-
-        // uncomment for debugging
-        /* alert(`
-            Adding a new standard event with the following info:
-            Name:              ${evt.name}
-            Description:       ${evt.description}
-            Start Time:        ${evt.startTime}
-            End Time:          ${evt.endTime}
-            Location:          ${evt.location}
-            Frequency:         ${evt.frequency}
-            Notifications:     ${evt.notifications}
-            Locked:            ${evt.locked}
-        `); */
-
-
-        // eslint-disable-next-line react/destructuring-assignment
-        this.props.createEvent(evt);
-        returnHome();
     }
 
     render() {
@@ -166,8 +177,8 @@ class StandardEventForm extends React.Component {
             notifications,
             notificationTime,
             locked,
+            error,
         } = this.state;
-
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <NameInput
@@ -180,6 +191,11 @@ class StandardEventForm extends React.Component {
                     value={description}
                     onChange={this.handleInputChange}
                 />
+                {error && (
+                    <div className="errorMessage">
+                        <div>Please enter a valid date combination</div>
+                    </div>
+                )}
                 <StartEndInput
                     start={eventStart}
                     end={eventEnd}
@@ -209,13 +225,14 @@ class StandardEventForm extends React.Component {
                     value={notificationTime}
                     onChange={this.handleInputChange}
                 />
-                {!hideLock && (
-                    <LockEventInput
-                        name="locked"
-                        checked={locked}
-                        onChange={this.handleInputChange}
-                    />
-                )}
+
+                <LockEventInput
+                    name="locked"
+                    checked={locked}
+                    onChange={this.handleInputChange}
+                    hide={hideLock}
+                />
+
             </InputForm>
         );
     }

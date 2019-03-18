@@ -2,23 +2,31 @@
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 moment().format();
+
+function verifyTimes(start, end) {
+    if (!(start instanceof moment)) {
+        throw new Error('Invalid Start Time');
+    } else if (!(end instanceof moment)) {
+        throw new Error('Invalid End Time');
+    } else if (start.isAfter(end)) {
+        throw new Error('Start time after end time');
+    }
+}
 
 // Class for events
 class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this.name = name;
         this.description = description;
-        if (startTime === null) {
-            throw new Error('Null start time is invalid');
-        }
-        this.startTime = startTime.clone();
-        if (endTime === null) {
-            throw new Error('Null end time is invalid');
-        }
-        this.endTime = endTime.clone();
+
+        this._startTime = startTime.clone();
+        this._endTime = endTime.clone();
+
+        verifyTimes(this._startTime, this._endTime);
+
         this.location = location;
         this.locked = locked;
         this.notifications = notifications;
@@ -67,24 +75,14 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
-        if (value === null) {
-            throw new Error('Null start time is invalid');
-        }
-        if (moment(value).isAfter(moment(this._endTime))) {
-            throw new Error('Start time after end time');
-        }
+        verifyTimes(value, this._endTime);
         this._startTime = value;
     }
 
     // this takes a String as input
     set endTime(value) {
-        if (value === null) {
-            throw new Error('Null end time is invalid');
-        }
-        if (moment(value).isBefore(moment(this._startTime))) {
-            throw new Error('End time before start time');
-        }
-        this._endTime = Date.parse(value);
+        verifyTimes(this._startTime, value);
+        this._endTime = value;
     }
 
     set location(value) {
@@ -133,7 +131,7 @@ class Event {
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
     constructor(name, description, startTime, endTime, notifications) {
-        super(name, description, startTime, endTime, name, false, notifications, null);
+        super(name, description, startTime, endTime, name, true, notifications, null);
     }
 }
 
@@ -154,4 +152,9 @@ class RecurringEvent extends Event {
     }
 }
 
-export { Event, LocationEvent, RecurringEvent };
+export {
+    Event,
+    LocationEvent,
+    RecurringEvent,
+    verifyTimes,
+};

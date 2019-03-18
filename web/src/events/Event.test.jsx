@@ -1,8 +1,6 @@
 /* disable-eslint */
 
-import Event from './Event';
-import Frequency from './Frequency';
-import Notifications from './Notifications';
+import { Event } from './Event';
 
 test('name works', () => {
     const event = new Event('test');

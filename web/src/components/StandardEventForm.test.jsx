@@ -2,7 +2,11 @@
 
 import React from 'react';
 import moment from 'moment';
-import { render, fireEvent, cleanup, getBySelectText } from 'react-testing-library';
+import {
+    render,
+    fireEvent,
+    cleanup,
+} from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import StandardEventForm from './StandardEventForm';
@@ -59,7 +63,7 @@ test('changes start date to first of month correctly', () => {
 });
 
 test('changes end date to third of month plus 1 hour from current time correctly', () => {
-    const { getByPlaceholderText, getByText, getAllByText } = render(
+    const { getByPlaceholderText, getAllByText } = render(
         <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
@@ -74,7 +78,49 @@ test('changes end date to third of month plus 1 hour from current time correctly
     const endDate = moment().date(1).add(2, 'day').add(1, 'hour');
 
     expect(endDateInput.value).toEqual(endDate.format('L LT'));
-})
+});
+
+test('changing start date to after end date pulls up error message', () => {
+    const {
+        getByPlaceholderText, getByText, getAllByText,
+    } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
+    );
+
+    // find the start date and set it to be the third day of
+    // the month at the current time
+    const startDateInput = getByPlaceholderText('Event Start Time');
+
+    const thirdDayOfMonth = getByText('3');
+
+    fireEvent.click(thirdDayOfMonth);
+
+    const startDate = moment().date(1).add(2, 'day');
+
+    expect(startDateInput.value).toEqual(startDate.format('L LT'));
+
+    // find the end date and set it to be the first date of
+    // the month at the current time plus an hour
+    const endDateInput = getByPlaceholderText('Event End Time');
+
+    const firstDayOfMonth = getAllByText('1')[2]; // third is the first in endDateInput
+
+    fireEvent.click(firstDayOfMonth);
+
+    const endDate = moment().date(1).add(1, 'hour');
+
+    expect(endDateInput.value).toEqual(endDate.format('L LT'));
+
+    // submit the event
+    const submitEvent = getByText('Submit');
+
+    fireEvent.click(submitEvent);
+
+    // check that the error message appeared
+    const errorDiv = getByText('Please enter a valid date combination');
+
+    expect(errorDiv).toBeDefined();
+});
 
 test('changes location correctly', () => {
     const { getByPlaceholderText } = render(
