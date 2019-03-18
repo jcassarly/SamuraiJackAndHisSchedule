@@ -12,8 +12,14 @@ class Event {
     constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
         this.name = name;
         this.description = description;
-        this.startTime = startTime.clone();
-        this.endTime = endTime.clone();
+
+        this._startTime = startTime.clone();
+        this._endTime = endTime.clone();
+
+        if (this._startTime.isAfter(this._endTime)) {
+            throw new Error('Start time after end time');
+        }
+
         this.location = location;
         this.locked = locked;
         this.notifications = notifications;
@@ -62,7 +68,7 @@ class Event {
 
     // this takes a String as input
     set startTime(value) {
-        if (moment(value).valueOf() > moment(this._endTime).valueOf()) {
+        if (this._endTime !== null && value.isAfter(this._endTime)) {
             throw new Error('Start time after end time');
         }
         this._startTime = value;
@@ -70,10 +76,10 @@ class Event {
 
     // this takes a String as input
     set endTime(value) {
-        if (moment(value).valueOf() < moment(this._startTime).valueOf()) {
+        if (this._startTime !== null && value.isBefore(this._startTime)) {
             throw new Error('End time before start time');
         }
-        this._endTime = Date.parse(value);
+        this._endTime = value;
     }
 
     set location(value) {
