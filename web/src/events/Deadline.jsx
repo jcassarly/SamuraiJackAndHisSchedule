@@ -1,5 +1,6 @@
-/* disable-eslint */
 // the class for handling deadlines
+const moment = require('moment');
+
 class Deadline {
     constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime,
         minBreak, startWorkTime, location) {
@@ -55,7 +56,13 @@ class Deadline {
     }
 
     set deadline(value) {
-        this._deadline = value;
+        if (value === null) {
+            throw new Error('Null start time is invalid');
+        }
+        if (moment(value).isBefore(moment(this._startWorkTime))) {
+            throw new Error('Cannot begin work after deadline');
+        }
+        this._startWorkTime = value;
     }
 
     set totalWorkTime(value) {
@@ -75,6 +82,12 @@ class Deadline {
     }
 
     set startWorkTime(value) {
+        if (value === null) {
+            throw new Error('Null start time is invalid');
+        }
+        if (moment(value).isAfter(moment(this._deadline))) {
+            throw new Error('Cannot begin work after deadline');
+        }
         this._startWorkTime = value;
     }
 
