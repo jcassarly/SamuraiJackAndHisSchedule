@@ -19,13 +19,9 @@ class MainCalendar extends Component {
     types = ['month', 'week', 'day'];
 
     static propTypes = {
-        events: PropTypes.objectOf(PropTypes.instanceOf(Event)),
+        events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
     };
-
-    static defaultProps = {
-        events: {},
-    }
 
     state = {
         date: moment().tz(moment.tz.guess()),

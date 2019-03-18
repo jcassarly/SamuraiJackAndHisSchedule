@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
+import { Event } from '../events/Event';
 import '../styles/Day.css';
 
 class Day extends Component {
@@ -31,10 +32,8 @@ class Day extends Component {
         const { day, events } = this.props;
         const dayStart = day.clone().startOf('day');
         const dayEnd = day.clone().endOf('day');
-        const currEvents = events.filter(event => (
-            moment(event.startTime).isBetween(dayStart, dayEnd)
-            || moment(event.endTime).isBetween(dayStart, dayEnd)
-        ));
+        const dayEv = new Event(null, null, dayStart, dayEnd);
+        const currEvents = events.filter(event => Event.overlap(dayEv, event));
         return (
             <div className="calDay">
                 <div className="dayEvents">
