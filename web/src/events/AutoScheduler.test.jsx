@@ -65,11 +65,10 @@ function compareRanges(array1, array2) {
 //     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 // });
 
-test('Valid Range Split', () => {
+test('Create Events Empty Schedule', () => {
     const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes([], deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     console.log(validTimes.map(displayRange));
-    console.log(correctTimes.map(displayRange));
     //expect(compareRanges(validTimes, correctTimes)).toBe(true);
     let newSchedule = createEvents([], deadline, validTimes);
     newSchedule.map((event) => {

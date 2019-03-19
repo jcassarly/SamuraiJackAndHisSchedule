@@ -222,7 +222,10 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             console.log('B');
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
-            if (duration > deadline.maxEventTime) {
+
+            if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
+                duration = remainingTime;
+            } else if (duration > deadline.maxEventTime) {
                 console.log('C');
                 duration = deadline.maxEventTime;
                 validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
@@ -236,7 +239,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
-            if (remainingTime > 0 && remainingTime < deadline.minEventTime) {
+            if (remainingTime !== 0 && remainingTime < deadline.minEventTime) {
                 console.log('E');
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
