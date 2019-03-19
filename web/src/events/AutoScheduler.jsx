@@ -119,35 +119,46 @@ class BinaryTimeRangeHeap {
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
     // eslint-disable-next-line prefer-const
-    let validTimes = [workRange];
-    //                                                                                                        TODO: split initial work Range into work times per day based on workHoursStart and workHoursFin
+    let validTimes = [];                     
+
+    // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
+    let dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+    let start = moment(moment.max(deadline.startWorkTime, dailyStart));
+    let dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
+    const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
+    while (dailyEnd.isBefore(finalEnd)) {
+        validTimes.push(new TimeRange(moment(start), moment(dailyEnd)));
+        start = dailyStart.add(1, 'days');
+        dailyEnd.add(1, 'days');
+    }
+    validTimes.push(new TimeRange(start, finalEnd));
 
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
-    //                                                                                                        TODO: Account for non-chronological and overlapping events
+    //                                                                                                    TODO: Account for non-chronological and overlapping events
     for (let j = 0; j < oldSchedule.length; j += 1) {
         const event = oldSchedule[j];
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
-            //                                                                                                TODO: Find a more efficient method to do this.
-            // let overlap = false;
+                                                                                                                // TODO: Find a more efficient method to do this.
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
-                    const prevEnd = validTimes[i].end;
+                    const prevEnd = moment(validTimes[i].end);
 
                     let validBefore = true;
-                    const newEnd = event.startTime.subtract(deadline.minBreak, 'minutes');
+                    const newEnd = moment(event.startTime).subtract(deadline.minBreak, 'minutes');
                     if (validTimes[i].start.isBefore(newEnd)) { // If there is a valid period before the event
-                        validTimes[i].end = newEnd; // Change the valid time range's end to before the start of the event and a break
+                        validTimes[i].end = moment(newEnd); // Change the valid time range's end to before the start of the event and a break
                     } else {
                         validBefore = false; // Else there is no valid time range before the event
                     }
 
                     let validAfter = true;
-                    const newStart = event.endTime.add(deadline.minBreak, 'minutes');
-                    if (validTimes[i].end.isAfter(newStart)) { // If there is a valid period after the event
+                    const newStart = moment(event.endTime).add(deadline.minBreak, 'minutes');
+                    
+                    if (prevEnd.isAfter(newStart)) { // If there is a valid period after the event
                         if (validBefore) { // If there was a valid period before, insert a new time period afer the event
-                            validTimes.splice(i + 1, 0, new TimeRange(newStart, prevEnd));
+                            validTimes.splice(i + 1, 0, new TimeRange(moment(newStart), moment(prevEnd)));
                         } else { // If there was not a valid period before, replace the current time period with the period after the event.
                             validTimes[i].start = newStart;
                         }
@@ -159,9 +170,9 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                         validTimes.splice(i, 1);
                     }
                 } else if (validTimes[i].inRange(event.startTime)) { //          Event's start is contained within valid time range, but end is not
-                    validTimes[i].end = event.startTime.subtract(deadline.minBreak, 'minutes'); //     Change the valid time range's end to before the start of the event and a break
+                    validTimes[i].end = moment(event.startTime).subtract(deadline.minBreak, 'minutes'); //     Change the valid time range's end to before the start of the event and a break
                 } else if (validTimes[i].inRange(event.endTime)) { //            Event's end is contained within valid time range, but start is not
-                    validTimes[i].start = event.endTime.add(deadline.minBreak, 'minutes'); //     Change the valid time range's start to the end of the event and a break
+                    validTimes[i].start = moment(event.endTime).add(deadline.minBreak, 'minutes'); //     Change the valid time range's start to the end of the event and a break
                 }
             }
         }
@@ -195,34 +206,50 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
 
-    while (validTimes.length > 0) {
+    while (validTimes.length > 0 && remainingTime > 0) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
+        console.log(`validTimes.length: ${validTimes.length}`);
+        console.log(`remainingTime: ${remainingTime}`);
+        console.log(`duration: ${duration}`);
+        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+
+        console.log('A');
+
         //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
-        if (duration > deadline.minEventTime) { // Time range is not too short
+        if (duration >= deadline.minEventTime) { // Time range is not too short
+            console.log('B');
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
             if (duration > deadline.maxEventTime) {
+                console.log('C');
                 duration = deadline.maxEventTime;
-                remainingTime -= deadline.maxEventTime;
-                validTimes.push(new TimeRange(range.start.add(deadline.maxEventTime + deadline.minBreak, 'minutes'), range.end));
+                validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
+            console.log('D');
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
 
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
-            if (remainingTime < deadline.minEventTime) {
+            if (remainingTime > 0 && remainingTime < deadline.minEventTime) {
+                console.log('E');
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
             }
 
-            newSchedule.push(new Event(deadline.name, deadline.description, range.start,
-                range.start.add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent));
+            console.log('F');
+            console.log(`new remainingTime: ${remainingTime}`);
+            console.log(`new duration: ${duration}`);
+            let debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
+                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent);
+            console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
+            console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
+            newSchedule.push(debugEvent);
         }
     }
     return newSchedule;
@@ -250,3 +277,6 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
 }
 
 export default autoSchedule;
+export { getValidTimes };
+export { createEvents };
+export { TimeRange };
