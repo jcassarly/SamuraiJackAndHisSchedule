@@ -103,21 +103,6 @@ class DeadlineForm extends React.Component {
                 // TODO: add uselocation to deadline
             );
 
-            // eslint-disable-next-line no-alert
-            alert(`
-                Adding a new standard event with the following info:
-                Name:              ${deadline.name}
-                Description:       TODO
-                Task Start:        ${deadline.startWorkTime}
-                Task Deadline:     ${deadline.deadline}
-                Location:          ${deadline.location}
-                Use Location:      TODO
-                Min Time:          ${deadline.minEventTime}
-                Max Time:          ${deadline.maxEventTime}
-                Min Break Time:    ${deadline.minBreak}
-                Total Time:        ${deadline.totalWorkTime}
-            `);
-
             // add the deadline event to the calendar
             // eslint-disable-next-line react/destructuring-assignment
             this.props.createDeadlineEvent(deadline);
