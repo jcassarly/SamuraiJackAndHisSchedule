@@ -236,7 +236,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
-            if (remainingTime < deadline.minEventTime) {
+            if (remainingTime > 0 && remainingTime < deadline.minEventTime) {
                 console.log('E');
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
