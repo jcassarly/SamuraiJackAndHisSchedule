@@ -32,7 +32,7 @@ function compareRanges(array1, array2) {
 }
 
 test('Valid Daily Work Times', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes([], deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     const correctTimes = [ 
         new TimeRange(moment('03/24/2019 11:00:00'), moment('03/24/2019 17:00:00')),
@@ -48,7 +48,7 @@ test('Valid Daily Work Times', () => {
 });
 
 test('Valid Range Split', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes(Object.values(initialEvents), deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     const correctTimes = [ 
         new TimeRange(moment('03/24/2019 11:00:00'), moment('03/24/2019 17:00:00')),
@@ -66,7 +66,7 @@ test('Valid Range Split', () => {
 });
 
 test('Valid Range Split', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes([], deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     console.log(validTimes.map(displayRange));
     console.log(correctTimes.map(displayRange));
