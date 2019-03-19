@@ -122,12 +122,12 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     let validTimes = [];                     
 
     // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
-    let dailyStart = deadline.startWorkTime.hour(workHoursStart.hour().minute(workHoursStart.minute()));
-    let start = moment.max(deadline.startWorkTime, dailyStart);
-    let dailyEnd = deadline.startWorkTime.hour(workHoursFin.hour()).minute(workHoursFin.minute());
-    const finalEnd = moment.min(deadline.deadline, deadline.deadline.hour(workHoursFin.hour()).minute(workHoursFin.minute()));
+    let dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+    let start = moment(moment.max(deadline.startWorkTime, dailyStart));
+    let dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
+    const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
     while (dailyEnd.isBefore(finalEnd)) {
-        validTimes.push(new TimeRange(start, dailyEnd));
+        validTimes.push(new TimeRange(moment(start), moment(dailyEnd)));
         start = dailyStart.add(1, 'days');
         dailyEnd.add(1, 'days');
     }
@@ -260,3 +260,6 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
 }
 
 export default autoSchedule;
+export { getValidTimes };
+export { createEvents };
+export { TimeRange };
