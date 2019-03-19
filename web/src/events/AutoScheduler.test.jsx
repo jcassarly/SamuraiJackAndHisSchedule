@@ -5,7 +5,12 @@ import { getValidTimes, createEvents, TimeRange } from './AutoScheduler';
 import moment from 'moment-timezone';
 
 const initialEvents = {
-    0: new Event('test', null, moment(), moment().add(3, 'hours')),
+    0: new Event('test0', null, moment('03/27/2019 11:00:00'), moment('03/27/2019 13:00:00')),
+    1: new Event('test1', null, moment('03/28/2019 08:00:00'), moment('03/28/2019 12:00:00')),
+    2: new Event('test2', null, moment('03/29/2019 15:00:00'), moment('03/29/2019 18:00:00')),
+    3: new Event('test3', null, moment('03/30/2019 08:00:00'), moment('03/30/2019 11:00:00')),
+    4: new Event('test4', null, moment('03/30/2019 11:20:00'), moment('03/30/2019 13:00:00')),
+    5: new Event('test5', null, moment('03/30/2019 13:50:00'), moment('03/30/2019 16:00:00')),
 };
 
 function displayRange(range) {
@@ -43,3 +48,24 @@ test('Valid Daily Work Times', () => {
     console.log(correctTimes.map(displayRange));
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 });
+
+test('Valid Range Split', () => {
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    let validTimes = getValidTimes(Object.values(initialEvents), deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
+    console.log(validTimes.map(displayRange));
+    const correctTimes = [ 
+        new TimeRange(moment('03/24/2019 11:00:00'), moment('03/24/2019 17:00:00')),
+        new TimeRange(moment('03/25/2019 09:00:00'), moment('03/25/2019 17:00:00')),
+        new TimeRange(moment('03/26/2019 09:00:00'), moment('03/26/2019 17:00:00')),
+        new TimeRange(moment('03/27/2019 09:00:00'), moment('03/27/2019 10:40:00')),
+        new TimeRange(moment('03/27/2019 13:20:00'), moment('03/27/2019 17:00:00')),
+        new TimeRange(moment('03/28/2019 12:20:00'), moment('03/28/2019 17:00:00')),
+        new TimeRange(moment('03/29/2019 09:00:00'), moment('03/29/2019 14:40:00')),
+        new TimeRange(moment('03/30/2019 13:20:00'), moment('03/30/2019 13:30:00')),
+        new TimeRange(moment('03/30/2019 16:20:00'), moment('03/30/2019 17:00:00')),
+        new TimeRange(moment('03/31/2019 09:00:00'), moment('03/31/2019 13:00:00'))
+    ]
+    console.log(correctTimes.map(displayRange));
+    expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
+
