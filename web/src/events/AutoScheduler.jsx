@@ -1,5 +1,6 @@
+/* eslint max-len: 0 */
+import moment from 'moment-timezone'; // eslint-disable-line
 import Event from './Event';
-import moment from 'moment-timezone';
 
 /**
  * Represents a range of time.
@@ -104,7 +105,7 @@ class BinaryTimeRangeHeap {
 }
 
 /**
- * Returns an array of TimeRange objects for valid times when new events can be scheduled. 
+ * Returns an array of TimeRange objects for valid times when new events can be scheduled.
  * Helper Function for autoSchedule.
  * @param {*} oldSchedule     Event[] representing the current schedule.
  * @param {*} deadline        An instance of the deadline class.
@@ -115,21 +116,20 @@ class BinaryTimeRangeHeap {
  * @param {*} workHoursStart  Moment object for time of day user can work after.
  * @param {*} workHoursFin    Moment object for time of day user cannot work after.
  */
-function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) {
+function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
     // eslint-disable-next-line prefer-const
     let validTimes = [workRange];
-                                                                                                                // TODO: split initial work Range into work times per day based on workHoursStart and workHoursFin
+    //                                                                                                        TODO: split initial work Range into work times per day based on workHoursStart and workHoursFin
 
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
-                                                                                                            // TODO: Account for non-chronological and overlapping events
+    //                                                                                                        TODO: Account for non-chronological and overlapping events
     for (let j = 0; j < oldSchedule.length; j += 1) {
         const event = oldSchedule[j];
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
-
             /* Check if the event overlaps with a currently valid time range */
-                                                                                                                // TODO: Find a more efficient method to do this.
+            //                                                                                                TODO: Find a more efficient method to do this.
             // let overlap = false;
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
@@ -158,9 +158,9 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) {
                     if (!validBefore && !validAfter) { // No more valid times within this time range, remove this time range.
                         validTimes.splice(i, 1);
                     }
-                } else if (validTimes[i].inRange(event.startTime)) {          // Event's start is contained within valid time range, but end is not
+                } else if (validTimes[i].inRange(event.startTime)) { //          Event's start is contained within valid time range, but end is not
                     validTimes[i].end = event.startTime.subtract(deadline.minBreak, 'minutes'); //     Change the valid time range's end to before the start of the event and a break
-                } else if (validTimes[i].inRange(event.endTime)) {            // Event's end is contained within valid time range, but start is not
+                } else if (validTimes[i].inRange(event.endTime)) { //            Event's end is contained within valid time range, but start is not
                     validTimes[i].start = event.endTime.add(deadline.minBreak, 'minutes'); //     Change the valid time range's start to the end of the event and a break
                 }
             }
@@ -192,14 +192,14 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         return null;
     }
 
-    let newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
-    let validTimes = new BinaryTimeRangeHeap(givenValidTimes);
+    const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
+    const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
 
     while (validTimes.length > 0) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
-                                                                                                             // TODO: think about how to prevent ending up with remainingTime < minChildEventTime
+        //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
         if (duration > deadline.minEventTime) { // Time range is not too short
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
@@ -245,6 +245,8 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
  */
 function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     const oldVals = Object.values(oldSchedule);
-    let validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
+    const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
     return createEvents(oldVals, deadline, validTimes);
 }
+
+export default autoSchedule;
