@@ -197,7 +197,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
  * @param {*} givenValidTimes An array of valid time ranges for events to be scheduled in.
  */
 function createEvents(oldSchedule, deadline, givenValidTimes) {
-    let remainingTime = deadline.totalWorkTime * 60;
+    let remainingTime = deadline.totalWorkTime;
 
     if (remainingTime < deadline.minChildEventTime) {
         return null;
