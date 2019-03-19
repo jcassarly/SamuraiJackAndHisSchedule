@@ -12,17 +12,19 @@ const reducer = (state = initialState, action) => {
             newState.events[state.maxId] = action.payload.event;
             newState.maxId += 1;
             break;
-        case CREATE_DEADLINE_EVENT:
+        case CREATE_DEADLINE_EVENT: {
+            const newEvents = autoSchedule(
+                state.events,
+                action.payload.deadline,
+                moment().hour(9),
+                moment().hour(17),
+            );
             newState.events = {
-                ...autoSchedule(
-                    state.events,
-                    action.payload.deadline,
-                    moment().hour(9),
-                    moment().hour(17),
-                ),
+                ...newEvents,
             };
-            newState.maxId = newState.events.length();
+            newState.maxId = newEvents.length;
             break;
+        }
         default:
         }
     }
