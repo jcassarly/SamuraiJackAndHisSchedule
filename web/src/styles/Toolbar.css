@@ -1,0 +1,16 @@
+.toolbar {
+    background: lightgray;
+    line-height: 2em;
+}
+
+.toolbar > button {
+    background: transparent;
+    border: 2px solid #008CBA;
+    border-radius: 0.5em;
+    margin-left: 1em;
+}
+
+.toolbar > button:hover {
+    background-color: #008CBA;
+    color: white;
+}

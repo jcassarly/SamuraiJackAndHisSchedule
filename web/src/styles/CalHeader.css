@@ -1,15 +1,15 @@
-.monthHeader {
+.calHeader {
     display: grid;
     grid-template-columns: 3em 1fr 3em;
     grid-template-rows: 3em;
     line-height: 3em;
 }
 
-.monthHeader > div {
+.calHeader > button {
+    cursor: pointer;
     text-align: center;
 }
 
-.monthHeader .nav:hover {
-    cursor: pointer;
+.calHeader .nav:hover {
     background: #bdbdbd;
 }

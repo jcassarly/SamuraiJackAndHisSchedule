@@ -1,43 +1,39 @@
 import React, { Component } from 'react';
 
-import addMonths from 'date-fns/add_months';
-import subMonths from 'date-fns/sub_months';
-
 import '../styles/App.css';
 import MainCalendar from './MainCalendar';
-import MonthHeader from './MonthHeader';
+import ChooseEventType from './ChooseEventType';
 
 class App extends Component {
     state = {
-        month: new Date(),
-        pos: 0, // eslint-disable-line react/no-unused-state
-    };
-
-    onLeft = () => {
-        const { month } = this.state;
-        this.setState({ month: subMonths(month, 1) });
+        nav: 'main',
     }
 
-    onRight = () => {
-        const { month } = this.state;
-        this.setState({ month: addMonths(month, 1) });
+    navNewEvent = () => {
+        this.setState({ nav: 'createEvent' });
+    }
+
+    returnHome = () => {
+        this.setState({ nav: 'main' });
+    }
+
+    pickComp = (nav) => {
+        switch (nav) {
+        case 'createEvent':
+            return <ChooseEventType returnHome={this.returnHome} />;
+        case 'main':
+        default:
+            return <MainCalendar navNewEvent={this.navNewEvent} />;
+        }
     }
 
     render() {
-        const { month } = this.state;
+        const { nav } = this.state;
         return (
-            <div className="monthHome">
-                <MonthHeader month={month} onLeft={this.onLeft} onRight={this.onRight} />
-                <div className="calendars">
-                    <div className="calendarSlider">
-                        <MainCalendar id={month.getMonth() - 1} month={subMonths(month, 1)} />
-                        <MainCalendar id={month.getMonth()} month={month} />
-                        <MainCalendar id={month.getMonth() + 1} month={addMonths(month, 1)} />
-                    </div>
-                </div>
+            <div className="app">
+                {this.pickComp(nav)}
             </div>
         );
     }
 }
-
 export default App;
