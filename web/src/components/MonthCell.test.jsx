@@ -11,7 +11,6 @@ test('renders no-event', () => {
 
 test('renders with event', () => {
     const eventStart = moment.tz('2019-03-18T02:00:00Z', 'America/New_York');
-    console.log(eventStart.format());
     const event = new Event('test', null, eventStart.clone(), eventStart.clone().add(2, 'hours'));
     const cell = shallow(<MonthCell date={5} events={[event]} />);
     expect(cell.find('.monthDay')).toHaveText('5');
