@@ -1,5 +1,4 @@
 import { Event } from './Event';
-import Frequency from './Frequency';
 import Notifications from './Notifications';
 import Deadline from './Deadline';
 
@@ -10,6 +9,8 @@ const start = moment('2010-10-20 4:30', 'YYYY-MM-DD HH:mm');
 const end = moment('2010-10-22 10:30', 'YYYY-MM-DD HH:mm');
 const start2 = moment('2010-10-25 4:30', 'YYYY-MM-DD HH:mm');
 const end2 = moment('2010-10-28 10:30', 'YYYY-MM-DD HH:mm');
+const start3 = moment('2010-10-20 3:30', 'YYYY-MM-DD HH:mm');
+const end3 = moment('2010-10-22 9:30', 'YYYY-MM-DD HH:mm');
 const notify = new Notifications('email', 15, start);
 const notes = new Array(notify);
 const startWork = moment('2010-10-20 1:30', 'YYYY-MM-DD HH:mm');
@@ -59,7 +60,8 @@ test('parent works', () => {
 test('overlap works', () => {
     const event = new Event('test', 'desctest', start, end, 'nowhere', true, notes, deadline);
     const event2 = new Event('test', 'desctest', start2, end2, 'nowhere', true, notes, deadline);
-    expect(Event.overlap(event, event)).toBe(true);
+    const event3 = new Event('test', 'desctest', start3, end3, 'nowhere', true, notes, deadline);
+    expect(Event.overlap(event, event3)).toBe(true);
     expect(Event.overlap(event, event2)).toBe(false);
     expect(Event.overlap(event2, event)).toBe(false);
 });
