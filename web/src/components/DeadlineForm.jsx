@@ -14,6 +14,7 @@ import {
 import '../styles/StandardEventForm.css';
 import Deadline from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
+import { createDeadlineEvent } from '../actions/createEvent';
 
 class DeadlineForm extends React.Component {
     constructor(props) {
@@ -43,8 +44,7 @@ class DeadlineForm extends React.Component {
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
-            // eslint-disable-next-line react/forbid-prop-types
-            events: PropTypes.object.isRequired,
+            createDeadlineEvent: PropTypes.func.isRequired,
         };
     }
 
@@ -118,14 +118,9 @@ class DeadlineForm extends React.Component {
                 Total Time:        ${deadline.totalWorkTime}
             `);
 
+            // add the deadline event to the calendar
             // eslint-disable-next-line react/destructuring-assignment
-            Object.values(this.props.events).forEach((e) => {
-                alert(e.toString());
-            });
-
-            // call the autoscheduler to get the new calendar
-
-            // set the calendar to the new event list created by the autoscheduler
+            this.props.createDeadlineEvent(deadline);
 
             returnHome();
         } catch (e) {
@@ -229,10 +224,4 @@ class DeadlineForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => (
-    {
-        events: state.events.events,
-    }
-);
-
-export default connect(mapStateToProps)(DeadlineForm);
+export default connect(null, { createDeadlineEvent })(DeadlineForm);
