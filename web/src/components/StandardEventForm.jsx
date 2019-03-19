@@ -13,9 +13,10 @@ import {
     LockEventInput,
 } from './InputFormComponents';
 import InputForm from './InputForm';
-import createEvent from '../actions/createEvent';
+import { createEvent } from '../actions/createEvent';
 import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
+import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
 
 class StandardEventForm extends React.Component {
@@ -34,6 +35,7 @@ class StandardEventForm extends React.Component {
             notificationTime: 0,
             locked: true,
             error: false,
+            errorMsg: 'No Error',
         };
 
         this.frequencySelectChange = this.frequencySelectChange.bind(this);
@@ -150,12 +152,9 @@ class StandardEventForm extends React.Component {
             this.props.createEvent(evt);
             returnHome();
         } catch (e) {
-            /* alert(`
-                The values entered for the dates are invalid.
-                ${e.message}
-            `); */
             this.setState({
                 error: true,
+                errorMsg: e.message,
             });
         }
     }
@@ -178,6 +177,7 @@ class StandardEventForm extends React.Component {
             notificationTime,
             locked,
             error,
+            errorMsg,
         } = this.state;
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
@@ -191,11 +191,10 @@ class StandardEventForm extends React.Component {
                     value={description}
                     onChange={this.handleInputChange}
                 />
-                {error && (
-                    <div className="errorMessage">
-                        <div>Please enter a valid date combination</div>
-                    </div>
-                )}
+                <DateErrorMessage
+                    show={error}
+                    errorMsg={errorMsg}
+                />
                 <StartEndInput
                     start={eventStart}
                     end={eventEnd}

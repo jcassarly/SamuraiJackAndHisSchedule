@@ -18,9 +18,9 @@ const initialEvents = {
 };
 const deadline = new Deadline('dead test', moment('March 31, 2019'), 5, 30, 120, 20, moment());
 
-console.log(initialEvents);
-console.log(autoSchedule(initialEvents, deadline, moment().startOf('day'), moment().endOf('day')));
-console.log(initialEvents);
+//console.log(initialEvents);
+//console.log(autoSchedule(initialEvents, deadline, moment().startOf('day'), moment().endOf('day')));
+//console.log(initialEvents);
 const store = createStore(rootReducer);
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));

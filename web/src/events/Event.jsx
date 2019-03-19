@@ -7,7 +7,9 @@ const moment = require('moment-timezone');
 moment().format();
 
 function verifyTimes(start, end) {
-    if (!(start instanceof moment)) {
+    if (!(start instanceof moment) && !(end instanceof moment)) {
+        throw new Error('Invalid Start and End Time');
+    } else if (!(start instanceof moment)) {
         throw new Error('Invalid Start Time');
     } else if (!(end instanceof moment)) {
         throw new Error('Invalid End Time');
@@ -22,10 +24,9 @@ class Event {
         this.name = name;
         this.description = description;
 
+        verifyTimes(startTime, endTime);
         this._startTime = startTime.clone();
         this._endTime = endTime.clone();
-
-        verifyTimes(this._startTime, this._endTime);
 
         this.location = location;
         this.locked = locked;

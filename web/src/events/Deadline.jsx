@@ -6,10 +6,10 @@ class Deadline {
         minBreak, startWorkTime, location) {
         this.name = name;
         this._createdEvents = [];
-        this._deadline = deadline;
-        this._startWorkTime = startWorkTime;
 
-        verifyTimes(this._startWorkTime, this._deadline);
+        verifyTimes(startWorkTime, deadline);
+        this._deadline = deadline.clone();
+        this._startWorkTime = startWorkTime.clone();
 
         this.totalWorkTime = totalWorkTime;
         this.minEventTime = minEventTime;

@@ -13,6 +13,7 @@ import {
 } from './InputFormComponents';
 import '../styles/StandardEventForm.css';
 import Deadline from '../events/Deadline';
+import DateErrorMessage from './ErrorMessage';
 
 class DeadlineForm extends React.Component {
     constructor(props) {
@@ -29,6 +30,8 @@ class DeadlineForm extends React.Component {
             maxTime: 0,
             minBreak: 0,
             totalTime: 0,
+            error: false,
+            errorMsg: 'No Error',
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -71,7 +74,7 @@ class DeadlineForm extends React.Component {
 
         const {
             name,
-            description, // eslint-disable-line 
+            description, // eslint-disable-line
             taskStart,
             taskDeadline,
             location,
@@ -86,44 +89,51 @@ class DeadlineForm extends React.Component {
             returnHome,
         } = this.props;
 
-        const deadline = new Deadline(
-            name,
-            // TODO: add description to deadline
-            taskDeadline,
-            totalTime,
-            minTime,
-            maxTime,
-            minBreak,
-            taskStart,
-            location,
-            // TODO: add uselocation to deadline
-        );
+        try {
+            const deadline = new Deadline(
+                name,
+                // TODO: add description to deadline
+                taskDeadline,
+                totalTime,
+                minTime,
+                maxTime,
+                minBreak,
+                taskStart,
+                location,
+                // TODO: add uselocation to deadline
+            );
 
-        // eslint-disable-next-line no-alert
-        alert(`
-            Adding a new standard event with the following info:
-            Name:              ${deadline.name}
-            Description:       TODO
-            Task Start:        ${deadline.startWorkTime}
-            Task Deadline:     ${deadline.deadline}
-            Location:          ${deadline.location}
-            Use Location:      TODO
-            Min Time:          ${deadline.minEventTime}
-            Max Time:          ${deadline.maxEventTime}
-            Min Break Time:    ${deadline.minBreak}
-            Total Time:        ${deadline.totalWorkTime}
-        `);
+            // eslint-disable-next-line no-alert
+            alert(`
+                Adding a new standard event with the following info:
+                Name:              ${deadline.name}
+                Description:       TODO
+                Task Start:        ${deadline.startWorkTime}
+                Task Deadline:     ${deadline.deadline}
+                Location:          ${deadline.location}
+                Use Location:      TODO
+                Min Time:          ${deadline.minEventTime}
+                Max Time:          ${deadline.maxEventTime}
+                Min Break Time:    ${deadline.minBreak}
+                Total Time:        ${deadline.totalWorkTime}
+            `);
 
-        // eslint-disable-next-line react/destructuring-assignment
-        Object.values(this.props.events).forEach((e) => {
-            alert(e.toString());
-        });
+            // eslint-disable-next-line react/destructuring-assignment
+            Object.values(this.props.events).forEach((e) => {
+                alert(e.toString());
+            });
 
-        // call the autoscheduler to get the new calendar
+            // call the autoscheduler to get the new calendar
 
-        // set the calendar to the new event list created by the autoscheduler
+            // set the calendar to the new event list created by the autoscheduler
 
-        returnHome();
+            returnHome();
+        } catch (e) {
+            this.setState({
+                error: true,
+                errorMsg: e.message,
+            });
+        }
     }
 
     render() {
@@ -140,6 +150,8 @@ class DeadlineForm extends React.Component {
             maxTime,
             minBreak,
             totalTime,
+            error,
+            errorMsg,
         } = this.state;
 
         return (
@@ -157,6 +169,10 @@ class DeadlineForm extends React.Component {
                     name="description"
                     value={description}
                     onChange={this.handleInputChange}
+                />
+                <DateErrorMessage
+                    show={error}
+                    errorMsg={errorMsg}
                 />
                 <StartEndInput
                     start={taskStart}
