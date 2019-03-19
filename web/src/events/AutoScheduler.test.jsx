@@ -1,7 +1,8 @@
 import { Event } from './Event';
-import {autoSchedule} from './AutoScheduler.jsx';
+import { Deadline } from './Deadline'
+import { autoSchedule } from './AutoScheduler';
 
-test('name works', () => {
-    const event = new Event('test');
+test('Valid Daily Work Times', () => {
+    const deadline = new Deadline('test');
     expect(event.name).toBe('test');
 });
