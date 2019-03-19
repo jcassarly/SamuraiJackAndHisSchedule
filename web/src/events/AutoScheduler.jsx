@@ -206,7 +206,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             if (duration > deadline.maxEventTime) {
                 duration = deadline.maxEventTime;
                 remainingTime -= deadline.maxEventTime;
-                validTimes.unshift(new TimeRange(range.start.add(deadline.maxEventTime + deadline.minBreak, 'minutes'), range.end));
+                validTimes.push(new TimeRange(range.start.add(deadline.maxEventTime + deadline.minBreak, 'minutes'), range.end));
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
