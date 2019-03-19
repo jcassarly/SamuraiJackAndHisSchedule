@@ -133,13 +133,11 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     }
     validTimes.push(new TimeRange(start, finalEnd));
 
-    console.log(oldSchedule);
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
     for (let j = 0; j < oldSchedule.length; j += 1) {
         const event = oldSchedule[j];
-        console.log('Event ' + j + ': ' + event)
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
                                                                                                                 // TODO: Find a more efficient method to do this.
@@ -155,40 +153,29 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                         validBefore = false; // Else there is no valid time range before the event
                     }
 
-                    console.log(`Before Start: ${validTimes[i].start.format('LLL')}, Before End: ${validTimes[i].end.format('LLL')}`);
-
                     let validAfter = true;
                     const newStart = moment(event.endTime).add(deadline.minBreak, 'minutes');
                     
-                    console.log(`newStart: ${newStart.format('LLL')}, breakTime: ${deadline.minBreak}`);
-                    console.log(`prevEnd: ${prevEnd.format('LLL')}`);
                     if (prevEnd.isAfter(newStart)) { // If there is a valid period after the event
                         if (validBefore) { // If there was a valid period before, insert a new time period afer the event
                             validTimes.splice(i + 1, 0, new TimeRange(moment(newStart), moment(prevEnd)));
-                            console.log('A');
                         } else { // If there was not a valid period before, replace the current time period with the period after the event.
                             validTimes[i].start = newStart;
-                            console.log('B');
                         }
                     } else {
                         validAfter = false; // Else there is no valid time range after the event
-                        console.log('C');
                     }
-                    console.log('D');
+
                     if (!validBefore && !validAfter) { // No more valid times within this time range, remove this time range.
                         validTimes.splice(i, 1);
-                        console.log('E');
                     }
                 } else if (validTimes[i].inRange(event.startTime)) { //          Event's start is contained within valid time range, but end is not
                     validTimes[i].end = moment(event.startTime).subtract(deadline.minBreak, 'minutes'); //     Change the valid time range's end to before the start of the event and a break
-                    console.log('F');
                 } else if (validTimes[i].inRange(event.endTime)) { //            Event's end is contained within valid time range, but start is not
                     validTimes[i].start = moment(event.endTime).add(deadline.minBreak, 'minutes'); //     Change the valid time range's start to the end of the event and a break
-                    console.log('G');
                 }
             }
         }
-        console.log('ValidTimes: ' + validTimes);
     }
 
     return validTimes;
@@ -219,21 +206,30 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
 
-    while (validTimes.length > 0) {
+    while (validTimes.length > 0 && remainingTime > 0) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
+        console.log(`validTimes.length: ${validTimes.length}`);
+        console.log(`remainingTime: ${remainingTime}`);
+        console.log(`duration: ${duration}`);
+        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+
+        console.log('A');
+
         //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
-        if (duration > deadline.minEventTime) { // Time range is not too short
+        if (duration >= deadline.minEventTime) { // Time range is not too short
+            console.log('B');
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
             if (duration > deadline.maxEventTime) {
+                console.log('C');
                 duration = deadline.maxEventTime;
-                remainingTime -= deadline.maxEventTime;
                 validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
+            console.log('D');
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
 
@@ -241,12 +237,19 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
             if (remainingTime < deadline.minEventTime) {
+                console.log('E');
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
             }
 
-            newSchedule.push(new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent));
+            console.log('F');
+            console.log(`new remainingTime: ${remainingTime}`);
+            console.log(`new duration: ${duration}`);
+            let debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
+                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent);
+            console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
+            console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
+            newSchedule.push(debugEvent);
         }
     }
     return newSchedule;
