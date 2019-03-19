@@ -210,45 +210,48 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
-        console.log(`validTimes.length: ${validTimes.length}`);
-        console.log(`remainingTime: ${remainingTime}`);
-        console.log(`duration: ${duration}`);
-        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+        // console.log(`validTimes.length: ${validTimes.length}`);
+        // console.log(`remainingTime: ${remainingTime}`);
+        // console.log(`duration: ${duration}`);
+        // console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
 
-        console.log('A');
+        // console.log('A');
 
         //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
         if (duration >= deadline.minEventTime) { // Time range is not too short
-            console.log('B');
+            // console.log('B');
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
-            if (duration > deadline.maxEventTime) {
+
+            if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
+                duration = remainingTime;
+            } else if (duration > deadline.maxEventTime) {
                 console.log('C');
                 duration = deadline.maxEventTime;
                 validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
-            console.log('D');
+            // console.log('D');
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
 
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
-            if (remainingTime > 0 && remainingTime < deadline.minEventTime) {
-                console.log('E');
+            if (remainingTime !== 0 && remainingTime < deadline.minEventTime) {
+                // console.log('E');
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
             }
 
-            console.log('F');
-            console.log(`new remainingTime: ${remainingTime}`);
-            console.log(`new duration: ${duration}`);
+            // console.log('F');
+            // console.log(`new remainingTime: ${remainingTime}`);
+            // console.log(`new duration: ${duration}`);
             let debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
                 moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent);
-            console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
-            console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
+            // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
+            // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
             newSchedule.push(debugEvent);
         }
     }

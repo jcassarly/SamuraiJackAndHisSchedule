@@ -19,7 +19,7 @@ function displayRange(range) {
 
 function compareRanges(array1, array2) {
     let returnValue = false;
-    if (array1.length == array2.length) {
+    if (array1.length === array2.length) {
         returnValue = true;
         for (let i = 0; i < array1.length; i += 1) {
             if (!(array1[i].start.isSame(array2[i].start) && array1[i].end.isSame(array2[i].end))) {
@@ -31,8 +31,22 @@ function compareRanges(array1, array2) {
     return returnValue;
 }
 
+function compareEventTimes(array1, array2) {
+    let returnValue = false;
+    if (array1.length === array2.length) {
+        returnValue = true;
+        for (let i = 0; i < array1.length; i += 1) {
+            if (!(array1[i].startTime.isSame(array2[i].startTime) && array1[i].endTime.isSame(array2[i].endTime))) {
+                returnValue = false;
+                break;
+            }
+        }
+    }
+    return returnValue;
+}
+
 test('Valid Daily Work Times', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes([], deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     const correctTimes = [ 
         new TimeRange(moment('03/24/2019 11:00:00'), moment('03/24/2019 17:00:00')),
@@ -48,7 +62,7 @@ test('Valid Daily Work Times', () => {
 });
 
 test('Valid Range Split', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes(Object.values(initialEvents), deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
     const correctTimes = [ 
         new TimeRange(moment('03/24/2019 11:00:00'), moment('03/24/2019 17:00:00')),
@@ -65,16 +79,15 @@ test('Valid Range Split', () => {
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 });
 
-test('Valid Range Split', () => {
-    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 300, 30, 120, 20, moment('03/24/2019 11:00:00'));
+test('Create Events Empty Schedule', () => {
+    const deadline = new Deadline('Work Times Test', moment('03/31/2019 13:00:00'), 5, 30, 120, 20, moment('03/24/2019 11:00:00'));
     let validTimes = getValidTimes([], deadline, moment().hour(9).minute(0), moment().hour(17).minute(0));
-    console.log(validTimes.map(displayRange));
-    console.log(correctTimes.map(displayRange));
-    //expect(compareRanges(validTimes, correctTimes)).toBe(true);
+    //console.log(validTimes.map(displayRange));
     let newSchedule = createEvents([], deadline, validTimes);
-    newSchedule.map((event) => {
-        console.log(`Event Name: ${event.name}`)
-        console.log(`    ${event.name} startTime: ${event.startTime}`)
-        console.log(`    ${event.name} endTime: ${event.endTime}`)
-    });
+    let correctEvents = [
+        new Event('Work Times Test', null, moment('03/25/2019 9:00:00'), moment('03/25/2019 11:00:00')),
+        new Event('Work Times Test', null, moment('03/26/2019 9:00:00'), moment('03/26/2019 11:00:00')),
+        new Event('Work Times Test', null, moment('03/30/2019 9:00:00'), moment('03/30/2019 10:00:00'))
+    ]
+    expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
 });
