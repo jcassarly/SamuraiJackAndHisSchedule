@@ -2,18 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import moment from 'moment';
-import { render, fireEvent, cleanup, getBySelectText, getAllByText } from 'react-testing-library';
+import { render, fireEvent, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import StandardEventForm from './StandardEventForm';
 import rootReducer from '../reducers/index';
-import Frequency from '../events/Frequency';
-import Notifications from '../events/Notifications';
 import { EventEnum } from './ChooseEventType';
 
 const store = createStore(rootReducer);
 
 afterEach(cleanup);
+
+moment.now = () => new Date('2019-03-19T08:00:00Z');
 
 /* it('renders without crashing', () => {
     const div = document.createElement('div');

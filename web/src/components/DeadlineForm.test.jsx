@@ -16,6 +16,8 @@ const store = createStore(rootReducer);
 
 afterEach(cleanup);
 
+moment.now = () => new Date('2019-03-19T08:00:00Z');
+
 test('changes name', () => {
     const { getByPlaceholderText } = render(
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
