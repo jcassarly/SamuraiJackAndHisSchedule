@@ -1,4 +1,3 @@
-// ADD overlap function
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 
