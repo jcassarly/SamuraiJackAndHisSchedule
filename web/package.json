@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "normalize.css": "^8.0.1",
@@ -13,7 +14,9 @@
     "react-redux": "^6.0.1",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "superagent": "^5.0.2",
+    "superagent-csrf-middleware": "^0.3.0"
   },
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --open --config ./webpack.dev.js",
