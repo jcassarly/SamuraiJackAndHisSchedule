@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint max-len: 0 */
 import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
@@ -119,7 +120,7 @@ class BinaryTimeRangeHeap {
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
     // eslint-disable-next-line prefer-const
-    let validTimes = [];                     
+    let validTimes = [];
 
     // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
     let dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
@@ -155,7 +156,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 
                     let validAfter = true;
                     const newStart = moment(event.endTime).add(deadline.minBreak, 'minutes');
-                    
+
                     if (prevEnd.isAfter(newStart)) { // If there is a valid period after the event
                         if (validBefore) { // If there was a valid period before, insert a new time period afer the event
                             validTimes.splice(i + 1, 0, new TimeRange(moment(newStart), moment(prevEnd)));

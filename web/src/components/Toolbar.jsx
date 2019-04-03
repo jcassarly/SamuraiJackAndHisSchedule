@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import '../styles/Toolbar.css';
@@ -21,20 +20,19 @@ class Toolbar extends React.Component {
         });
     }
 
-    renderLogout() {
+    render() {
         const { logout } = this.state;
+
         if (logout) {
-            return <Redirect to="/accounts/logout/" />;
+            this.setState({
+                logout: false,
+            });
+            window.location.replace('http://127.0.0.1:8000/accounts/logout/');
         }
 
-        return null;
-    }
-
-    render() {
         const { navNewEvent } = this.props;
         return (
             <div className="toolbar">
-                {/* this.renderLogout() */}
                 <button type="button" onClick={navNewEvent}>New Event</button>
                 <button type="button" onClick={this.logout}>Logout</button>
             </div>
