@@ -1,12 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 import moment from 'moment';
 import { render, fireEvent, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import rootReducer from '../reducers/index';
-import { EventEnum } from './ChooseEventType';
+
+import App from '../App';
+import rootReducer from '../../reducers/index';
+import { EventEnum } from '../ChooseEventType';
 
 const store = createStore(rootReducer);
 

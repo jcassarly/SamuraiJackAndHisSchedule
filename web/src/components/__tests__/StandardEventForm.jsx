@@ -9,10 +9,10 @@ import {
 } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import StandardEventForm from './StandardEventForm';
-import rootReducer from '../reducers/index';
-import Frequency from '../events/Frequency';
-import Notifications from '../events/Notifications';
+import StandardEventForm from '../StandardEventForm';
+import rootReducer from '../../reducers/index';
+import Frequency from '../../events/Frequency';
+import Notifications from '../../events/Notifications';
 
 const store = createStore(rootReducer);
 

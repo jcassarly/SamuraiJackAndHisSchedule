@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import moment from 'moment-timezone';
-import Day from './Day';
-import { Event } from '../events/Event';
+import Day from '../Day';
+import { Event } from '../../events/Event';
 
 const nonDaylight = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 const daylight = moment.tz('2019-03-10T08:00:00Z', 'America/New_York');

@@ -9,8 +9,8 @@ import {
 } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import DeadlineForm from './DeadlineForm';
-import rootReducer from '../reducers/index';
+import DeadlineForm from '../DeadlineForm';
+import rootReducer from '../../reducers/index';
 
 const store = createStore(rootReducer);
 
