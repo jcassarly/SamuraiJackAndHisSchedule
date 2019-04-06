@@ -1,4 +1,4 @@
-import reducer from './events';
+import reducer from '../events';
 
 const state = { maxId: 0, events: {} };
 
