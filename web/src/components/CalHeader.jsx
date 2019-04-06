@@ -5,7 +5,12 @@ import moment from 'moment-timezone';
 
 import '../styles/CalHeader.css';
 
+/**
+ * Component for the header of the calendar
+ * Displays the date and navigation for changing the date and calendar type
+ */
 const CalHeader = (props) => {
+    // see CalHeader.propTypes
     const {
         onLeft,
         onRight,
@@ -14,6 +19,7 @@ const CalHeader = (props) => {
     } = props;
     let { date } = props;
 
+    // selects the format to display the date in based on the type of date
     let format = '';
     switch (type) {
     case 'day':
@@ -27,6 +33,7 @@ const CalHeader = (props) => {
     default:
         format = 'MMMM';
     }
+
     return (
         <div className="calHeader">
             <button type="button" className="nav" onClick={onLeft}>&lt;</button>
@@ -36,6 +43,14 @@ const CalHeader = (props) => {
     );
 };
 
+/**
+ * onLeft: a handler to navigate to the previous date (month, week, day)
+ * onRight: a handler to navigate to the next date (month, week, day)
+ * onSwitch: a handler to navigate to a different calendar view
+ *     (cycles between month, week, and day)
+ * date: the date being displayed
+ * type: the type of date being displayed (month, week, or day)
+ */
 CalHeader.propTypes = {
     onLeft: PropTypes.func.isRequired,
     onRight: PropTypes.func.isRequired,
