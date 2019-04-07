@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import moment from 'moment-timezone';
 
@@ -20,7 +21,6 @@ function createDayList(date, events) {
     // array for holding the month cell elements
     const dates = [];
     for (let i = 0; i < 3 * 6 * 7; i += 1) {
-
         // filters our events not ocurring on the current date
         const day = new Event(null, null, currDate, currDate.clone().endOf('day'));
         const currEvents = events.filter(event => Event.overlap(day, event));
@@ -44,8 +44,8 @@ class Month extends Component {
      * used by react
      */
     shouldComponentUpdate(nextProps) {
-        const { month } = this.props;
-        return nextProps.month.diff(month, 'months') !== 0;
+        const { month, events } = this.props;
+        return nextProps.month.diff(month, 'months') !== 0 && _.isEqual(events, nextProps.events);
     }
 
     render() {
