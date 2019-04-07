@@ -12,6 +12,7 @@ const initialState = { maxId: 0, events: {} };
 const reducer = (state = initialState, action) => {
     // copy the old state
     const newState = { ...state };
+    newState.events = { ...state.events };
 
     if (action) {
         // mutate state depending on the type of the action
@@ -34,10 +35,12 @@ const reducer = (state = initialState, action) => {
             );
 
             // the new list of events is are put on the calendar, overwriting the old ones
-            newState.events = {
-                ...newEvents,
-            };
-            newState.maxId = newEvents.length;
+            if (newEvents && newEvents.length && newEvents.length >= Object.values(state.events)) {
+                newState.events = {
+                    ...newEvents,
+                };
+                newState.maxId = newEvents.length;
+            }
             break;
         }
         default:
