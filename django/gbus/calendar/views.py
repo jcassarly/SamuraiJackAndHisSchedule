@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .models import Events
@@ -14,7 +15,7 @@ def index(request):
     if request.user.is_authenticated():
         return render(request, 'calendar/index.html')
     else:
-        return redirect('/accounts/login')
+        return redirect(reverse('login'))
 
 @ensure_csrf_cookie
 def get_data(request):
@@ -26,9 +27,10 @@ def get_data(request):
     }
     return HttpResponse(resp.__str__())
 
+@ensure_csrf_cookie
 def set_data(request):
     events_obj = Events.objects.get(id=request.user.id)
-    req_json = json.loads(request.body)
+    req_json = json.loads(request.body.decode('utf-8'))
 
     events_obj.events = req_json['events']
     #events_obj.deadlines = req_json['deadlines']

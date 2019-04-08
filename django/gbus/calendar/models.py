@@ -7,6 +7,7 @@ from django.db import models
 class Events(models.Model):
     events = models.TextField()
     deadlines = models.TextField()
+    username = models.CharField(max_length=150, default='anon')
 
     def __str__(self):
-        return "[Events: {}], [Deadlines: {}]".format(self.events, self.deadlines)
+        return "[Username: {}], [Events: {}], [Deadlines: {}]".format(self.username, self.events, self.deadlines)
