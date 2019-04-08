@@ -184,7 +184,7 @@ class RecurringEvent extends Event {
         const retval = super.serialize();
         retval.type = EVENT_TYPES.RECURRING;
         retval.obj = {
-            ...retval,
+            ...retval.obj,
             frequency: this._frequency.timing,
             optionalCustomFrequency: this._frequency.customSettings,
         };

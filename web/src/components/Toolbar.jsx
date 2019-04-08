@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
+import
 
 import '../styles/Toolbar.css';
 
@@ -71,4 +72,12 @@ Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
 };
 
-export default Toolbar;
+const mapStateToProps = state => (
+    {
+        events: state.events.events,
+        deadlines: state.events.deadlines,
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps)(Toolbar);

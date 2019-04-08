@@ -1,14 +1,14 @@
 import moment from 'moment';
-import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
-import autoSchedule from '../events/AutoScheduler';
+import { UPDATE_SETTINGS } from '../actions/updateSettings';
+import Settings from '../events/Settings';
 
-const initialState = { maxId: 0, events: {}, deadlines: {} };
+const initialState = { settings: new Settings() };
 
 const reducer = (state = initialState, action) => {
     const newState = { ...state };
     if (action) {
         switch (action.type) {
-        case CREATE_EVENT:
+        case :
             newState.events[state.maxId] = action.payload.event;
             newState.maxId += 1;
             break;
