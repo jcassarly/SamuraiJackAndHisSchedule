@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "lodash": "^4.17.11",
+    "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "normalize.css": "^8.0.1",
@@ -12,7 +13,11 @@
     "react-datetime": "^2.16.3",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.1",
-    "redux": "^4.0.1"
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "redux": "^4.0.1",
+    "superagent": "^5.0.2",
+    "superagent-csrf-middleware": "^0.3.0"
   },
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --open --config ./webpack.dev.js",
