@@ -56,7 +56,9 @@ class Toolbar extends React.Component {
             window.location.replace('http://127.0.0.1:8000/accounts/logout/');
         }
 
+        // see propTypes
         const { navNewEvent } = this.props;
+        // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">
                 <button type="button" onClick={navNewEvent}>New Event</button>
@@ -68,6 +70,9 @@ class Toolbar extends React.Component {
     }
 }
 
+/**
+ * navNewEvent: navigates to the form for creating a new event
+ */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
 };
