@@ -179,13 +179,8 @@ class StandardEventForm extends React.Component {
             // add the Event to the redux store
             // eslint-disable-next-line react/destructuring-assignment
             this.props.createEvent(evt);
-<<<<<<< HEAD
-            console.log(JSON.stringify(evt.serialize()));
-            console.log(deserialize(JSON.stringify(evt.serialize())));
-=======
 
             // send the user back to home screen
->>>>>>> save-state
             returnHome();
 
         // if creating and adding the event failed, show an error message on the next render

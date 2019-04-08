@@ -83,7 +83,7 @@ class Settings {
     }
 
     set minWorkTime(value) {
-        if (value.valueOf() > this.maxWorkTime().valueOf()) {
+        if (value.valueOf() > this.maxWorkTime.valueOf()) {
             throw new Error('minimum must be less than maximum');
         } else {
             this._minWorkTime = value;
@@ -91,7 +91,7 @@ class Settings {
     }
 
     set maxWorkTime(value) {
-        if (value.valueOf() < this.minWorkTime().valueOf()) {
+        if (value.valueOf() < this.minWorkTime.valueOf()) {
             throw new Error('maximum must be greater than minimum');
         } else {
             this._maxWorkTime = value;

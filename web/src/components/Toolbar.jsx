@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
-import
+import { connect } from 'react-redux';
 
 import '../styles/Toolbar.css';
 
