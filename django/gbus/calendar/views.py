@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from .models import Events
+
 import json
 
 # Create your views here.
@@ -15,7 +17,9 @@ def index(request):
         return redirect('/accounts/login')
 
 @ensure_csrf_cookie
-def getData(request):
-    req_json = json.loads(request.body)
-    resp = "You said {}, The response: Hello!".format(req_json['name'])
+def get_data(request):
+    last_event_index = Events.objects.count()
+    resp = {
+        "events": "Events.objects.filter()"
+    }
     return HttpResponse(resp)

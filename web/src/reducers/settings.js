@@ -1,30 +1,25 @@
-import moment from 'moment';
 import { UPDATE_SETTINGS } from '../actions/updateSettings';
 import Settings from '../events/Settings';
 
+// the user starts out with the default settings
 const initialState = { settings: new Settings() };
 
+/**
+ * reducer for the list of all events the user has
+ */
 const reducer = (state = initialState, action) => {
+    // copy the old state
     const newState = { ...state };
+
     if (action) {
+        // mutate state depending on the type of the action
         switch (action.type) {
-        case :
-            newState.events[state.maxId] = action.payload.event;
-            newState.maxId += 1;
+        // updates the settings
+        case UPDATE_SETTINGS:
+            // changes the settings to the new settings passed in from the payload
+            newState.settings = action.payload.settings;
             break;
-        case CREATE_DEADLINE_EVENT: {
-            const newEvents = autoSchedule(
-                state.events,
-                action.payload.deadline,
-                moment().hour(9),
-                moment().hour(17),
-            );
-            newState.events = {
-                ...newEvents,
-            };
-            newState.maxId = newEvents.length;
-            break;
-        }
+
         default:
         }
     }

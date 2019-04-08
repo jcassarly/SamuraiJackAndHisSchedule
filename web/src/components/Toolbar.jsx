@@ -81,7 +81,7 @@ const mapStateToProps = state => (
     {
         events: state.events.events,
         deadlines: state.events.deadlines,
-        settings: state.settings.settings,
+        // settings: state.settings.settings,
     }
 );
 
