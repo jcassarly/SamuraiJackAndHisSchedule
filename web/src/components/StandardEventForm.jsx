@@ -14,7 +14,7 @@ import {
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { createEvent } from '../actions/createEvent';
-import { deserialize, Event, RecurringEvent } from '../events/Event';
+import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';

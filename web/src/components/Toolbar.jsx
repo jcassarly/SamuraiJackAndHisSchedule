@@ -29,12 +29,20 @@ class Toolbar extends React.Component {
 
     syncTo() {
         // eslint-disable-next-line no-unused-vars
-        const { logout } = this.state;
+        // eslint-disable-next-line react/prop-types
+        const { events, deadlines } = this.props;
+
+        const syncData = JSON.stringify({
+            events: JSON.stringify(events),
+            deadlines: JSON.stringify(deadlines),
+        });
+        console.log('Hello');
+        console.log(syncData);
         request
-            .post('http://127.0.0.1:8000/proto/get')
+            .post('http://127.0.0.1:8000/proto/set')
             .set('X-CSRFToken', unescape(Cookie.get('csrftoken')))
             .set('Content-Type', 'application/json')
-            .send('{"name":"tj","pet":"tobi"}')
+            .send(syncData)
             .then((res) => {
                 console.log(res.text);
             });
@@ -42,8 +50,15 @@ class Toolbar extends React.Component {
     }
 
     syncFrom() {
+        // eslint-disable-next-line no-unused-vars
         const { logout } = this.state;
-        alert(!logout);
+        request
+            .post('http://127.0.0.1:8000/proto/get')
+            .set('X-CSRFToken', unescape(Cookie.get('csrftoken')))
+            .set('Content-Type', 'application/json')
+            .then((res) => {
+                console.log(res.text);
+            });
     }
 
     render() {

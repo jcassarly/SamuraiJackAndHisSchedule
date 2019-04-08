@@ -18,8 +18,25 @@ def index(request):
 
 @ensure_csrf_cookie
 def get_data(request):
-    last_event_index = Events.objects.count()
+
+    events_obj = Events.objects.get(id=request.user.id)
     resp = {
-        "events": "Events.objects.filter()"
+        "events": events_obj.events,
+        "deadlines": events_obj.deadlines
     }
-    return HttpResponse(resp)
+    return HttpResponse(resp.__str__())
+
+def set_data(request):
+    events_obj = Events.objects.get(id=request.user.id)
+    req_json = json.loads(request.body)
+
+    events_obj.events = req_json['events']
+    #events_obj.deadlines = req_json['deadlines']
+
+    events_obj.save()
+
+    return HttpResponse(req_json['events'])
+    #req_json = json.loads(request.body)
+    #resp = "You said {}, The response: Hello!".format(req_json['name'])
+    #return HttpResponse(resp)
+
