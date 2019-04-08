@@ -14,7 +14,7 @@ import {
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { createEvent } from '../actions/createEvent';
-import { Event, RecurringEvent } from '../events/Event';
+import { deserialize, Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
@@ -150,6 +150,8 @@ class StandardEventForm extends React.Component {
 
             // eslint-disable-next-line react/destructuring-assignment
             this.props.createEvent(evt);
+            console.log(JSON.stringify(evt.serialize()));
+            console.log(deserialize(JSON.stringify(evt.serialize())));
             returnHome();
         } catch (e) {
             this.setState({

@@ -19,6 +19,10 @@ class Frequency {
         return this._timing;
     }
 
+    get customSettings() {
+        return this._customSettings;
+    }
+
     setTiming(value, optionalCustomOptions) {
         switch (value) {
         case Frequency.freqEnum.DAILY:
