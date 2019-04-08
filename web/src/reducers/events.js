@@ -1,10 +1,11 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import autoSchedule from '../events/AutoScheduler';
+import { loadState } from './persistState';
 
 // the user starts out with no events
 // each event needs an id, these ids are assigned in order, maxId keeps track of the largest
-const initialState = { maxId: 0, events: {} };
+const initialState = loadState().events;
 
 /**
  * reducer for the list of all events the user has

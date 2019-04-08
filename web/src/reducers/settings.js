@@ -1,8 +1,9 @@
 import { UPDATE_SETTINGS } from '../actions/updateSettings';
+import { loadState } from './persistState';
 // import Settings from '../events/Settings';
 
 // the user starts out with the default settings
-const initialState = { settings: null }; // new Settings() };
+const initialState = loadState().settings;
 
 /**
  * reducer for the list of all events the user has
