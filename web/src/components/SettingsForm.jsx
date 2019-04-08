@@ -8,15 +8,21 @@ import {
     SelectInput,
 } from './InputFormComponents';
 import InputForm from './InputForm';
-import Frequency from '../events/Frequency';
 import Settings from '../events/Settings';
 import '../styles/SettingsForm.css';
 
+/**
+ * Creates a section of settings for organization of related settings
+ * @param {string} props.title    the title of the section
+ * @param {node}   props.children the input fields for the settings in the section
+ */
 function SettingsSection(props) {
     const {
         title,
         children,
     } = props;
+
+    // create a JSX object with the title above the children and appropriate CSS
     return (
         <div className="sectionBorder">
             <div className="titleLine">
@@ -29,15 +35,24 @@ function SettingsSection(props) {
     );
 }
 
+// defines the object that checks the props passed into the SettingsSection
 SettingsSection.propTypes = {
     title: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
 };
 
+/**
+ * React Component that handles input gathering for the general settings of the app
+ */
 class SettingsForm extends React.Component {
+    /**
+     * Creates the form used to change the user settings of the app
+     * @param {returnHome} props.returnHome a function to send the user back to the homescreen
+     */
     constructor(props) {
         super(props);
 
+        // get the default settings
         const defaults = new Settings();
         this.state = {
             title: 'General Settings',
@@ -54,7 +69,6 @@ class SettingsForm extends React.Component {
             timeToComplete: defaults.timeToComplete,
         };
 
-        this.frequencySelectChange = this.frequencySelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
@@ -62,20 +76,19 @@ class SettingsForm extends React.Component {
         this.returnHome = this.returnHome.bind(this);
     }
 
+    /**
+     * Gets the required types for the props passed into the constructor
+     */
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
         };
     }
 
-    frequencySelectChange(event) {
-        this.setState({ frequency: event.target.value });
-
-        if (event.target.value === Frequency.freqEnum.CUSTOM) {
-            alert('TODO: open custom choice menu');
-        }
-    }
-
+    /**
+     * Updates the state with the change to the input form the user made
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleInputChange(event) {
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
@@ -85,18 +98,30 @@ class SettingsForm extends React.Component {
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the start date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleStartDateChange(time) {
         this.setState({
             eventStart: time,
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the end date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleEndDateChange(time) {
         this.setState({
             eventEnd: time,
         });
     }
 
+    /**
+     * Updates the Settings object, changes to the redux store, and returns to the home screen
+     * @param {obj} event the event object that stores the event that called this function
+     */
     handleSubmit(event) {
         alert(`
             Adding a new standard event with the following info:
@@ -105,7 +130,6 @@ class SettingsForm extends React.Component {
             Start Time:        ${this.state.eventStart}
             End Time:          ${this.state.eventEnd}
             Location:          ${this.state.location}
-            Frequency:         ${this.state.frequency}
             Notifications:     ${this.state.notifications}
             Notification Time: ${this.state.notificationTime}
             Locked:            ${this.state.locked}
@@ -113,6 +137,9 @@ class SettingsForm extends React.Component {
         event.preventDefault();
     }
 
+    /**
+     * Loads the input form
+     */
     render() {
         const {
             returnHome,
@@ -133,6 +160,7 @@ class SettingsForm extends React.Component {
             timeToComplete,
         } = this.state;
 
+        // generate the input form based on the Settings input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <SettingsSection title="Home Screen">

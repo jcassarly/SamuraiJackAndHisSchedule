@@ -120,12 +120,16 @@ class BinaryTimeRangeHeap {
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
     // eslint-disable-next-line prefer-const
+<<<<<<< HEAD
+    const validTimes = [];
+=======
     let validTimes = [];
+>>>>>>> origin/jcassarly/server
 
     // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
-    let dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+    const dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
     let start = moment(moment.max(deadline.startWorkTime, dailyStart));
-    let dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
+    const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
     const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
     while (dailyEnd.isBefore(finalEnd)) {
         validTimes.push(new TimeRange(moment(start), moment(dailyEnd)));
@@ -141,7 +145,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
         const event = oldSchedule[j];
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
-                                                                                                                // TODO: Find a more efficient method to do this.
+            //                                                                                            TODO: Find a more efficient method to do this.
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
                     const prevEnd = moment(validTimes[i].end);
@@ -227,7 +231,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
                 duration = remainingTime;
             } else if (duration > deadline.maxEventTime) {
-                console.log('C');
+                // console.log('C');
                 duration = deadline.maxEventTime;
                 validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
             }
@@ -249,7 +253,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // console.log('F');
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
-            let debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
+            const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
                 moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent);
             // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
             // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);

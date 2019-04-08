@@ -14,12 +14,24 @@ import {
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { createEvent } from '../actions/createEvent';
-import { Event, RecurringEvent } from '../events/Event';
+import { deserialize, Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
 
+/**
+ * React Component that handles standard event input gathering
+ */
 class StandardEventForm extends React.Component {
+    /**
+     * Create a form to get input for a standard event
+     * @param {func}   props.returnHome  a function to send the user back to home screen
+     * @param {func}   props.createEvent a function to create an event in the redux store
+     *                                   with the gathered input from the form
+     * @param {string} props.title       the name of the event form
+     * @param {bool}   props.hideLock    true if the lock form field should be hidden,
+     *                                   false if it should appear
+     */
     constructor(props) {
         super(props);
         const { title } = this.props;
@@ -45,6 +57,9 @@ class StandardEventForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    /**
+     * Gets the required types for the props passed into the constructor
+     */
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
@@ -54,6 +69,10 @@ class StandardEventForm extends React.Component {
         };
     }
 
+    /**
+     * Gets the default values for props if they are not passed into the constructor
+     * and are not required
+     */
     static get defaultProps() {
         return {
             title: 'Standard Event Form',
@@ -61,6 +80,10 @@ class StandardEventForm extends React.Component {
         };
     }
 
+    /**
+     * Updates the state with the frequency selection the user made
+     * @param {obj} event the event object that stores the selection the user made
+     */
     frequencySelectChange(event) {
         this.setState({ frequency: event.target.value });
 
@@ -69,6 +92,10 @@ class StandardEventForm extends React.Component {
         }
     }
 
+    /**
+     * Updates the state with the change to the input form the user made
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleInputChange(event) {
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
@@ -78,18 +105,30 @@ class StandardEventForm extends React.Component {
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the start date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleStartDateChange(time) {
         this.setState({
             eventStart: time,
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the end date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleEndDateChange(time) {
         this.setState({
             eventEnd: time,
         });
     }
 
+    /**
+     * Creates the Event object, adds it to the redux store, and returns to the home screen
+     * @param {obj} event the JS event object that stores the event that called this function
+     */
     handleSubmit(event) {
         event.preventDefault();
         const {
@@ -107,8 +146,10 @@ class StandardEventForm extends React.Component {
             returnHome,
         } = this.props;
 
+        // attempt to create the new event and add it to the redux store
         let evt = null;
         try {
+            // create a single event if frequency is just once
             if (frequency === '') {
                 evt = new Event(
                     name,
@@ -120,6 +161,7 @@ class StandardEventForm extends React.Component {
                     notifications, // TODO: use notification object here instead
                     null,
                 );
+            // create a recurring event otherwise with the chosen frequency
             } else {
                 evt = new RecurringEvent(
                     name,
@@ -134,23 +176,19 @@ class StandardEventForm extends React.Component {
                 ); // TODO: handle custom frequency
             }
 
-            // uncomment for debugging
-            /* alert(`
-                Adding a new standard event with the following info:
-                Name:              ${evt.name}
-                Description:       ${evt.description}
-                Start Time:        ${evt.startTime}
-                End Time:          ${evt.endTime}
-                Location:          ${evt.location}
-                Frequency:         ${evt.frequency}
-                Notifications:     ${evt.notifications}
-                Locked:            ${evt.locked}
-            `); */
-
-
+            // add the Event to the redux store
             // eslint-disable-next-line react/destructuring-assignment
             this.props.createEvent(evt);
+<<<<<<< HEAD
+            console.log(JSON.stringify(evt.serialize()));
+            console.log(deserialize(JSON.stringify(evt.serialize())));
+=======
+
+            // send the user back to home screen
+>>>>>>> save-state
             returnHome();
+
+        // if creating and adding the event failed, show an error message on the next render
         } catch (e) {
             this.setState({
                 error: true,
@@ -159,6 +197,9 @@ class StandardEventForm extends React.Component {
         }
     }
 
+    /**
+     * Load the input form
+     */
     render() {
         const {
             returnHome,
@@ -179,6 +220,9 @@ class StandardEventForm extends React.Component {
             error,
             errorMsg,
         } = this.state;
+
+        // create the JSX object that handles gathering user input as per the Standard Event
+        // input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <NameInput

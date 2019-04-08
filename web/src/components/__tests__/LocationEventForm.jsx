@@ -4,8 +4,8 @@ import React from 'react';
 import { render, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import LocationEventForm from './LocationEventForm';
-import rootReducer from '../reducers/index';
+import LocationEventForm from '../LocationEventForm';
+import rootReducer from '../../reducers/index';
 
 const store = createStore(rootReducer);
 

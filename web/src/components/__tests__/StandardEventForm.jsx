@@ -9,8 +9,10 @@ import {
 } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import DeadlineForm from './DeadlineForm';
-import rootReducer from '../reducers/index';
+import StandardEventForm from '../StandardEventForm';
+import rootReducer from '../../reducers/index';
+import Frequency from '../../events/Frequency';
+import Notifications from '../../events/Notifications';
 
 const store = createStore(rootReducer);
 
@@ -20,7 +22,7 @@ moment.now = () => new Date('2019-03-19T08:00:00Z');
 
 test('changes name', () => {
     const { getByPlaceholderText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     const input = getByPlaceholderText('Event Name');
@@ -33,7 +35,7 @@ test('changes name', () => {
 
 test('changes description', () => {
     const { getByPlaceholderText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     const input = getByPlaceholderText('Event Description');
@@ -46,12 +48,12 @@ test('changes description', () => {
 
 test('changes start date to first of month correctly', () => {
     const { getByPlaceholderText, getByText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     // find the start date and set it to be the first day of
     // the month at the current time
-    const startDateInput = getByPlaceholderText('Task Start Time');
+    const startDateInput = getByPlaceholderText('Event Start Time');
 
     const firstDayOfMonth = getByText('1');
 
@@ -64,12 +66,12 @@ test('changes start date to first of month correctly', () => {
 
 test('changes end date to third of month plus 1 hour from current time correctly', () => {
     const { getByPlaceholderText, getAllByText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     // find the end date and set it to be the third date of
     // the month at the current time plus an hour
-    const endDateInput = getByPlaceholderText('Task Deadline');
+    const endDateInput = getByPlaceholderText('Event End Time');
 
     const thirdDayOfMonth = getAllByText('3')[2]; // third is the first in endDateInput
 
@@ -84,12 +86,12 @@ test('changing start date to after end date pulls up error message', () => {
     const {
         getByPlaceholderText, getByText, getAllByText,
     } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     // find the start date and set it to be the third day of
     // the month at the current time
-    const startDateInput = getByPlaceholderText('Task Start Time');
+    const startDateInput = getByPlaceholderText('Event Start Time');
 
     const thirdDayOfMonth = getByText('3');
 
@@ -101,7 +103,7 @@ test('changing start date to after end date pulls up error message', () => {
 
     // find the end date and set it to be the first date of
     // the month at the current time plus an hour
-    const endDateInput = getByPlaceholderText('Task Deadline');
+    const endDateInput = getByPlaceholderText('Event End Time');
 
     const firstDayOfMonth = getAllByText('1')[2]; // third is the first in endDateInput
 
@@ -124,7 +126,7 @@ test('changing start date to after end date pulls up error message', () => {
 
 test('changes location correctly', () => {
     const { getByPlaceholderText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
     const input = getByPlaceholderText('Event Location');
@@ -135,12 +137,53 @@ test('changes location correctly', () => {
     expect(input.value).toEqual('test');
 });
 
-test('changes use location value correctly', () => {
-    const { getByPlaceholderText } = render(
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+test('changes frequency to weekly correctly', () => {
+    const { getByText } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
     );
 
-    const input = getByPlaceholderText('Use Location');
+    const input = getByText('Event Frequency:').children.frequency;
+    expect(input.value).toEqual('');
+
+    fireEvent.change(input, { target: { value: Frequency.freqEnum.WEEKLY } });
+
+    expect(input.value).toEqual(Frequency.freqEnum.WEEKLY);
+});
+
+test('changes notifications to email correctly', () => {
+    const { getByText } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
+    );
+
+    const input = getByText('Notification Type:').children.notifications;
+    expect(input.value).toEqual('');
+
+    fireEvent.change(input, { target: { value: Notifications.noteEnum.EMAIL } });
+
+    expect(input.value).toEqual(Notifications.noteEnum.EMAIL);
+});
+
+test('changes notification time correctly', () => {
+    const { getByPlaceholderText } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
+    );
+
+    const input = getByPlaceholderText('Notification Time');
+    expect(input.value).toEqual('0');
+
+    input.value = 123;
+
+    fireEvent.change(input, { target: { value: 123 } });
+
+    expect(input.value).toEqual('123');
+});
+
+test('changes lock value correctly', () => {
+    const { getByPlaceholderText } = render(
+        <Provider store={store}><StandardEventForm returnHome={() => {}} /></Provider>,
+    );
+
+    const input = getByPlaceholderText('Lock Event');
     expect(input.value).toEqual(''); // starts as empty string
 
     fireEvent.click(input);
@@ -150,47 +193,4 @@ test('changes use location value correctly', () => {
     fireEvent.click(input);
 
     expect(input.value).toEqual('');
-});
-
-function testNumberInput(placeholderText, nodeToRender) {
-    const { getByPlaceholderText } = render(
-        nodeToRender,
-    );
-
-    const input = getByPlaceholderText(placeholderText);
-    expect(input.value).toEqual('0');
-
-    input.value = 123;
-
-    fireEvent.change(input, { target: { value: 123 } });
-
-    expect(input.value).toEqual('123');
-}
-
-test('changes min event time correctly', () => {
-    testNumberInput(
-        'Min Scheduled Event Time',
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
-    );
-});
-
-test('changes max event time correctly', () => {
-    testNumberInput(
-        'Max Scheduled Event Time',
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
-    );
-});
-
-test('changes min break time correctly', () => {
-    testNumberInput(
-        'Min Time Between Events',
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
-    );
-});
-
-test('changes total time correctly', () => {
-    testNumberInput(
-        'Total Time to Complete',
-        <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
-    );
 });

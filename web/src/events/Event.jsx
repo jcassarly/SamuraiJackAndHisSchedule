@@ -5,6 +5,12 @@ const moment = require('moment-timezone');
 
 moment().format();
 
+const EVENT_TYPES = {
+    EVENT: 'event',
+    LOCATION: 'location',
+    RECURRING: 'recurring',
+};
+
 function verifyTimes(start, end) {
     if (!(start instanceof moment) && !(end instanceof moment)) {
         throw new Error('Invalid Start and End Time');
@@ -126,12 +132,35 @@ class Event {
         }
         return false;
     }
+
+    serialize() {
+        return {
+            type: EVENT_TYPES.EVENT,
+            obj: {
+                name: this.name,
+                description: this.description,
+                startTime: this.startTime,
+                endTime: this.endTime,
+                location: this.location,
+                locked: this.locked,
+                notifications: this.notifications,
+                parent: this.parent,
+            },
+        };
+    }
 }
 
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
     constructor(name, description, startTime, endTime, notifications) {
         super(name, description, startTime, endTime, name, true, notifications, null);
+    }
+
+    serialize() {
+        const retval = super.serialize();
+        retval.type = EVENT_TYPES.LOCATION;
+
+        return retval;
     }
 }
 
@@ -150,6 +179,58 @@ class RecurringEvent extends Event {
     set frequency(value) {
         this._frequency = value;
     }
+
+    serialize() {
+        const retval = super.serialize();
+        retval.type = EVENT_TYPES.RECURRING;
+        retval.obj = {
+            ...retval.obj,
+            frequency: this._frequency.timing,
+            optionalCustomFrequency: this._frequency.customSettings,
+        };
+        return retval;
+    }
+}
+
+function deserialize(jsonStr) {
+    const json = JSON.parse(jsonStr);
+    const { type, obj } = json;
+
+    switch (type) {
+    case EVENT_TYPES.EVENT:
+        return new Event(
+            obj.name,
+            obj.description,
+            moment(obj.startTime),
+            moment(obj.endTime),
+            obj.location,
+            obj.locked,
+            obj.notifications,
+            obj.parent,
+        );
+    case EVENT_TYPES.LOCATION:
+        return new LocationEvent(
+            obj.name,
+            obj.description,
+            moment(obj.startTime),
+            moment(obj.endTime),
+            obj.notifications,
+        );
+    case EVENT_TYPES.RECURRING:
+        return new RecurringEvent(
+            obj.name,
+            obj.description,
+            moment(obj.startTime),
+            moment(obj.endTime),
+            obj.location,
+            obj.locked,
+            obj.notifications,
+            obj.frequency,
+            obj.optionalCustomFrequency,
+        );
+    default:
+        throw new Error('Invalid type to deserialize');
+    }
 }
 
 export {
@@ -157,4 +238,5 @@ export {
     LocationEvent,
     RecurringEvent,
     verifyTimes,
+    deserialize,
 };
