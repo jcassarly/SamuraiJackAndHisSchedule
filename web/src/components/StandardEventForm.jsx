@@ -29,7 +29,6 @@ class StandardEventForm extends React.Component {
      * @param {func}   props.createEvent a function to create an event in the redux store
      *                                   with the gathered input from the form
      * @param {string} props.title       the name of the event form
-     * @param {bool}   props.hideLock    true if the lock form field should be hidden,
      *                                   false if it should appear
      */
     constructor(props) {
@@ -65,7 +64,6 @@ class StandardEventForm extends React.Component {
             returnHome: PropTypes.func.isRequired,
             createEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
-            hideLock: PropTypes.bool,
         };
     }
 
@@ -76,7 +74,6 @@ class StandardEventForm extends React.Component {
     static get defaultProps() {
         return {
             title: 'Standard Event Form',
-            hideLock: false,
         };
     }
 
@@ -198,7 +195,6 @@ class StandardEventForm extends React.Component {
     render() {
         const {
             returnHome,
-            hideLock,
         } = this.props;
 
         const {
@@ -268,7 +264,7 @@ class StandardEventForm extends React.Component {
                     name="locked"
                     checked={locked}
                     onChange={this.handleInputChange}
-                    hide={hideLock}
+                    hide={false}
                 />
 
             </InputForm>
