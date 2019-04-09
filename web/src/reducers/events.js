@@ -28,6 +28,7 @@ const reducer = (state = initialState, action) => {
         case CREATE_EVENT:
             // adds a new event with an id corresponding to max id
             newState.events[state.maxEventId] = action.payload.event;
+            newState.events[state.maxEventId].id = state.maxEventId;
             newState.maxEventId += 1;
             break;
 
@@ -42,6 +43,11 @@ const reducer = (state = initialState, action) => {
                 state.maxDeadlineId,
             );
 
+            // set the ids
+            Object.keys(newEvents).forEach((key) => {
+                newEvents[key].id = key;
+            });
+
             // the new list of events is are put on the calendar, overwriting the old ones
             if (newEvents && newEvents.length && newEvents.length >= Object.values(state.events)) {
                 newState.events = {
@@ -51,6 +57,7 @@ const reducer = (state = initialState, action) => {
 
                 // add the deadline object to the calendar too to keep track of it
                 newState.deadlines[state.maxDeadlineId] = action.payload.deadline;
+                newState.deadlines[state.maxDeadlineId].id = state.maxDeadlineId;
                 newState.maxDeadlineId += 1;
                 console.log(newState);
             }
@@ -63,11 +70,21 @@ const reducer = (state = initialState, action) => {
             };
             newState.maxEventId = newState.events.length;
 
+            // set the ids
+            /* Object.keys(newState.events).forEach((key) => {
+                newState.events[key].id = key;
+            }); */
+
             // change the deadline list to the new one and update the length
             newState.deadlines = {
                 ...action.payload.deadlines,
             };
             newState.maxDeadlineId = newState.deadlines.length;
+
+            // set the ids
+            /* Object.keys(newState.deadlines).forEach((key) => {
+                newState.deadlines[key].id = key;
+            }); */
 
             break;
         }

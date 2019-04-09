@@ -197,7 +197,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
  *                              - get location
  * @param {*} givenValidTimes An array of valid time ranges for events to be scheduled in.
  */
-function createEvents(oldSchedule, deadline, givenValidTimes, deadline_index) {
+function createEvents(oldSchedule, deadline, givenValidTimes) {
     let remainingTime = deadline.totalWorkTime;
 
     if (remainingTime < deadline.minChildEventTime) {
@@ -250,12 +250,11 @@ function createEvents(oldSchedule, deadline, givenValidTimes, deadline_index) {
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
             const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline_index);
+                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline);
             // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
             // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
             newSchedule.push(debugEvent);
-            console.log('test');
-            deadline.addEvent(newSchedule.length - 1);
+            deadline.createdEvents.push(debugEvent);
         }
     }
     return newSchedule;
@@ -276,10 +275,10 @@ function createEvents(oldSchedule, deadline, givenValidTimes, deadline_index) {
  * @param {*} workHoursStart  Moment object for time of day user can work after.
  * @param {*} workHoursFin    Moment object for time of day user cannot work after.
  */
-function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin, deadline_index) {
+function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     const oldVals = Object.values(oldSchedule);
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
-    return createEvents(oldVals, deadline, validTimes, deadline_index);
+    return createEvents(oldVals, deadline, validTimes);
 }
 
 export default autoSchedule;

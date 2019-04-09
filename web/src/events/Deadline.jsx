@@ -17,6 +17,8 @@ class Deadline {
         this.maxEventTime = maxEventTime;
         this.minBreak = minBreak;
         this.location = location;
+
+        this.id = -1; // default is no id - it gets set later
     }
 
     get name() {
@@ -55,6 +57,10 @@ class Deadline {
         return this._location;
     }
 
+    get id() {
+        return this._id;
+    }
+
     set name(value) {
         this._name = value;
     }
@@ -89,6 +95,14 @@ class Deadline {
         this._location = value;
     }
 
+    set id(value) {
+        this._id = value;
+    }
+
+    setEvent(index, newEvent) {
+        this._createdEvents[index] = newEvent;
+    }
+
     addEvent(event) {
         this._createdEvents.push(event);
     }
@@ -99,9 +113,16 @@ class Deadline {
     }
 
     serialize() {
+        // convert the created events to their IDs for serialization
+        const childEvents = [];
+        this._createdEvents.forEach((child) => {
+            childEvents.push(child.id);
+        });
+
         return {
+            id: this.id,
             name: this.name,
-            createdEvents: this._createdEvents,
+            createdEvents: childEvents,
             deadline: this._deadline,
             startWorkTime: this._startWorkTime,
             totalWorkTime: this.totalWorkTime,

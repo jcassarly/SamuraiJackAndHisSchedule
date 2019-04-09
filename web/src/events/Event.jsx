@@ -37,6 +37,8 @@ class Event {
         this.locked = locked;
         this.notifications = notifications;
         this.parent = parent;
+
+        this.id = -1; // default is no ID - to be set later
     }
 
     get name() {
@@ -69,6 +71,10 @@ class Event {
 
     get parent() {
         return this._parent;
+    }
+
+    get id() {
+        return this._id;
     }
 
     set name(value) {
@@ -107,6 +113,10 @@ class Event {
         this._parent = value;
     }
 
+    set id(value) {
+        this._id = value;
+    }
+
     addNotification(timeBefore, type) {
         this._notifications.push(new Notifications(type, timeBefore, this._startTime));
     }
@@ -138,6 +148,7 @@ class Event {
         return {
             type: EVENT_TYPES.EVENT,
             obj: {
+                id: this.id,
                 name: this.name,
                 description: this.description,
                 startTime: this.startTime,
@@ -145,7 +156,7 @@ class Event {
                 location: this.location,
                 locked: this.locked,
                 notifications: this.notifications,
-                parent: this.parent,
+                parent: (this.parent !== null) ? this.parent.id : -1,
             },
         };
     }

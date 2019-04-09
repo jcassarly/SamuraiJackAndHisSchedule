@@ -27,16 +27,27 @@ function syncFromAsync() {
                 console.log(res.text);
                 const parsed = JSON.parse(res.text);
                 console.log(parsed);
-                const newEvents = {};
-                Object.keys(parsed.events).forEach((key) => {
-                    newEvents[key] = deserialize(parsed.events[key]);
-                });
+
 
                 const newDeadlines = {};
                 Object.keys(parsed.deadlines).forEach((key) => {
                     newDeadlines[key] = deserializeDeadline(parsed.deadlines[key]);
+                    newDeadlines[key].id = key;
                 });
 
+                const newEvents = {};
+                Object.keys(parsed.events).forEach((key) => {
+                    newEvents[key] = deserialize(parsed.events[key]);
+                    newEvents[key].id = key;
+
+                    // get the pointer to the parent deadline class
+                    if (newEvents[key].parent !== -1) {
+                        newEvents[key].parent = newDeadlines[newEvents[key].parent];
+                        newEvents[key].parent.setEvent(key, newEvents[key]);
+                    } else {
+                        newEvents[key].parent = null;
+                    }
+                });
 
                 console.log(newEvents);
                 console.log(newDeadlines);
