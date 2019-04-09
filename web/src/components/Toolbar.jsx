@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
+import { setLists } from '../actions/createEvent';
+// eslint-disable-next-line no-unused-vars
+import { deserialize } from '../events/Event';
 
 import '../styles/Toolbar.css';
 
@@ -32,11 +35,14 @@ class Toolbar extends React.Component {
         // eslint-disable-next-line react/prop-types
         const { events, deadlines } = this.props;
 
+        const eventsClone = {};
+        Object.keys(events).forEach((key) => {
+            eventsClone[key] = JSON.stringify(events[key].serialize());
+        });
         const syncData = JSON.stringify({
-            events: JSON.stringify(events),
+            events: JSON.stringify(eventsClone),
             deadlines: JSON.stringify(deadlines),
         });
-        console.log('Hello');
         console.log(syncData);
         request
             .post('http://127.0.0.1:8000/proto/set')
@@ -52,13 +58,34 @@ class Toolbar extends React.Component {
     syncFrom() {
         // eslint-disable-next-line no-unused-vars
         const { logout } = this.state;
+        const { refreshHome } = this.props;
+
         request
             .post('http://127.0.0.1:8000/proto/get')
             .set('X-CSRFToken', unescape(Cookie.get('csrftoken')))
             .set('Content-Type', 'application/json')
             .then((res) => {
                 console.log(res.text);
+                const parsed = JSON.parse(res.text);
+                console.log(parsed);
+                const newEvents = {};
+                Object.keys(parsed.events).forEach((key) => {
+                    newEvents[key] = deserialize(parsed.events[key]);
+                });
+
+
+                console.log(newEvents);
+                console.log('yoot');
+                // eslint-disable-next-line
+                this.props.setLists(newEvents, this.props.deadlines);
             });
+
+        // trigger a render
+        this.setState({
+            logout,
+        });
+
+        refreshHome();
     }
 
     render() {
@@ -90,6 +117,7 @@ class Toolbar extends React.Component {
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
+    refreshHome: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => (
@@ -100,4 +128,4 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps)(Toolbar);
+export default connect(mapStateToProps, { setLists })(Toolbar);

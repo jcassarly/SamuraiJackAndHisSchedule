@@ -1,10 +1,15 @@
 import moment from 'moment';
-import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
+import { CREATE_EVENT, CREATE_DEADLINE_EVENT, SET_LISTS } from '../actions/createEvent';
 import autoSchedule from '../events/AutoScheduler';
 
 // the user starts out with no events
 // each event needs an id, these ids are assigned in order, maxId keeps track of the largest
-const initialState = { maxId: 0, events: {} };
+const initialState = {
+    maxEventId: 0,
+    events: {},
+    maxDeadlineId: 0,
+    deadlines: {},
+};
 
 /**
  * reducer for the list of all events the user has
@@ -20,8 +25,8 @@ const reducer = (state = initialState, action) => {
         // adds a new event
         case CREATE_EVENT:
             // adds a new event with an id corresponding to max id
-            newState.events[state.maxId] = action.payload.event;
-            newState.maxId += 1;
+            newState.events[state.maxEventId] = action.payload.event;
+            newState.maxEventId += 1;
             break;
 
         // adds a new deadline event
@@ -39,8 +44,27 @@ const reducer = (state = initialState, action) => {
                 newState.events = {
                     ...newEvents,
                 };
-                newState.maxId = newEvents.length;
+                newState.maxEventId = newEvents.length;
+
+                // add the deadline object to the calendar too to keep track of it
+                newState.deadlines[state.maxDeadlineId] = action.payload.deadline;
+                newState.maxDeadlineId += 1;
             }
+            break;
+        }
+        case SET_LISTS: {
+            // change the event list to the new one and update the length
+            newState.events = {
+                ...action.payload.events,
+            };
+            newState.maxEventId = newState.events.length;
+
+            // change the deadline list to the new one and update the length
+            newState.deadlines = {
+                ...action.payload.deadlines,
+            };
+            newState.maxDeadlineId = newState.deadlines.length;
+
             break;
         }
         default:

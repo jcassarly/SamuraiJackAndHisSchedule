@@ -21,11 +21,8 @@ def index(request):
 def get_data(request):
 
     events_obj = Events.objects.get(id=request.user.id)
-    resp = {
-        "events": events_obj.events,
-        "deadlines": events_obj.deadlines
-    }
-    return HttpResponse(resp.__str__())
+    resp = "{\"events\": %s, \"deadlines\": %s, \"username\": \"%s\"}" % (events_obj.events, events_obj.deadlines, events_obj.username)
+    return HttpResponse(resp)
 
 @ensure_csrf_cookie
 def set_data(request):

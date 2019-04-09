@@ -30,6 +30,7 @@ class App extends Component {
      */
     returnHome = () => {
         this.setState({ nav: 'main' });
+        console.log('back to home');
     }
 
     /**
@@ -43,7 +44,7 @@ class App extends Component {
             return <ChooseEventType returnHome={this.returnHome} />;
         case 'main':
         default:
-            return <MainCalendar navNewEvent={this.navNewEvent} />;
+            return <MainCalendar navNewEvent={this.navNewEvent} refreshHome={this.returnHome} />;
         }
     }
 
