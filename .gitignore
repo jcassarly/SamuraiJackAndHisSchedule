@@ -5,3 +5,5 @@
 .notags
 .vroot
 tags
+
+*.pyc
