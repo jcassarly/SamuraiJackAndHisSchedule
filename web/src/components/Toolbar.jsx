@@ -1,15 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
+import request from 'superagent';
 import { connect } from 'react-redux';
 import { syncFromAsync } from '../actions/sync';
 
 import '../styles/Toolbar.css';
 
-const request = require('superagent');
-// const csrf = require('superagent-csrf-middleware');
-
+/**
+ * Class to represent the Toolbar on the homscreen
+ */
 class Toolbar extends React.Component {
+    /**
+     * Create a new user
+     * @param {*} props the arguments passed into the Toolbar
+     *                  see proptypes below for more info
+     */
     constructor(props) {
         super(props);
 
@@ -21,50 +27,64 @@ class Toolbar extends React.Component {
         this.syncTo = this.syncTo.bind(this);
     }
 
+    /**
+     * Set the state to signify that the user clicked the logout button
+     */
     logout() {
         this.setState({
             logout: true,
         });
     }
 
+    /**
+     * Sends the current events and deadlines in the redux store to the server
+     * Overwrites whatever was saved on the user's account
+     */
     syncTo() {
-        // eslint-disable-next-line no-unused-vars
-        // eslint-disable-next-line react/prop-types
         const { events, deadlines } = this.props;
 
+        // serialize the events
         const eventsClone = {};
         Object.keys(events).forEach((key) => {
             eventsClone[key] = JSON.stringify(events[key].serialize());
         });
 
+        // serialize the deadlines
         const deadlinesClone = {};
         Object.keys(deadlines).forEach((key) => {
             deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
         });
 
+        // takes the serializes lists and combine them into one object
         const syncData = JSON.stringify({
             events: JSON.stringify(eventsClone),
             deadlines: JSON.stringify(deadlinesClone),
         });
-        console.log(syncData);
+
+        // send the data to the server
         request
-            .post('http://127.0.0.1:8000/proto/set')
-            .set('X-CSRFToken', unescape(Cookie.get('csrftoken')))
-            .set('Content-Type', 'application/json')
+            .post('http://127.0.0.1:8000/proto/set') // TODO: remove hardocded URL
+            .set('X-CSRFToken', unescape(Cookie.get('csrftoken'))) // for security
+            .set('Content-Type', 'application/json') // sending a JSON object
             .send(syncData)
             .then((res) => {
+                // echo the response on the console
                 console.log(res.text);
             });
-        // alert(logout);
     }
 
+    /**
+     * Render the Toolbar object
+     */
     render() {
         const { logout } = this.state;
 
+        // if the user clicked logout, go to the logout URL
         if (logout) {
             this.setState({
                 logout: false,
             });
+            // TODO: remove hardcoded URL
             window.location.replace('http://127.0.0.1:8000/accounts/logout/');
         }
 
@@ -85,10 +105,17 @@ class Toolbar extends React.Component {
 
 /**
  * navNewEvent: navigates to the form for creating a new event
+ * syncFromAsync: pulls the events from the server to the redux store
+ * events: the list of events from the redux store
+ * deadlines: the list of deadlines from the redux store
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
     syncFromAsync: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    events: PropTypes.object.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    deadlines: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => (

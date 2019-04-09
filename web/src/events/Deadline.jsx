@@ -57,6 +57,9 @@ class Deadline {
         return this._location;
     }
 
+    /**
+     * Returns the id of the deadline in the redux store. -1 if it has not been set yet
+     */
     get id() {
         return this._id;
     }
@@ -95,6 +98,10 @@ class Deadline {
         this._location = value;
     }
 
+    /**
+     * Set the id of the Deadline in the redux store to value
+     * @param {int} value the new id
+     */
     set id(value) {
         this._id = value;
     }
@@ -112,6 +119,10 @@ class Deadline {
         this._createdEvents.splice(toRemove);
     }
 
+    /**
+     * Serialize this deadline object so it can be stored
+     * returns a JSON string with the deadline object
+     */
     serialize() {
         // convert the created events to their IDs for serialization
         const childEvents = [];
@@ -134,6 +145,12 @@ class Deadline {
     }
 }
 
+/**
+ * Deserializes a JSON string containing a Deadline object
+ * (should have the same form as the output of the serialize methods for a Deadline)
+ * @param {string} jsonStr a JSON string containing one Deadline
+ * Returns a Deadline parsed from the jsonStr
+ */
 function deserializeDeadline(jsonStr) {
     const json = JSON.parse(jsonStr);
     const dl = new Deadline(

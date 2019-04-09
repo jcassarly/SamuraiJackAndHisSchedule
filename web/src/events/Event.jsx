@@ -73,6 +73,9 @@ class Event {
         return this._parent;
     }
 
+    /**
+     * Returns the id of the event in the redux store. -1 if it has not been set yet
+     */
     get id() {
         return this._id;
     }
@@ -113,6 +116,10 @@ class Event {
         this._parent = value;
     }
 
+    /**
+     * Set the id of the Event in the redux store to value
+     * @param {int} value the new id
+     */
     set id(value) {
         this._id = value;
     }
@@ -143,6 +150,10 @@ class Event {
         return false;
     }
 
+    /**
+     * Serialize this event object so it can be stored
+     * returns a JSON string with the event object
+     */
     serialize() {
         console.log(`parent: ${this.parent}`);
         return {
@@ -156,6 +167,7 @@ class Event {
                 location: this.location,
                 locked: this.locked,
                 notifications: this.notifications,
+                // if the parent is not null, use the id, otherwise there is no id, so -1
                 parent: (this.parent !== null) ? this.parent.id : -1,
             },
         };
@@ -168,7 +180,12 @@ class LocationEvent extends Event {
         super(name, description, startTime, endTime, name, true, notifications, null);
     }
 
+    /**
+     * Serialize this location event object so it can be stored
+     * returns a JSON string with the location event object
+     */
     serialize() {
+        // all the serialization is the same as the event except that the type is location
         const retval = super.serialize();
         retval.type = EVENT_TYPES.LOCATION;
 
@@ -192,9 +209,17 @@ class RecurringEvent extends Event {
         this._frequency = value;
     }
 
+    /**
+     * Serialize this recurring event object so it can be stored
+     * returns a JSON string with the recurring event object
+     */
     serialize() {
         const retval = super.serialize();
+
+        // set the type of event for when deserialization happens
         retval.type = EVENT_TYPES.RECURRING;
+
+        // add the frequency fields
         retval.obj = {
             ...retval.obj,
             frequency: this._frequency.timing,
@@ -204,11 +229,21 @@ class RecurringEvent extends Event {
     }
 }
 
+/**
+ * Deserializes a JSON string containing an event object
+ * (should have the same form as the output of the serialize methods for its respective type)
+ * @param {string} jsonStr a JSON string containing one Event or Event subclass
+ * Returns an Event or subclass of event parsed from the jsonStr
+ *
+ * class is based on the type field
+ */
 function deserialize(jsonStr) {
     const json = JSON.parse(jsonStr);
     const { type, obj } = json;
 
+    // check the type
     switch (type) {
+    // type is normal event
     case EVENT_TYPES.EVENT:
         return new Event(
             obj.name,
@@ -220,6 +255,7 @@ function deserialize(jsonStr) {
             obj.notifications,
             obj.parent,
         );
+    // type is location event
     case EVENT_TYPES.LOCATION:
         return new LocationEvent(
             obj.name,
@@ -228,6 +264,7 @@ function deserialize(jsonStr) {
             moment(obj.endTime),
             obj.notifications,
         );
+    // type is recurring event
     case EVENT_TYPES.RECURRING:
         return new RecurringEvent(
             obj.name,

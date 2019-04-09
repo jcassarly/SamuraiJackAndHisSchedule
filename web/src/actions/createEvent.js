@@ -5,7 +5,6 @@ const CREATE_EVENT = 'CREATE_EVENT';
 // add a new deadline event to the calendar
 const CREATE_DEADLINE_EVENT = 'CREATE_DEADLINE_EVENT';
 // sets the event and deadline lists to new ones in the calendar
-const SET_LISTS = 'SET_LISTS';
 
 /**
  * action creator
@@ -37,22 +36,5 @@ function createDeadlineEvent(deadline) {
     };
 }
 
-/**
- * action creator
- * creates an action corresponding to setting the deadline and event lists
- * @param {Event[]} events
- * @param {Deadline[]} deadlines
- * Returns the action
- */
-function setLists(events, deadlines) {
-    return {
-        type: SET_LISTS,
-        payload: {
-            events,
-            deadlines,
-        },
-    };
-}
-
-export { createEvent, createDeadlineEvent, setLists };
-export { CREATE_EVENT, CREATE_DEADLINE_EVENT, SET_LISTS };
+export { createEvent, createDeadlineEvent };
+export { CREATE_EVENT, CREATE_DEADLINE_EVENT };
