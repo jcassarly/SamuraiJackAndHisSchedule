@@ -30,7 +30,7 @@ def set_data(request):
     req_json = json.loads(request.body.decode('utf-8'))
 
     events_obj.events = req_json['events']
-    #events_obj.deadlines = req_json['deadlines']
+    events_obj.deadlines = req_json['deadlines']
 
     events_obj.save()
 

@@ -6,7 +6,7 @@ import {
     createDeadlineEvent,
 } from '../../actions/createEvent';
 import { Event } from '../../events/Event';
-import Deadline from '../../events/Deadline';
+import { Deadline } from '../../events/Deadline';
 
 jest.mock('../../events/AutoScheduler');
 

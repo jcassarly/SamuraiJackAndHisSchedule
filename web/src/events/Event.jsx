@@ -134,6 +134,7 @@ class Event {
     }
 
     serialize() {
+        console.log(`parent: ${this.parent}`);
         return {
             type: EVENT_TYPES.EVENT,
             obj: {

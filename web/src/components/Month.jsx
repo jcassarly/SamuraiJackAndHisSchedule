@@ -45,7 +45,7 @@ class Month extends Component {
      */
     shouldComponentUpdate(nextProps) {
         const { month, events } = this.props;
-        return nextProps.month.diff(month, 'months') !== 0 && _.isEqual(events, nextProps.events);
+        return nextProps.month.diff(month, 'months') !== 0 || !_.isEqual(events, nextProps.events);
     }
 
     render() {

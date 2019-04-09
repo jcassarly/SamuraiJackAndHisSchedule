@@ -1,4 +1,5 @@
 // the class for handling deadlines
+import moment from 'moment-timezone';
 import { verifyTimes } from './Event';
 
 class Deadline {
@@ -96,6 +97,43 @@ class Deadline {
         const toRemove = this._createdEvents.findIndex(item => item === event);
         this._createdEvents.splice(toRemove);
     }
+
+    serialize() {
+        return {
+            name: this.name,
+            createdEvents: this._createdEvents,
+            deadline: this._deadline,
+            startWorkTime: this._startWorkTime,
+            totalWorkTime: this.totalWorkTime,
+            minEventTime: this.minEventTime,
+            maxEventTime: this.maxEventTime,
+            minBreak: this.minBreak,
+            location: this.location,
+        };
+    }
 }
 
-export default Deadline;
+function deserializeDeadline(jsonStr) {
+    const json = JSON.parse(jsonStr);
+    const dl = new Deadline(
+        json.name,
+        moment(json.deadline),
+        json.totalWorkTime,
+        json.minEventTime,
+        json.maxEventTime,
+        json.minBreak,
+        moment(json.startWorkTime),
+        json.location,
+    );
+
+    json.createdEvents.forEach((e) => {
+        dl.addEvent(e);
+    });
+
+    return dl;
+}
+
+export {
+    Deadline,
+    deserializeDeadline,
+};

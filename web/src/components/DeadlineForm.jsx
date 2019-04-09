@@ -12,7 +12,7 @@ import {
     NumberInput,
 } from './InputFormComponents';
 import '../styles/StandardEventForm.css';
-import Deadline from '../events/Deadline';
+import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
 
@@ -119,32 +119,32 @@ class DeadlineForm extends React.Component {
         } = this.props;
 
         // try to create the deadline object
-        try {
-            const deadline = new Deadline(
-                name,
-                // TODO: add description to deadline
-                taskDeadline,
-                totalTime,
-                minTime,
-                maxTime,
-                minBreak,
-                taskStart,
-                location,
-                // TODO: add uselocation to deadline
-            );
+        // try {
+        const deadline = new Deadline(
+            name,
+            // TODO: add description to deadline
+            taskDeadline,
+            totalTime,
+            minTime,
+            maxTime,
+            minBreak,
+            taskStart,
+            location,
+            // TODO: add uselocation to deadline
+        );
 
-            // add the deadline event to the calendar
-            // eslint-disable-next-line react/destructuring-assignment
-            this.props.createDeadlineEvent(deadline);
+        // add the deadline event to the calendar
+        // eslint-disable-next-line react/destructuring-assignment
+        this.props.createDeadlineEvent(deadline);
 
-            returnHome();
+        returnHome();
         // if there was an error creating the deadline object, display it to the user.
-        } catch (e) {
+        /* } catch (e) {
             this.setState({
                 error: true,
                 errorMsg: e.message,
             });
-        }
+        } */
     }
 
     /**

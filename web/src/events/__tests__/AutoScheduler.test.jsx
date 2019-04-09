@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 
 import { Event } from '../Event';
-import Deadline from '../Deadline';
+import { Deadline } from '../Deadline';
 import autoSchedule, { getValidTimes, createEvents, TimeRange } from '../AutoScheduler';
 
 const initialEvents = {

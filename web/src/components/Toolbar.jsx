@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
-import { setLists } from '../actions/createEvent';
-// eslint-disable-next-line no-unused-vars
-import { deserialize } from '../events/Event';
+import { syncFromAsync } from '../actions/sync';
 
 import '../styles/Toolbar.css';
 
@@ -21,7 +19,6 @@ class Toolbar extends React.Component {
 
         this.logout = this.logout.bind(this);
         this.syncTo = this.syncTo.bind(this);
-        this.syncFrom = this.syncFrom.bind(this);
     }
 
     logout() {
@@ -39,9 +36,15 @@ class Toolbar extends React.Component {
         Object.keys(events).forEach((key) => {
             eventsClone[key] = JSON.stringify(events[key].serialize());
         });
+
+        const deadlinesClone = {};
+        Object.keys(deadlines).forEach((key) => {
+            deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
+        });
+
         const syncData = JSON.stringify({
             events: JSON.stringify(eventsClone),
-            deadlines: JSON.stringify(deadlines),
+            deadlines: JSON.stringify(deadlinesClone),
         });
         console.log(syncData);
         request
@@ -55,39 +58,6 @@ class Toolbar extends React.Component {
         // alert(logout);
     }
 
-    syncFrom() {
-        // eslint-disable-next-line no-unused-vars
-        const { logout } = this.state;
-        const { refreshHome } = this.props;
-
-        request
-            .post('http://127.0.0.1:8000/proto/get')
-            .set('X-CSRFToken', unescape(Cookie.get('csrftoken')))
-            .set('Content-Type', 'application/json')
-            .then((res) => {
-                console.log(res.text);
-                const parsed = JSON.parse(res.text);
-                console.log(parsed);
-                const newEvents = {};
-                Object.keys(parsed.events).forEach((key) => {
-                    newEvents[key] = deserialize(parsed.events[key]);
-                });
-
-
-                console.log(newEvents);
-                console.log('yoot');
-                // eslint-disable-next-line
-                this.props.setLists(newEvents, this.props.deadlines);
-            });
-
-        // trigger a render
-        this.setState({
-            logout,
-        });
-
-        refreshHome();
-    }
-
     render() {
         const { logout } = this.state;
 
@@ -99,14 +69,15 @@ class Toolbar extends React.Component {
         }
 
         // see propTypes
-        const { navNewEvent } = this.props;
+        // eslint-disable-next-line no-shadow
+        const { navNewEvent, syncFromAsync } = this.props;
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">
                 <button type="button" onClick={navNewEvent}>New Event</button>
                 <button type="button" onClick={this.logout}>Logout</button>
                 <button type="button" onClick={this.syncTo}>Sync To Server</button>
-                <button type="button" onClick={this.syncFrom}>Sync From Server</button>
+                <button type="button" onClick={syncFromAsync}>Sync From Server</button>
             </div>
         );
     }
@@ -117,7 +88,7 @@ class Toolbar extends React.Component {
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
-    refreshHome: PropTypes.func.isRequired,
+    syncFromAsync: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => (
@@ -128,4 +99,4 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { setLists })(Toolbar);
+export default connect(mapStateToProps, { syncFromAsync })(Toolbar);

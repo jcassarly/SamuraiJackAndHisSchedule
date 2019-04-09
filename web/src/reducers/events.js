@@ -1,5 +1,6 @@
 import moment from 'moment';
-import { CREATE_EVENT, CREATE_DEADLINE_EVENT, SET_LISTS } from '../actions/createEvent';
+import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
+import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
 
 // the user starts out with no events
@@ -18,6 +19,7 @@ const reducer = (state = initialState, action) => {
     // copy the old state
     const newState = { ...state };
     newState.events = { ...state.events };
+    newState.deadlines = { ...state.deadlines };
 
     if (action) {
         // mutate state depending on the type of the action
@@ -37,6 +39,7 @@ const reducer = (state = initialState, action) => {
                 action.payload.deadline,
                 moment().hour(9),
                 moment().hour(17),
+                state.maxDeadlineId,
             );
 
             // the new list of events is are put on the calendar, overwriting the old ones
@@ -49,10 +52,11 @@ const reducer = (state = initialState, action) => {
                 // add the deadline object to the calendar too to keep track of it
                 newState.deadlines[state.maxDeadlineId] = action.payload.deadline;
                 newState.maxDeadlineId += 1;
+                console.log(newState);
             }
             break;
         }
-        case SET_LISTS: {
+        case SYNC_FROM: {
             // change the event list to the new one and update the length
             newState.events = {
                 ...action.payload.events,
