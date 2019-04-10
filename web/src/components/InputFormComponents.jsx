@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import DateTime from 'react-datetime';
+import ColorEnum from './ColorEnum';
 import Frequency from '../events/Frequency';
 import Notifications from '../events/Notifications';
 
@@ -550,6 +551,41 @@ UseLocationInput.propTypes = {
     name: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
+};
+
+/**
+ * Create a React Component that gets a selection from a list of color schemes
+ * @param {string} props.name     the name of the React Component
+ * @param {string} props.value    the selection
+ * @param {func}   props.onChange a function to handle changes to the input field
+ */
+function ColorSelect(props) {
+    const {
+        name,
+        value,
+        onChange,
+    } = props;
+    return (
+        <SelectInput prompt="Color Scheme" name={name} value={value} onChange={onChange}>
+            <option value="">None</option>
+            <option value={ColorEnum.WHITE_BLACK}>White + Black Text</option>
+            <option value={ColorEnum.BLUE_BLACK}>Blue + Black Text</option>
+            <option value={ColorEnum.GREEN_BLACK}>Green + Black Text</option>
+            <option value={ColorEnum.ORANGE_BLACK}>Orange + Black Text</option>
+        </SelectInput>
+    );
+}
+
+// defines the object that checks the props passed into the NotificationSelect
+ColorSelect.propTypes = {
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
+// defines the object that specified the default values for non-required props
+ColorSelect.defaultProps = {
+    value: '',
 };
 
 export {
