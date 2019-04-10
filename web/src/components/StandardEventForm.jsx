@@ -44,6 +44,7 @@ class StandardEventForm extends React.Component {
             frequency: '',
             notifications: '',
             notificationTime: 0,
+            color: '',
             locked: true,
             error: false,
             errorMsg: 'No Error',
@@ -136,6 +137,7 @@ class StandardEventForm extends React.Component {
             location,
             locked,
             notifications,
+            color,
             frequency,
         } = this.state;
 
@@ -157,6 +159,7 @@ class StandardEventForm extends React.Component {
                     locked,
                     notifications, // TODO: use notification object here instead
                     null,
+                    color,
                 );
             // create a recurring event otherwise with the chosen frequency
             } else {
@@ -168,6 +171,7 @@ class StandardEventForm extends React.Component {
                     location,
                     locked,
                     notifications,
+                    color,
                     frequency,
                     null,
                 ); // TODO: handle custom frequency
@@ -265,6 +269,12 @@ class StandardEventForm extends React.Component {
                     checked={locked}
                     onChange={this.handleInputChange}
                     hide={false}
+                />
+
+                <ColorSelect
+                    name="color"
+                    value={color}
+                    onChnage={this.handleInputChange}
                 />
 
             </InputForm>

@@ -139,16 +139,16 @@ class Event {
 
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
-    constructor(name, description, startTime, endTime, notifications) {
-        super(name, description, startTime, endTime, name, true, notifications, null);
+    constructor(name, description, startTime, endTime, notifications, color) {
+        super(name, description, startTime, endTime, name, true, notifications, null, color);
     }
 }
 
 // Class for recurring events
 class RecurringEvent extends Event {
     constructor(name, description, startTime, endTime, location, locked,
-        notifications, frequency, optionalCustomFrequency) {
-        super(name, description, startTime, endTime, location, locked, notifications, null);
+        notifications, color, frequency, optionalCustomFrequency) {
+        super(name, description, startTime, endTime, location, locked, notifications, null, color);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
     }
 
