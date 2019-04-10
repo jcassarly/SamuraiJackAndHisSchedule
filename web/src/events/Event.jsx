@@ -133,6 +133,19 @@ class Event {
         return false;
     }
 
+    clone() {
+        return new Event(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.parent,
+        );
+    }
+
     serialize() {
         return {
             type: EVENT_TYPES.EVENT,
@@ -156,6 +169,16 @@ class LocationEvent extends Event {
         super(name, description, startTime, endTime, name, true, notifications, null);
     }
 
+    clone() {
+        return new Event(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.notifications,
+        );
+    }
+
     serialize() {
         const retval = super.serialize();
         retval.type = EVENT_TYPES.LOCATION;
@@ -170,6 +193,20 @@ class RecurringEvent extends Event {
         notifications, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
+    }
+
+    clone() {
+        return new Event(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.frequency,
+            this.optionalCustomFrequency,
+        );
     }
 
     get frequency() {
