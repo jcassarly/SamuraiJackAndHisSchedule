@@ -14,17 +14,17 @@ const TimeRangeRelation = {
  */
 class TimeRange {
     constructor(start, end) {
-        this.start = start;
-        this.end = end;
+        this._start = start;
+        this._end = end;
     }
 
-    // get start() {
-    //     return this.start;
-    // }
+    get start() {
+        return this._start;
+    }
 
-    // get end() {
-    //     return this.end;
-    // }
+    get end() {
+        return this._end;
+    }
 
     set start(newStart) {
         if (newStart.isAfter(this.end)) {
