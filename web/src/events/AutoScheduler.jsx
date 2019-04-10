@@ -13,11 +13,11 @@ const TimeRangeRelation = {
  * Represents a range of time.
  */
 class TimeRange {
-    constructor(start, end) {
-        this._start = start;
-        this._end = end;
-        this.start = start;
-        this.end = end;
+    constructor(newStart, newEnd) {
+        this._start = newStart;
+        this._end = newEnd;
+        this.start = newStart;
+        this.end = newEnd;
     }
 
     get start() {
@@ -86,6 +86,7 @@ class TimeRange {
 
 class BinaryTimeRangeHeap {
     constructor(array) {
+        this.array = [];
         this.array = array;
         this.heapify();
     }
@@ -193,11 +194,11 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
             //                                                                                            TODO: Find a more efficient method to do this.
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
 
-                console.log('here I am')
                 // If the event slightly overlaps the beginning or end of this time range, trim the edges
-                validTimes[i].trim(new TimeRange(moment(event.startTime), moment(event.endtime)), deadline.minBreak);
+                validTimes[i].trim(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak);
 
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
+                    console.log(`Current Range: ${validTimes[i].start.format('LLL')} to ${validTimes[i].end.format('LLL')}`)
                     const prevEnd = moment(validTimes[i].end);
 
                     let validBefore = true;
@@ -258,6 +259,9 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
     let counter = 0;
 
+    console.log('Given ValidTimes')
+    printRanges(validTimes.array);
+
     while (validTimes.length > 0 && remainingTime > 0) {
         counter += 1;
         if (counter > 100) {
@@ -271,40 +275,63 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
-        // console.log(`validTimes.length: ${validTimes.length}`);
-        // console.log(`remainingTime: ${remainingTime}`);
-        // console.log(`duration: ${duration}`);
-        // console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+        console.log(`counter: ${counter}`)
+        console.log(`validTimes.length: ${validTimes.length}`);
+        console.log(`remainingTime: ${remainingTime}`);
+        console.log(`duration: ${duration}`);
+        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+        console.log('A')
 
         //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
         if (duration >= deadline.minEventTime) { // Time range is not too short
+            console.log('B')
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
+            console.log(`Max Event Time: ${deadline.maxEventTime}, type: ${typeof deadline.maxEventTime}`)
             if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
+                console.log('C')
                 duration = remainingTime;
             } else if (duration > deadline.maxEventTime) {
-                // console.log('C');
+                console.log('D')
                 duration = deadline.maxEventTime;
 
                 const newStart = moment(range.start).add(Number(deadline.maxEventTime) + Number(deadline.minBreak), 'm');
                 const newDuration = (range.end.format('x') - newStart.format('x')) / 60 / 1000;
                 if (newDuration > deadline.minEventTime) {
+                    console.log('E')
                     validTimes.push(new TimeRange(newStart, moment(range.end)));
+                    console.log('new validTimes:')
+                    printRanges(validTimes.array);
                 }
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
+            console.log('alpha')
+            console.log(`remainingTime: ${remainingTime}`);
+            console.log(`duration: ${duration}`);
+
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
+
+            console.log('beta')
+            console.log(`remainingTime: ${remainingTime}`);
+            console.log(`duration: ${duration}`);
 
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
             if (remainingTime !== 0 && remainingTime < deadline.minEventTime) {
-                // console.log('E');
+                console.log('F')
+                console.log('theta')
+                console.log(`remainingTime: ${remainingTime}`);
+                console.log(`duration: ${duration}`);
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
+                console.log('gamma')
+                console.log(`remainingTime: ${remainingTime}`);
+                console.log(`duration: ${duration}`);
             }
+            console.log('G')
 
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
@@ -343,8 +370,9 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     console.log(`    MinBreakTime: ${deadline.minBreak}`)
     console.log(`    TotalWorkTime: ${deadline.totalWorkTime}`)
     const oldVals = Object.values(oldSchedule);
+    console.log('Currently existing Events')
+    printRanges(eventToRanges(oldVals))
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
-    console.log('yeee yee wassup');
     console.log('Values of ValidTimes after getValidTimes():')
     printRanges(validTimes);
     console.log('Types of validTimes after getValidTimes():');
