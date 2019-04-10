@@ -30,7 +30,7 @@ class TimeRange {
 
     set start(newStart) {
         if (newStart.isAfter(this.end)) {
-            this._start = moment(this.end);
+            throw 'Invalid TimeRange: start cannot be after end'
         } else {
             this._start = moment(newStart);
         }
@@ -38,7 +38,7 @@ class TimeRange {
 
     set end(newEnd) {
         if (newEnd.isBefore(this.start)) {
-            this._end = moment(this.start);
+            throw 'Invalid TimeRange: end cannot be before start'
         } else {
             this._end = moment(newEnd);
         }
@@ -258,7 +258,10 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         counter += 1;
         if (counter > 100) {
             console.log(`Exceeded 100 iterations.`);
-            printRanges(validTimes);
+            console.log('Types of validTimes during infinite:');
+            console.log(validTimes);
+            console.log('Values of validTimes during infinite:')
+            printRanges(validTimes.array);
             break;
         }
         const range = validTimes.pop(); // Get the longest duration TimeRange
@@ -335,6 +338,7 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     console.log('ValidTimes:')
     printRanges(validTimes);
     let returnvalue =  createEvents(oldVals, deadline, validTimes);
+    console.log('Events:')
     printRanges(eventToRanges(returnvalue));
     return returnvalue;
 }
