@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
 import { Event } from '../events/Event';
+import { moveEvent } from '../actions/changeEvent';
 
 import CalHeader from './CalHeader';
 import Toolbar from './Toolbar';
@@ -42,6 +43,7 @@ class MainCalendar extends Component {
     static propTypes = {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
+        moveEvent: PropTypes.func.isRequired,
     };
 
     /**
@@ -122,13 +124,6 @@ class MainCalendar extends Component {
     }
 
     /**
-     * move an event
-     */
-    moveEvent = (id, change, type) => {
-        console.log(id, change, type);
-    }
-
-    /**
      * main render method
      */
     render() {
@@ -138,7 +133,7 @@ class MainCalendar extends Component {
             pos, type,
         } = this.state;
         // see propTypes
-        const { navNewEvent } = this.props;
+        const { navNewEvent, moveEvent } = this.props;
         let { events } = this.props;
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
@@ -148,10 +143,10 @@ class MainCalendar extends Component {
         //     being displayed
         switch (type) {
         case types.DAY:
-            calElem = <Day mode={mode} moveEvent={this.moveEvent} events={events} day={date} />;
+            calElem = <Day mode={mode} moveEvent={moveEvent} events={events} day={date} />;
             break;
         case types.WEEK:
-            calElem = <Week mode={mode} moveEvent={this.moveEvent} events={events} week={date} />;
+            calElem = <Week mode={mode} moveEvent={moveEvent} events={events} week={date} />;
             break;
         default:
         case types.MONTH:
@@ -167,7 +162,7 @@ class MainCalendar extends Component {
                         <div className="calContainer" style={{ top: `${pos}px` }}>
                             <Month
                                 mode={mode}
-                                moveEvent={this.moveEvent}
+                                moveEvent={moveEvent}
                                 events={events}
                                 id={date.month()}
                                 month={date}
@@ -209,5 +204,5 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps)(MainCalendar);
+export default connect(mapStateToProps, { moveEvent })(MainCalendar);
 export { modes, types };

@@ -88,7 +88,7 @@ class Day extends Component {
         this.setState({ selectedEvent: -1, initialPos: 0, mouseMove: 0 });
         // mouseMove is in pixels, so convert to em, divide by 3 to convert to hours,
         // then multiply by 60 to get minutes
-        moveEvent(selectedEvent, Math.round(mouseMove / em / 3 * 60, 'minutes'));
+        moveEvent(selectedEvent, Math.round(mouseMove / em / 3 * 60), 'minutes');
         e.preventDefault();
     }
 

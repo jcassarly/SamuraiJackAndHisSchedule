@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
+import { MOVE_EVENT } from '../actions/changeEvent';
 import autoSchedule from '../events/AutoScheduler';
 
 // the user starts out with no events
@@ -41,6 +42,21 @@ const reducer = (state = initialState, action) => {
                 };
                 newState.maxId = newEvents.length;
             }
+            break;
+        }
+        case MOVE_EVENT: {
+            const { id, amount, type } = action.payload;
+            const newEvent = newState.events[id].clone();
+            const start = newEvent.startTime.clone().add(amount, type);
+            const end = newEvent.endTime.clone().add(amount, type);
+            if (amount > 0) {
+                newEvent.endTime = end;
+                newEvent.startTime = start;
+            } else {
+                newEvent.startTime = start;
+                newEvent.endTime = end;
+            }
+            newState.events[id] = newEvent;
             break;
         }
         default:

@@ -4,6 +4,7 @@
 
 .calDay.drag .dayEvents {
     touch-action: none;
+    cursor: pointer;
 }
 
 .calDay .dayEvents {
