@@ -1,8 +1,9 @@
 import { UPDATE_SETTINGS } from '../actions/updateSettings';
-// import Settings from '../events/Settings';
+import { SYNC_FROM } from '../actions/sync';
+import { Settings, deserializeSettings } from '../events/Settings';
 
 // the user starts out with the default settings
-const initialState = { settings: null }; // new Settings() };
+const initialState = { settings: new Settings() };
 
 /**
  * reducer for the list of all events the user has
@@ -20,6 +21,10 @@ const reducer = (state = initialState, action) => {
             newState.settings = action.payload.settings;
             break;
 
+        case SYNC_FROM:
+            // changes the settings to the settings received from the sync
+            newState.settings = deserializeSettings(action.payload.settingsJson);
+            break;
         default:
         }
     }

@@ -4,6 +4,7 @@ import Cookie from 'js-cookie';
 import request from 'superagent';
 import { connect } from 'react-redux';
 import { syncFromAsync } from '../actions/sync';
+import { Settings } from '../events/Settings';
 
 import '../styles/Toolbar.css';
 
@@ -41,7 +42,7 @@ class Toolbar extends React.Component {
      * Overwrites whatever was saved on the user's account
      */
     syncTo() {
-        const { events, deadlines } = this.props;
+        const { events, deadlines, settings } = this.props;
 
         // serialize the events
         const eventsClone = {};
@@ -55,10 +56,11 @@ class Toolbar extends React.Component {
             deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
         });
 
-        // takes the serializes lists and combine them into one object
+        // takes the serialized lists and settings and combine them into one object
         const syncData = JSON.stringify({
             events: JSON.stringify(eventsClone),
             deadlines: JSON.stringify(deadlinesClone),
+            settings: JSON.stringify(settings.serialize()),
         });
 
         // send the data to the server
@@ -108,6 +110,7 @@ class Toolbar extends React.Component {
  * syncFromAsync: pulls the events from the server to the redux store
  * events: the list of events from the redux store
  * deadlines: the list of deadlines from the redux store
+ * settings: the settings object from the redux store
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
@@ -116,13 +119,15 @@ Toolbar.propTypes = {
     events: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     deadlines: PropTypes.object.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    settings: PropTypes.instanceOf(Settings).isRequired,
 };
 
 const mapStateToProps = state => (
     {
         events: state.events.events,
         deadlines: state.events.deadlines,
-        // settings: state.settings.settings,
+        settings: state.settings.settings,
     }
 );
 

@@ -1,7 +1,5 @@
-import Cookie from 'js-cookie';
+// import Cookie from 'js-cookie';
 import request from 'superagent';
-import { deserialize } from '../events/Event';
-import { deserializeDeadline } from '../events/Deadline';
 
 const SYNC_FROM = 'SYNC_FROM';
 
@@ -9,70 +7,45 @@ const SYNC_FROM = 'SYNC_FROM';
 /**
  * action creator
  * sets the events and deadlines lists in the redux store
- * @param {Event[]} events the new events list
- * @param {Deadline[]} deadlines the new deadlines list
+ * @param {Event[]} events the new events list with elements still as strings
+ * @param {Deadline[]} deadlines the new deadlines list with elements still as strings
+ * @param {Settings} settings the new settings as a JSON string
  */
-function syncFrom(events, deadlines) {
+function syncFrom(eventsJson, deadlinesJson, settingsJson) {
     return {
         type: SYNC_FROM,
         payload: {
-            events,
-            deadlines,
+            eventsJson,
+            deadlinesJson,
+            settingsJson,
         },
     };
 }
 
 /**
  * asynchronous action creator
+ * this function is redux thunk
  * returns a function that handles getting the syncing from the server
  */
 function syncFromAsync() {
     return (dispatch) => {
         request
-            .post('http://127.0.0.1:8000/proto/get') // TODO: remove hardcoded URL
-            .set('X-CSRFToken', unescape(Cookie.get('csrftoken'))) // for security
-            .set('Content-Type', 'application/json') // expect to receive JSON
+            .get('http://127.0.0.1:8000/proto/get') // TODO: remove hardcoded URL
             .then((res) => {
                 // create the JSON object from the string received
                 const parsed = JSON.parse(res.text);
 
-                // deserialize the deadlines
-                const newDeadlines = {};
-                Object.keys(parsed.deadlines).forEach((key) => {
-                    // get the deadline from the response
-                    newDeadlines[key] = deserializeDeadline(parsed.deadlines[key]);
-
-                    // set the id of the current deadline
-                    newDeadlines[key].id = key;
-                });
-
-                // deserialize the events
-                const newEvents = {};
-                Object.keys(parsed.events).forEach((key) => {
-                    // get the event from the response
-                    newEvents[key] = deserialize(parsed.events[key]);
-
-                    // set the id of the current event
-                    newEvents[key].id = key;
-
-
-                    // need to check if the current event has a parent
-                    if (newEvents[key].parent !== -1) {
-                        // get the pointer to the parent deadline class
-                        newEvents[key].parent = newDeadlines[newEvents[key].parent];
-
-                        // set the child event in the parent to the current event
-                        // after all iterations, the child events in the deadline class will
-                        // be set up correctly with circular references
-                        newEvents[key].parent.setEvent(key, newEvents[key]);
-                    // set parent to null if there is none - the -1 is only for serialization
-                    } else {
-                        newEvents[key].parent = null;
-                    }
-                });
+                console.log(parsed.events);
+                console.log(parsed.deadlines);
+                console.log(JSON.stringify(parsed.settings));
 
                 // add the new events and deadlines from the server to the redux store
-                dispatch(syncFrom(newEvents, newDeadlines));
+                dispatch(syncFrom(
+                    parsed.events,
+                    parsed.deadlines,
+                    // convert back to string because syncFrom expects a string
+                    JSON.stringify(parsed.settings),
+                ));
             });
     };
 }
