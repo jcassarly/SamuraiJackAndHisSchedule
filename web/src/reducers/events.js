@@ -105,13 +105,13 @@ const reducer = (state = initialState, action) => {
                 state.maxDeadlineId,
             );
 
-            // set the ids
-            Object.keys(newEvents).forEach((key) => {
-                newEvents[key].id = key;
-            });
-
             // the new list of events is are put on the calendar, overwriting the old ones
             if (newEvents && newEvents.length && newEvents.length >= Object.values(state.events)) {
+                // set the ids
+                Object.keys(newEvents).forEach((key) => {
+                    newEvents[key].id = key;
+                });
+
                 newState.events = {
                     ...newEvents,
                 };

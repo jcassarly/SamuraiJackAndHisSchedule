@@ -35,6 +35,10 @@ function syncFromAsync() {
                 // create the JSON object from the string received
                 const parsed = JSON.parse(res.text);
 
+                console.log(parsed.events);
+                console.log(parsed.deadlines);
+                console.log(JSON.stringify(parsed.settings));
+
                 // add the new events and deadlines from the server to the redux store
                 dispatch(syncFrom(
                     parsed.events,
