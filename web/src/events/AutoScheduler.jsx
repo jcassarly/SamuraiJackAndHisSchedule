@@ -26,13 +26,21 @@ class TimeRange {
     //     return this.end;
     // }
 
-    // set start(newStart) {
-    //     this.start = newStart;
-    // }
+    set start(newStart) {
+        if (newStart.isAfter(this.end)) {
+            this.start = moment(this.end);
+        } else {
+            this.start = moment(newStart);
+        }
+    }
 
-    // set end(newEnd) {
-    //     this.end = newEnd;
-    // }
+    set end(newEnd) {
+        if (newEnd.isBefore(this.start)) {
+            this.end = moment(this.start);
+        } else {
+            this.end = moment(newEnd);
+        }
+    }
 
     inRange(time) {
         return (this.start.isBefore(time) && this.end.isAfter(time)); // Use moment().format('x') to get time in Unix time (seconds since 1970)
@@ -47,18 +55,30 @@ class TimeRange {
      *      -1 this TimeRange is before the given TimeRange
      *       0 this TimeRange overlaps with given TimeRange
      *       1 this TimeRange is after the given TimeRange
-     * @param {*} timerange 
+     * @param {*} range 
      */
-    inRelationTo(timerange) {
+    inRelationTo(range) {
         let returnValue;
-        if (this.end.isBefore(timerange.start)) {
+        if (this.end.isBefore(range.start)) {
             returnValue = -1;
-        } else if (timerange.inRange(this.start) || timerange.inRange(this.end)) {
+        } else if (range.inRange(this.start) || range.inRange(this.end)) {
             returnValue = 0;
         } else {
             returnValue = 1;
         }
         return returnValue;
+    }
+
+    trim(range, breakTime) {
+        // timerange's start time is within the given range, move it to after the range's end
+        if (range.inRange(this.start)) { 
+            this.start = moment(range.end).add(breakTime, 'minutes');
+        } 
+
+        // timerange's end time is within given range, move it to before range starts 
+        if (range.inRange(this.end)) {
+            this.end = moment(range.start).subtract(breakTime, 'minutes');
+        }
     }
 }
 
@@ -168,6 +188,10 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
             for (let i = validTimes.length - 1; i >= 0; i -= 1) {
+
+                // If the event slightly overlaps the beginning or end of this time range, trim the edges
+                validtimes[i].trim(TimeRange(moment(event.startTime), moment(event.endtime)), deadline.minBreak);
+
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
                     const prevEnd = moment(validTimes[i].end);
 
@@ -195,10 +219,6 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                     if (!validBefore && !validAfter) { // No more valid times within this time range, remove this time range.
                         validTimes.splice(i, 1);
                     }
-                } else if (validTimes[i].inRange(event.startTime)) { //          Event's start is contained within valid time range, but end is not
-                    validTimes[i].end = moment(event.startTime).subtract(deadline.minBreak, 'minutes'); //     Change the valid time range's end to before the start of the event and a break
-                } else if (validTimes[i].inRange(event.endTime)) { //            Event's end is contained within valid time range, but start is not
-                    validTimes[i].start = moment(event.endTime).add(deadline.minBreak, 'minutes'); //     Change the valid time range's start to the end of the event and a break
                 }
             }
         }
