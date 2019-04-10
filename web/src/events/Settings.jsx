@@ -8,6 +8,8 @@ class Settings {
         this.defaultNotificationTimeBefore = 15;
         this.defaultNotificationType = 'email';
         this.locked = true;
+        this.language = 'English';
+        this.snapToGrid = 15;
         // the below value is in hours.
         this.timeBeforeDue = 168;
         // the following three values are in minutes
@@ -16,6 +18,37 @@ class Settings {
         this.minBreakTime = 15;
         // the below value is in hours
         this.timeToComplete = 42;
+    }
+
+    // Essentially an overloaded constructor
+    static createSettingsfromInfo(
+        lngth,
+        loc,
+        noteType,
+        noteTime,
+        locked,
+        lang,
+        snap,
+        timeBefore,
+        minWork,
+        maxWork,
+        minBreak,
+        timeToComplete,
+    ) {
+        const newSettings = new Settings();
+        newSettings.eventLength = lngth;
+        newSettings.defaultLocation = loc;
+        newSettings.defaultNotificationType = noteType;
+        newSettings.defaultNotificationTimeBefore = noteTime;
+        newSettings.snapToGrid = snap;
+        newSettings.locked = locked;
+        newSettings.language = lang;
+        newSettings.timeBeforeDue = timeBefore;
+        newSettings.minWorkTime = minWork;
+        newSettings.maxWorkTime = maxWork;
+        newSettings.minBreakTime = minBreak;
+        newSettings.timeToComplete = timeToComplete;
+        return newSettings;
     }
 
     get eventLength() {
