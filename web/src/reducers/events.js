@@ -106,7 +106,9 @@ const reducer = (state = initialState, action) => {
             );
 
             // the new list of events is are put on the calendar, overwriting the old ones
-            if (newEvents && newEvents.length && newEvents.length >= Object.values(state.events).length) {
+            if (newEvents
+                && newEvents.length
+                && newEvents.length >= Object.values(state.events).length) {
                 // set the ids
                 Object.keys(newEvents).forEach((key) => {
                     newEvents[key].id = key;
