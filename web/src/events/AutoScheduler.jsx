@@ -74,12 +74,12 @@ class TimeRange {
     trim(range, breakTime) {
         // timerange's start time is within the given range, move it to after the range's end
         if (range.inRange(this.start)) { 
-            this.start = moment(range.end).add(breakTime, 'minutes');
+            this.start = moment(range.end).add(Number(breakTime), 'minutes');
         } 
 
         // timerange's end time is within given range, move it to before range starts 
         if (range.inRange(this.end)) {
-            this.end = moment(range.start).subtract(breakTime, 'minutes');
+            this.end = moment(range.start).subtract(Number(breakTime), 'minutes');
         }
     }
 }
@@ -92,7 +92,7 @@ class BinaryTimeRangeHeap {
 
     siftUp(givenIndex) {
         let index = givenIndex;
-        if (index >= 0 && index < this.array.length) {
+        if (index > 0 && index < this.array.length) {
             while (index > 0) {
                 const parent = Math.floor((index - 1) / 2);
                 if (this.array[index].duration() > this.array[parent].duration()) {
@@ -109,14 +109,15 @@ class BinaryTimeRangeHeap {
         let index = givenIndex;
         if (index >= 0 && index < this.array.length) {
             while (index < Math.floor(this.array.length / 2)) {
-                const leftChild = (index + 1) * 2 - 1;
-                const rightChild = (index + 1) * 2;
+                const leftChild = 2 * index + 1;
+                const rightChild = 2 * index + 2;
                 let largerChild;
 
-                if (this.array[leftChild].duration() > this.array[rightChild].duration()) {
-                    largerChild = leftChild;
-                } else {
+                if (rightChild < this.array.length && 
+                    this.array[leftChild].duration() < this.array[rightChild].duration()) {
                     largerChild = rightChild;
+                } else {
+                    largerChild = leftChild;
                 }
 
                 if (this.array[largerChild].duration() > this.array[index].duration()) {
@@ -137,13 +138,16 @@ class BinaryTimeRangeHeap {
 
     push(newRange) {
         this.array.push(newRange); // Add the new timerange to the this.array
+        console.log(this.array);
         this.siftUp(this.array.length - 1); // Sift the new timerange up
     }
 
     pop() {
-        const returnValue = this.array[0]; // Save the first range in the this.array (longest duration)
-        this.array[0] = this.array.pop(); // Move the last range in the this.array to the top
-        this.siftDown(0); // Sift the new top down
+        const returnValue = this.array.shift(); // Save the first range in the this.array (longest duration)
+        if (this.array.length > 0){
+            this.array.unshift(this.array.pop()); // Move the last range in the this.array to the top
+            this.siftDown(0); // Sift the new top down
+        }
         return returnValue; // return the original top of the heap
     }
 
@@ -197,7 +201,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                     const prevEnd = moment(validTimes[i].end);
 
                     let validBefore = true;
-                    const newEnd = moment(event.startTime).subtract(deadline.minBreak, 'minutes');
+                    const newEnd = moment(event.startTime).subtract(Number(deadline.minBreak), 'minutes');
                     if (validTimes[i].start.isBefore(newEnd)) { // If there is a valid period before the event
                         validTimes[i].end = moment(newEnd); // Change the valid time range's end to before the start of the event and a break
                     } else {
@@ -205,7 +209,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                     }
 
                     let validAfter = true;
-                    const newStart = moment(event.endTime).add(deadline.minBreak, 'minutes');
+                    const newStart = moment(event.endTime).add(Number(deadline.minBreak), 'minutes');
 
                     if (prevEnd.isAfter(newStart)) { // If there is a valid period after the event
                         if (validBefore) { // If there was a valid period before, insert a new time period afer the event
@@ -254,6 +258,9 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
     let counter = 0;
 
+    console.log('Values of validTimes before loop');
+    printRanges(validTimes.array);
+
     while (validTimes.length > 0 && remainingTime > 0) {
         counter += 1;
         if (counter > 100) {
@@ -270,7 +277,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         // console.log(`validTimes.length: ${validTimes.length}`);
         // console.log(`remainingTime: ${remainingTime}`);
         // console.log(`duration: ${duration}`);
-        // console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
 
         // console.log('A');
 
@@ -279,13 +286,22 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // console.log('B');
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
-
             if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
                 duration = remainingTime;
             } else if (duration > deadline.maxEventTime) {
                 // console.log('C');
                 duration = deadline.maxEventTime;
-                validTimes.push(new TimeRange(moment(range.start).add(deadline.maxEventTime + deadline.minBreak, 'minutes'), moment(range.end)));
+
+                const newStart = moment(range.start).add(Number(deadline.maxEventTime) + Number(deadline.minBreak), 'm');
+                const newDuration = (range.end.format('x') - newStart.format('x')) / 60 / 1000;
+                console.log(`newDuration: ${newDuration}`);
+                if (newDuration > deadline.minEventTime) {
+                    console.log('Added new timerange')
+                    validTimes.push(new TimeRange(newStart, moment(range.end)));
+                }
+                console.log('ValidTimes post split:')
+                printRanges(validTimes.array);
+
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
@@ -306,11 +322,13 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
             const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline);
+                moment(range.start).add(Number(duration), 'minutes'), deadline.location, false, deadline.notifications, deadline);
             // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
             // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
             newSchedule.push(debugEvent);
             deadline.createdEvents.push(debugEvent);
+        } else {
+            throw "Auto Scheduler unable to schedule: No more valid time ranges longer than min event time."
         }
     }
     return newSchedule;
@@ -335,8 +353,10 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     const oldVals = Object.values(oldSchedule);
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
     console.log('yeee yee wassup');
-    console.log('ValidTimes:')
+    console.log('Values of ValidTimes after getValidTimes():')
     printRanges(validTimes);
+    console.log('Types of validTimes after getValidTimes():');
+    console.log(validTimes);
     let returnvalue =  createEvents(oldVals, deadline, validTimes);
     console.log('Events:')
     printRanges(eventToRanges(returnvalue));
