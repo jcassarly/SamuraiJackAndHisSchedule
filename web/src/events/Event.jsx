@@ -19,7 +19,7 @@ function verifyTimes(start, end) {
 
 // Class for events
 class Event {
-    constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
+    constructor(name, description, startTime, endTime, location, locked, notifications, parent, color) {
         this.name = name;
         this.description = description;
 
@@ -31,6 +31,7 @@ class Event {
         this.locked = locked;
         this.notifications = notifications;
         this.parent = parent;
+        this.color = color;
     }
 
     get name() {
@@ -63,6 +64,10 @@ class Event {
 
     get parent() {
         return this._parent;
+    }
+
+    get color() {
+        return this._color;
     }
 
     set name(value) {
@@ -99,6 +104,10 @@ class Event {
 
     set parent(value) {
         this._parent = value;
+    }
+
+    set color(value) {
+        this._color = value;
     }
 
     addNotification(timeBefore, type) {
