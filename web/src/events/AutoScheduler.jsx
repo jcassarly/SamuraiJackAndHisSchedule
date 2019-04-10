@@ -3,6 +3,12 @@
 import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
 
+const TimeRangeRelation = {
+    BEFORE: -1,
+    OVERLAP: 0,
+    AFTER: 1,
+}
+
 /**
  * Represents a range of time.
  */
@@ -34,6 +40,25 @@ class TimeRange {
 
     duration() {
         return (this.end.format('x') - this.start.format('x')) / 60 / 1000;
+    }
+
+    /**
+     * Returns:
+     *      -1 this TimeRange is before the given TimeRange
+     *       0 this TimeRange overlaps with given TimeRange
+     *       1 this TimeRange is after the given TimeRange
+     * @param {*} timerange 
+     */
+    inRelationTo(timerange) {
+        let returnValue;
+        if (this.end.isBefore(timerange.start)) {
+            returnValue = -1;
+        } else if (timerange.inRange(this.start) || timerange.inRange(this.end)) {
+            returnValue = 0;
+        } else {
+            returnValue = 1;
+        }
+        return returnValue;
     }
 }
 
