@@ -1,8 +1,8 @@
 import { UPDATE_SETTINGS } from '../actions/updateSettings';
-// import Settings from '../events/Settings';
+import Settings from '../events/Settings';
 
 // the user starts out with the default settings
-const initialState = { settings: null }; // new Settings() };
+const initialState = { settings: new Settings() };
 
 /**
  * reducer for the list of all events the user has

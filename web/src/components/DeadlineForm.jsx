@@ -15,6 +15,7 @@ import '../styles/StandardEventForm.css';
 import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
+import Settings from '../events/Settings';
 
 /**
  * Class to handle gathering input form the user to create a Deadline object
@@ -32,13 +33,13 @@ class DeadlineForm extends React.Component {
             name: '',
             description: '',
             taskStart: moment(),
-            taskDeadline: moment().add(1, 'hour'),
-            location: '',
-            useLocation: true,
-            minTime: 0,
-            maxTime: 0,
-            minBreak: 0,
-            totalTime: 0,
+            taskDeadline: moment().add(props.settings.timeBeforeDue, 'hour'),
+            location: props.settings.location,
+            useLocation: false,
+            minTime: props.settings.minTime,
+            maxTime: props.settings.maxTime,
+            minBreak: props.settings.minBreak,
+            totalTime: props.settings.timeToComplete,
             error: false,
             errorMsg: 'No Error',
         };
@@ -56,6 +57,7 @@ class DeadlineForm extends React.Component {
         return {
             returnHome: PropTypes.func.isRequired,
             createDeadlineEvent: PropTypes.func.isRequired,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
@@ -244,4 +246,11 @@ class DeadlineForm extends React.Component {
     }
 }
 
-export default connect(null, { createDeadlineEvent })(DeadlineForm);
+// maps state to settings from redux store
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { createDeadlineEvent })(DeadlineForm);

@@ -18,6 +18,7 @@ import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
+import Settings from '../events/Settings';
 
 /**
  * React Component that handles standard event input gathering
@@ -40,11 +41,11 @@ class StandardEventForm extends React.Component {
             name: '',
             description: '',
             eventStart: moment(),
-            eventEnd: moment().add(1, 'hour'),
-            location: '',
+            eventEnd: moment().add(props.settings.eventLength, 'minutes'),
+            location: props.settings.location,
             frequency: '',
-            notifications: '',
-            notificationTime: 0,
+            notifications: props.settings.defaultNotificationType,
+            notificationTime: props.settings.defaultNotificationTimeBefore,
             locked: true,
             error: false,
             errorMsg: 'No Error',
@@ -66,6 +67,7 @@ class StandardEventForm extends React.Component {
             createEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
             hideLock: PropTypes.bool,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
@@ -276,4 +278,11 @@ class StandardEventForm extends React.Component {
     }
 }
 
-export default connect(null, { createEvent })(StandardEventForm);
+// maps the state settings to the redux store settings
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { createEvent })(StandardEventForm);
