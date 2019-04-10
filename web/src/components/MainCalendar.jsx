@@ -33,7 +33,6 @@ class MainCalendar extends Component {
     static propTypes = {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
-        refreshHome: PropTypes.func.isRequired,
     };
 
     /**
@@ -107,7 +106,7 @@ class MainCalendar extends Component {
         // see state
         const { date, pos, type } = this.state;
         // see propTypes
-        const { navNewEvent, refreshHome } = this.props;
+        const { navNewEvent } = this.props;
         let { events } = this.props;
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
@@ -153,7 +152,7 @@ class MainCalendar extends Component {
                     onRight={this.onRight}
                     onSwitch={this.onSwitch}
                 />
-                <Toolbar navNewEvent={navNewEvent} refreshHome={refreshHome} />
+                <Toolbar navNewEvent={navNewEvent} />
                 {calElem}
             </div>
         );

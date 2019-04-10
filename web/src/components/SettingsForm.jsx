@@ -8,7 +8,7 @@ import {
     SelectInput,
 } from './InputFormComponents';
 import InputForm from './InputForm';
-import Settings from '../events/Settings';
+import { Settings } from '../events/Settings';
 import '../styles/SettingsForm.css';
 
 /**

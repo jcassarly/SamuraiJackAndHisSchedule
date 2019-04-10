@@ -44,7 +44,7 @@ class App extends Component {
             return <ChooseEventType returnHome={this.returnHome} />;
         case 'main':
         default:
-            return <MainCalendar navNewEvent={this.navNewEvent} refreshHome={this.returnHome} />;
+            return <MainCalendar navNewEvent={this.navNewEvent} />;
         }
     }
 

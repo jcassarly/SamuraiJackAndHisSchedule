@@ -21,7 +21,15 @@ def index(request):
 def get_data(request):
 
     events_obj = Events.objects.get(id=request.user.id)
-    resp = "{\"events\": %s, \"deadlines\": %s, \"username\": \"%s\"}" % (events_obj.events, events_obj.deadlines, events_obj.username)
+
+    # create the JSON string to return from the user's events information
+    resp = "{\"events\": %s, \"deadlines\": %s, \"settings\": %s, \"username\": \"%s\"}" % (
+        events_obj.events,
+        events_obj.deadlines,
+        events_obj.user_settings,
+        events_obj.username
+    )
+
     return HttpResponse(resp)
 
 @ensure_csrf_cookie
@@ -31,10 +39,11 @@ def set_data(request):
 
     events_obj.events = req_json['events']
     events_obj.deadlines = req_json['deadlines']
+    events_obj.user_settings = req_json['settings']
 
     events_obj.save()
 
-    return HttpResponse(req_json['events'])
+    return HttpResponse(events_obj)
     #req_json = json.loads(request.body)
     #resp = "You said {}, The response: Hello!".format(req_json['name'])
     #return HttpResponse(resp)

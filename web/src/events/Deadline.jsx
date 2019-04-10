@@ -164,6 +164,7 @@ function deserializeDeadline(jsonStr) {
         json.location,
     );
 
+    // add the child events to the json object
     json.createdEvents.forEach((e) => {
         dl.addEvent(e);
     });

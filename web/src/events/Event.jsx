@@ -1,5 +1,6 @@
 import Frequency from './Frequency';
 import Notifications from './Notifications';
+import { Deadline } from './Deadline';
 
 const moment = require('moment-timezone');
 
@@ -155,7 +156,6 @@ class Event {
      * returns a JSON string with the event object
      */
     serialize() {
-        console.log(`parent: ${this.parent}`);
         return {
             type: EVENT_TYPES.EVENT,
             obj: {
@@ -168,7 +168,11 @@ class Event {
                 locked: this.locked,
                 notifications: this.notifications,
                 // if the parent is not null, use the id, otherwise there is no id, so -1
-                parent: (this.parent !== null) ? this.parent.id : -1,
+                parent: (
+                    this.parent !== null
+                    && this.parent !== undefined
+                    && this.parent instanceof Deadline
+                ) ? this.parent.id : -1,
             },
         };
     }
@@ -241,11 +245,13 @@ function deserialize(jsonStr) {
     const json = JSON.parse(jsonStr);
     const { type, obj } = json;
 
+    let newEvent = null;
+
     // check the type
     switch (type) {
     // type is normal event
     case EVENT_TYPES.EVENT:
-        return new Event(
+        newEvent = new Event(
             obj.name,
             obj.description,
             moment(obj.startTime),
@@ -255,18 +261,23 @@ function deserialize(jsonStr) {
             obj.notifications,
             obj.parent,
         );
+        break;
     // type is location event
     case EVENT_TYPES.LOCATION:
-        return new LocationEvent(
+        newEvent = new LocationEvent(
             obj.name,
             obj.description,
             moment(obj.startTime),
             moment(obj.endTime),
             obj.notifications,
         );
+
+        // location events never have parents and needs to be set to -1 when deserializing
+        newEvent.parent = -1;
+        break;
     // type is recurring event
     case EVENT_TYPES.RECURRING:
-        return new RecurringEvent(
+        newEvent = new RecurringEvent(
             obj.name,
             obj.description,
             moment(obj.startTime),
@@ -277,9 +288,15 @@ function deserialize(jsonStr) {
             obj.frequency,
             obj.optionalCustomFrequency,
         );
+
+        // recurring events never have parents and needs to be set to -1 when deserializing
+        newEvent.parent = -1;
+        break;
     default:
         throw new Error('Invalid type to deserialize');
     }
+
+    return newEvent;
 }
 
 export {

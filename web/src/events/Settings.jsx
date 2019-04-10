@@ -83,7 +83,7 @@ class Settings {
     }
 
     set minWorkTime(value) {
-        if (value.valueOf() > this.maxWorkTime.valueOf()) {
+        if (value > this.maxWorkTime) {
             throw new Error('minimum must be less than maximum');
         } else {
             this._minWorkTime = value;
@@ -91,7 +91,7 @@ class Settings {
     }
 
     set maxWorkTime(value) {
-        if (value.valueOf() < this.minWorkTime.valueOf()) {
+        if (value < this.minWorkTime) {
             throw new Error('maximum must be greater than minimum');
         } else {
             this._maxWorkTime = value;
@@ -109,6 +109,49 @@ class Settings {
             this._timeToComplete = value;
         }
     }
+
+    /**
+     * Serialize this Settings object so it can be stored
+     * returns a JSON string with the Settings object
+     */
+    serialize() {
+        return {
+            eventLength: this.eventLength,
+            defaultLocation: this.defaultLocation,
+            defaultNotificationTimeBefore: this.defaultNotificationTimeBefore,
+            defaultNotificationType: this.defaultNotificationType,
+            locked: this.locked,
+            timeBeforeDue: this.timeBeforeDue,
+            minWorkTime: this.minWorkTime,
+            maxWorkTime: this.maxWorkTime,
+            minBreakTime: this.minBreakTime,
+            timeToComplete: this.timeToComplete,
+        };
+    }
 }
 
-export default Settings;
+/**
+ * Deserializes a JSON string containing a Settings object
+ * (should have the same form as the output of the serialize methods for a Serialize)
+ * @param {string} jsonStr a JSON string containing the Settings
+ * Returns the Settings object parsed from the jsonStr
+ */
+function deserializeSettings(jsonStr) {
+    const json = JSON.parse(jsonStr);
+    const settings = new Settings();
+
+    settings.eventLength = json.eventLength;
+    settings.defaultLocation = json.defaultLocation;
+    settings.defaultNotificationTimeBefore = json.defaultNotificationTimeBefore;
+    settings.defaultNotificationType = json.defaultNotificationType;
+    settings.locked = json.locked;
+    settings.timeBeforeDue = json.timeBeforeDue;
+    settings.minWorkTime = json.minWorkTime;
+    settings.maxWorkTime = json.maxWorkTime;
+    settings.minBreakTime = json.minBreakTime;
+    settings.timeToComplete = json.timeToComplete;
+
+    return settings;
+}
+
+export { Settings, deserializeSettings };
