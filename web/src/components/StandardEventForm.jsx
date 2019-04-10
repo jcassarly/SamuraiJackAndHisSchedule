@@ -211,6 +211,7 @@ class StandardEventForm extends React.Component {
             frequency,
             notifications,
             notificationTime,
+            color,
             locked,
             error,
             errorMsg,
