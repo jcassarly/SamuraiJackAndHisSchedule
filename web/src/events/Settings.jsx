@@ -71,6 +71,14 @@ class Settings {
         return this._locked;
     }
 
+    get language() {
+        return this._language;
+    }
+
+    get snapToGrid() {
+        return this._snapToGrid;
+    }
+
     get timeBeforeDue() {
         return this._timeBeforeDue;
     }
@@ -109,6 +117,14 @@ class Settings {
 
     set locked(value) {
         this._locked = value;
+    }
+
+    set language(value) {
+        this._language = value;
+    }
+
+    set snapToGrid(value) {
+        this._snapToGrid = value;
     }
 
     set timeBeforeDue(value) {
@@ -154,6 +170,8 @@ class Settings {
             defaultNotificationTimeBefore: this.defaultNotificationTimeBefore,
             defaultNotificationType: this.defaultNotificationType,
             locked: this.locked,
+            language: this.language,
+            snapToGrid: this.snapToGrid,
             timeBeforeDue: this.timeBeforeDue,
             minWorkTime: this.minWorkTime,
             maxWorkTime: this.maxWorkTime,
@@ -171,20 +189,21 @@ class Settings {
  */
 function deserializeSettings(jsonStr) {
     const json = JSON.parse(jsonStr);
-    const settings = new Settings();
 
-    settings.eventLength = json.eventLength;
-    settings.defaultLocation = json.defaultLocation;
-    settings.defaultNotificationTimeBefore = json.defaultNotificationTimeBefore;
-    settings.defaultNotificationType = json.defaultNotificationType;
-    settings.locked = json.locked;
-    settings.timeBeforeDue = json.timeBeforeDue;
-    settings.minWorkTime = json.minWorkTime;
-    settings.maxWorkTime = json.maxWorkTime;
-    settings.minBreakTime = json.minBreakTime;
-    settings.timeToComplete = json.timeToComplete;
-
-    return settings;
+    return Settings.createSettingsfromInfo(
+        json.eventLength,
+        json.defaultLocation,
+        json.defaultNotificationTimeBefore,
+        json.defaultNotificationType,
+        json.locked,
+        json.language,
+        json.snapToGrid,
+        json.timeBeforeDue,
+        json.minWorkTime,
+        json.maxWorkTime,
+        json.minBreakTime,
+        json.timeToComplete,
+    );
 }
 
 export { Settings, deserializeSettings };

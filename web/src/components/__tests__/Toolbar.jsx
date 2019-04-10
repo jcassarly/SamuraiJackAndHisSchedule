@@ -1,10 +1,27 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import {
+    render,
+    fireEvent,
+    cleanup,
+} from 'react-testing-library';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import Toolbar from '../Toolbar';
+import rootReducer from '../../reducers/index';
+
+const store = createStore(rootReducer);
+
+afterEach(cleanup);
 
 const navNewEvent = jest.fn(() => {});
 test('toolbar works', () => {
-    const toolbar = shallow(<Toolbar navNewEvent={navNewEvent} />);
-    toolbar.find('.toolbar > button').at(0).simulate('click');
+    const { getByText } = render(
+        <Provider store={store}><Toolbar navNewEvent={navNewEvent} /></Provider>,
+    );
+
+    const newEventButton = getByText('Logout');
+
+    fireEvent.click(newEventButton);
+
     expect(navNewEvent.mock.calls).toHaveLength(1);
 });
