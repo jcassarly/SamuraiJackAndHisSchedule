@@ -275,63 +275,43 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
-        console.log(`counter: ${counter}`)
-        console.log(`validTimes.length: ${validTimes.length}`);
-        console.log(`remainingTime: ${remainingTime}`);
-        console.log(`duration: ${duration}`);
-        console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
-        console.log('A')
+        // console.log(`counter: ${counter}`)
+        // console.log(`validTimes.length: ${validTimes.length}`);
+        // console.log(`remainingTime: ${remainingTime}`);
+        // console.log(`duration: ${duration}`);
+        // console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
+        // console.log('A')
 
         //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
         if (duration >= deadline.minEventTime) { // Time range is not too short
-            console.log('B')
             // Time range is larger than maximum child event duration.
             // Make new event with max child event time, add a new range into list.
             console.log(`Max Event Time: ${deadline.maxEventTime}, type: ${typeof deadline.maxEventTime}`)
-            if (remainingTime < duration && remainingTime < deadline.maxEventTime) {
-                console.log('C')
+            if (remainingTime < duration && remainingTime < Number(deadline.maxEventTime)) {
                 duration = remainingTime;
             } else if (duration > deadline.maxEventTime) {
-                console.log('D')
                 duration = deadline.maxEventTime;
 
                 const newStart = moment(range.start).add(Number(deadline.maxEventTime) + Number(deadline.minBreak), 'm');
                 const newDuration = (range.end.format('x') - newStart.format('x')) / 60 / 1000;
                 if (newDuration > deadline.minEventTime) {
-                    console.log('E')
                     validTimes.push(new TimeRange(newStart, moment(range.end)));
-                    console.log('new validTimes:')
-                    printRanges(validTimes.array);
                 }
             }
             // Else time range is less than maximum child event duration, take up entire range.
 
-            console.log('alpha')
-            console.log(`remainingTime: ${remainingTime}`);
-            console.log(`duration: ${duration}`);
 
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
 
-            console.log('beta')
-            console.log(`remainingTime: ${remainingTime}`);
-            console.log(`duration: ${duration}`);
 
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
             if (remainingTime !== 0 && remainingTime < deadline.minEventTime) {
-                console.log('F')
-                console.log('theta')
-                console.log(`remainingTime: ${remainingTime}`);
-                console.log(`duration: ${duration}`);
                 duration -= deadline.minEventTime - remainingTime;
                 remainingTime = deadline.minEventTime;
-                console.log('gamma')
-                console.log(`remainingTime: ${remainingTime}`);
-                console.log(`duration: ${duration}`);
             }
-            console.log('G')
 
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
