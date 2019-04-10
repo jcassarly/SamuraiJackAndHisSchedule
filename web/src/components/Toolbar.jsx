@@ -90,7 +90,7 @@ class Toolbar extends React.Component {
 
         // see propTypes
         // eslint-disable-next-line no-shadow
-        const { navNewEvent, syncFromAsync } = this.props;
+        const { navNewEvent, syncFromAsync, navSettings } = this.props;
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">
@@ -98,6 +98,7 @@ class Toolbar extends React.Component {
                 <button type="button" onClick={this.logout}>Logout</button>
                 <button type="button" onClick={this.syncTo}>Sync To Server</button>
                 <button type="button" onClick={syncFromAsync}>Sync From Server</button>
+                <button type="button" onClick={navSettings}>General Settings</button>
             </div>
         );
     }
@@ -108,6 +109,7 @@ class Toolbar extends React.Component {
  * syncFromAsync: pulls the events from the server to the redux store
  * events: the list of events from the redux store
  * deadlines: the list of deadlines from the redux store
+ * navSettings: navigates to the form for managing settings
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
@@ -116,6 +118,7 @@ Toolbar.propTypes = {
     events: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     deadlines: PropTypes.object.isRequired,
+    navSettings: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => (
