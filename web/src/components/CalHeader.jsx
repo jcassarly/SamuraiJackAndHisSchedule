@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
+import { types } from './MainCalendar';
 import '../styles/CalHeader.css';
 
 /**
@@ -22,14 +23,14 @@ const CalHeader = (props) => {
     // selects the format to display the date in based on the type of date
     let format = '';
     switch (type) {
-    case 'day':
+    case types.DAY:
         format = 'MMM Do (ddd)';
         break;
-    case 'week':
+    case types.WEEK:
         format = '[Week of] MMM Do';
         date = date.clone().startOf('week');
         break;
-    case 'month':
+    case types.MONTH:
     default:
         format = 'MMMM';
     }
@@ -56,11 +57,7 @@ CalHeader.propTypes = {
     onRight: PropTypes.func.isRequired,
     onSwitch: PropTypes.func.isRequired,
     date: PropTypes.instanceOf(moment).isRequired,
-    type: PropTypes.oneOf([
-        'month',
-        'week',
-        'day',
-    ]).isRequired,
+    type: PropTypes.number.isRequired,
 };
 
 export default CalHeader;

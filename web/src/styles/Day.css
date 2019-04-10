@@ -2,6 +2,10 @@
     overflow: scroll;
 }
 
+.calDay.drag .dayEvents {
+    touch-action: none;
+}
+
 .calDay .dayEvents {
     position: relative;
     width: 100%;

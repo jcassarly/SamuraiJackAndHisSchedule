@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 
+import { modes, types } from './MainCalendar';
 import '../styles/Toolbar.css';
 
 const request = require('superagent');
@@ -48,6 +49,8 @@ class Toolbar extends React.Component {
 
     render() {
         const { logout } = this.state;
+        // see propTypes
+        const { navNewEvent, toggleMode, currMode, calType } = this.props;
 
         if (logout) {
             this.setState({
@@ -56,15 +59,23 @@ class Toolbar extends React.Component {
             window.location.replace('http://127.0.0.1:8000/accounts/logout/');
         }
 
-        // see propTypes
-        const { navNewEvent } = this.props;
+        const buttons = [
+            <button key="new-ev" type="button" onClick={navNewEvent}>New Event</button>,
+            <button key="logout" type="button" onClick={this.logout}>Logout</button>,
+            <button key="sync-from" type="button" onClick={this.syncTo}>Sync To Server</button>,
+            <button key="sync-to" type="button" onClick={this.syncFrom}>Sync From Server</button>,
+        ];
+
+        if (calType !== types.MONTH) {
+            buttons.push(
+                <button key="drag-drop" className={currMode === modes.DRAG_DROP ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</button>,
+            );
+        }
+
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">
-                <button type="button" onClick={navNewEvent}>New Event</button>
-                <button type="button" onClick={this.logout}>Logout</button>
-                <button type="button" onClick={this.syncTo}>Sync To Server</button>
-                <button type="button" onClick={this.syncFrom}>Sync From Server</button>
+                {buttons}
             </div>
         );
     }
@@ -75,6 +86,9 @@ class Toolbar extends React.Component {
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
+    toggleMode: PropTypes.func.isRequired,
+    currMode: PropTypes.number.isRequired,
+    calType: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => (

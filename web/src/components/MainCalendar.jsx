@@ -13,6 +13,19 @@ import Month from './Month';
 import Week from './Week';
 import Day from './Day';
 
+const modes = {
+    NORMAL: 0,
+    DRAG_DROP: 1,
+};
+
+// the types of calendars that can be displayed
+const types = {
+    MONTH: 0,
+    WEEK: 1,
+    DAY: 2,
+};
+const typesToString = ['month', 'week', 'day'];
+
 /**
  * Main component for diplaying the calendar
  * Calendar can be a month, week, or day calendar depending on its state
@@ -20,10 +33,6 @@ import Day from './Day';
 class MainCalendar extends Component {
     // when the user is scrolling, this represents the position that the user started scrolling from
     startPos = 0;
-
-    // the types of calendars that can be displayed
-    // does not change
-    types = ['month', 'week', 'day'];
 
     /**
      * events: An array of events passed in by redux: state.events.events
@@ -42,8 +51,9 @@ class MainCalendar extends Component {
      */
     state = {
         date: moment().tz(moment.tz.guess()),
-        type: this.types[0],
+        type: types.MONTH,
         pos: 0,
+        mode: 0,
     };
 
     /**
@@ -53,7 +63,7 @@ class MainCalendar extends Component {
      */
     onLeft = () => {
         const { date, type } = this.state;
-        this.setState({ date: date.clone().subtract(1, type) });
+        this.setState({ date: date.clone().subtract(1, typesToString[type]) });
     }
 
     /**
@@ -63,7 +73,7 @@ class MainCalendar extends Component {
      */
     onRight = () => {
         const { date, type } = this.state;
-        this.setState({ date: date.clone().add(1, type) });
+        this.setState({ date: date.clone().add(1, typesToString[type]) });
     }
 
     /**
@@ -72,7 +82,7 @@ class MainCalendar extends Component {
      */
     onSwitch = () => {
         const { type } = this.state;
-        this.setState({ type: this.types[(this.types.indexOf(type) + 1) % this.types.length] });
+        this.setState({ type: (type + 1) % typesToString.length });
     }
 
     /**
@@ -100,11 +110,33 @@ class MainCalendar extends Component {
     }
 
     /**
+     * switch to the passed in mode
+     */
+    toggleMode = (newMode) => {
+        const { mode } = this.state;
+        if (newMode === mode) {
+            this.setState({ mode: modes.NORMAL });
+        } else {
+            this.setState({ mode: newMode });
+        }
+    }
+
+    /**
+     * move an event
+     */
+    moveEvent = (id, change, type) => {
+        console.log(id, change, type);
+    }
+
+    /**
      * main render method
      */
     render() {
         // see state
-        const { date, pos, type } = this.state;
+        const {
+            mode, date,
+            pos, type,
+        } = this.state;
         // see propTypes
         const { navNewEvent } = this.props;
         let { events } = this.props;
@@ -115,14 +147,14 @@ class MainCalendar extends Component {
         // selects the calendar component to display depending on the type of calendar
         //     being displayed
         switch (type) {
-        case 'day':
-            calElem = <Day events={events} day={date} />;
+        case types.DAY:
+            calElem = <Day mode={mode} moveEvent={this.moveEvent} events={events} day={date} />;
             break;
-        case 'week':
-            calElem = <Week events={events} week={date} />;
+        case types.WEEK:
+            calElem = <Week mode={mode} moveEvent={this.moveEvent} events={events} week={date} />;
             break;
         default:
-        case 'month':
+        case types.MONTH:
             calElem = (
                 <div className="calendarSlider" style={{ display: 'block' }}>
                     <div
@@ -133,7 +165,13 @@ class MainCalendar extends Component {
                         onTouchCancel={this.endScroll}
                     >
                         <div className="calContainer" style={{ top: `${pos}px` }}>
-                            <Month events={events} id={date.month()} month={date} />
+                            <Month
+                                mode={mode}
+                                moveEvent={this.moveEvent}
+                                events={events}
+                                id={date.month()}
+                                month={date}
+                            />
                         </div>
                     </div>
                 </div>
@@ -152,7 +190,12 @@ class MainCalendar extends Component {
                     onRight={this.onRight}
                     onSwitch={this.onSwitch}
                 />
-                <Toolbar navNewEvent={navNewEvent} />
+                <Toolbar
+                    currMode={mode}
+                    calType={type}
+                    toggleMode={this.toggleMode}
+                    navNewEvent={navNewEvent}
+                />
                 {calElem}
             </div>
         );
@@ -167,3 +210,4 @@ const mapStateToProps = state => (
 );
 
 export default connect(mapStateToProps)(MainCalendar);
+export { modes, types };
