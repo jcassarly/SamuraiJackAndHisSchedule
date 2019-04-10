@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     LocationInput,
     NotificationSelect,
@@ -10,6 +11,7 @@ import {
 import InputForm from './InputForm';
 import { Settings } from '../events/Settings';
 import '../styles/SettingsForm.css';
+import { updateSettings } from '../actions/updateSettings';
 
 /**
  * Creates a section of settings for organization of related settings
@@ -82,6 +84,7 @@ class SettingsForm extends React.Component {
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
+            updateSettings: PropTypes.func.isRequired,
         };
     }
 
@@ -99,42 +102,53 @@ class SettingsForm extends React.Component {
     }
 
     /**
-     * Updates the state with the change the user made to the start date
-     * @param {obj} event the event object that stores the change the user made
-     */
-    handleStartDateChange(time) {
-        this.setState({
-            eventStart: time,
-        });
-    }
-
-    /**
-     * Updates the state with the change the user made to the end date
-     * @param {obj} event the event object that stores the change the user made
-     */
-    handleEndDateChange(time) {
-        this.setState({
-            eventEnd: time,
-        });
-    }
-
-    /**
      * Updates the Settings object, changes to the redux store, and returns to the home screen
      * @param {obj} event the event object that stores the event that called this function
      */
     handleSubmit(event) {
-        alert(`
-            Adding a new standard event with the following info:
-            Name:              ${this.state.name}
-            Description:       ${this.state.description}
-            Start Time:        ${this.state.eventStart}
-            End Time:          ${this.state.eventEnd}
-            Location:          ${this.state.location}
-            Notifications:     ${this.state.notifications}
-            Notification Time: ${this.state.notificationTime}
-            Locked:            ${this.state.locked}
-        `);
         event.preventDefault();
+        const {
+            location,
+            notifications,
+            notificationTime,
+            snapToGrid,
+            minBreak,
+            minTime,
+            maxTime,
+            language,
+            duration,
+            timeBeforeDue,
+            timeToComplete,
+        } = this.state;
+
+        const {
+            returnHome,
+        } = this.props;
+
+        // attempt to create the new event and add it to the redux store
+        let sett = null;
+        // create a Settings object
+        sett = Settings.createSettingsfromInfo(
+            duration,
+            location,
+            notifications,
+            notificationTime,
+            true,
+            language,
+            snapToGrid,
+            timeBeforeDue,
+            minTime,
+            maxTime,
+            minBreak,
+            timeToComplete,
+        );
+
+        // add the Settings to the redux store
+        // eslint-disable-next-line react/destructuring-assignment
+        this.props.updateSettings(sett);
+
+        // send the user back to home screen
+        returnHome();
     }
 
     /**
@@ -277,4 +291,4 @@ class SettingsForm extends React.Component {
     }
 }
 
-export default SettingsForm;
+export default connect(null, { updateSettings })(SettingsForm);
