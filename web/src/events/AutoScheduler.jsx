@@ -16,6 +16,8 @@ class TimeRange {
     constructor(start, end) {
         this._start = start;
         this._end = end;
+        this.start = start;
+        this.end = end;
     }
 
     get start() {
@@ -28,17 +30,17 @@ class TimeRange {
 
     set start(newStart) {
         if (newStart.isAfter(this.end)) {
-            this.start = moment(this.end);
+            this._start = moment(this.end);
         } else {
-            this.start = moment(newStart);
+            this._start = moment(newStart);
         }
     }
 
     set end(newEnd) {
         if (newEnd.isBefore(this.start)) {
-            this.end = moment(this.start);
+            this._end = moment(this.start);
         } else {
-            this.end = moment(newEnd);
+            this._end = moment(newEnd);
         }
     }
 
@@ -172,12 +174,11 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     let start = moment(moment.max(deadline.startWorkTime, dailyStart));
     const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
     const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
-    while (dailyEnd.isBefore(finalEnd)) {
-        validTimes.push(new TimeRange(moment(start), moment(dailyEnd)));
+    while (start.isBefore(finalEnd)) {
+        validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
         start = dailyStart.add(1, 'days');
-        dailyEnd.add(1, 'days');
+        dailyEnd.add(1, 'days'), finalEnd;
     }
-    validTimes.push(new TimeRange(start, finalEnd));
 
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
@@ -251,8 +252,15 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
 
     const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
+    let counter = 0;
 
     while (validTimes.length > 0 && remainingTime > 0) {
+        counter += 1;
+        if (counter > 100) {
+            console.log(`Exceeded 100 iterations.`);
+            printRanges(validTimes);
+            break;
+        }
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
@@ -323,7 +331,27 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
 function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     const oldVals = Object.values(oldSchedule);
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
-    return createEvents(oldVals, deadline, validTimes);
+    console.log('yeee yee wassup');
+    console.log('ValidTimes:')
+    printRanges(validTimes);
+    let returnvalue =  createEvents(oldVals, deadline, validTimes);
+    printRanges(eventToRanges(returnvalue));
+    return returnvalue;
+}
+
+function printRanges(ranges) {
+    for (let j = 0; j < ranges.length; j += 1) {
+        console.log(`Range: ${j}\n    Start: ${ranges[j].start.format('MMMM Do YYYY, h:mm:ss a')}\n    End: ${ranges[j].end.format('MMMM Do YYYY, h:mm:ss a')}`);
+    }
+}
+
+function eventToRanges(schedule) {
+    let newSchedule = Object.values(schedule);
+    let newRanges = [];
+    for (let j = 0; j < schedule.length; j += 1) {
+        newRanges.push(new TimeRange(newSchedule[j].startTime, newSchedule[j].endTime));
+    }
+    return newRanges;
 }
 
 export default autoSchedule;
