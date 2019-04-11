@@ -124,7 +124,7 @@ class DeadlineForm extends React.Component {
         // try {
         const deadline = new Deadline(
             name,
-            // TODO: add description to deadline
+            description,
             taskDeadline,
             totalTime,
             minTime,
@@ -132,7 +132,7 @@ class DeadlineForm extends React.Component {
             minBreak,
             taskStart,
             location,
-            // TODO: add uselocation to deadline
+            useLocation,
         );
 
         // add the deadline event to the calendar
