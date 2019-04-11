@@ -261,4 +261,3 @@ const mapStateToProps = state => (
 );
 
 export default connect(mapStateToProps, { createEvent })(LocationEventForm);
-
