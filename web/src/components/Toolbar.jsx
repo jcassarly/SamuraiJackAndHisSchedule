@@ -107,6 +107,12 @@ class Toolbar extends React.Component {
             );
         }
 
+        buttons.push(
+            <button key="cut" className={currMode === modes.CUT ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.CUT); }}>cut</button>,
+            <button key="copy" className={currMode === modes.COPY ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.COPY); }}>copy</button>,
+            <button key="paste" className={currMode === modes.PASTE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.PASTE); }}>paste</button>,
+        );
+
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">

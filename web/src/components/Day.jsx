@@ -5,6 +5,7 @@ import moment from 'moment-timezone';
 
 import { Event } from '../events/Event';
 import { modes } from './MainCalendar';
+import { SET_MIN } from '../actions/clipboard';
 import em from '../em2px';
 import '../styles/Day.css';
 
@@ -23,6 +24,9 @@ class Day extends Component {
         moveEvent: PropTypes.func.isRequired,
         changeStart: PropTypes.func.isRequired,
         changeEnd: PropTypes.func.isRequired,
+        cut: PropTypes.func.isRequired,
+        copy: PropTypes.func.isRequired,
+        paste: PropTypes.func.isRequired,
     }
 
 
@@ -66,6 +70,27 @@ class Day extends Component {
             yPos = e.clientY;
         }
         return yPos;
+    }
+
+    clipboardClosure = event => () => {
+        const { cut, copy, mode } = this.props;
+        if (mode === modes.CUT) {
+            cut(event.id);
+        } else if (mode === modes.COPY) {
+            copy(event.id);
+        }
+    };
+
+    onPaste = (e) => {
+        const { paste, mode, day } = this.props;
+        if (mode !== modes.PASTE) {
+            return;
+        }
+        const pos = e.clientY - e.currentTarget.getBoundingClientRect().top;
+        const time = day.clone();
+        time.hour(Math.floor(pos / em / 3), 'hours');
+        time.minute(Math.floor((pos / em / 3 * 60) % 60));
+        paste(time, SET_MIN);
     }
 
     mouseDownClosureResize = (event, startSelected) => (e) => {
@@ -139,7 +164,7 @@ class Day extends Component {
 
         return (
             <div
-                className={`calDay ${mode === modes.DRAG_DROP ? 'drag' : ''}`}
+                className={`calDay ${mode === modes.DRAG_DROP || mode === modes.CUT || mode === modes.COPY ? 'tool' : ''} ${mode === modes.PASTE ? 'paste' : ''}`}
                 onMouseMove={this.mouseMove}
                 onMouseUp={this.mouseUp}
                 onTouchMove={this.mouseMove}
@@ -147,7 +172,7 @@ class Day extends Component {
                 onTouchCancel={this.mouseUp}
             >
                 <div className="dayEvents">
-                    {currEvents.map((event, i) => { // add each event to the calendar
+                    {currEvents.map((event) => { // add each event to the calendar
                         // start and end of the event, but cut off if the event spans
                         //     into the next or previous day
                         const virtualStart = moment.max(moment(event.startTime), dayStart);
@@ -181,6 +206,7 @@ class Day extends Component {
                                 style={{ top: `${startPos}em`, height: `${length}em` }}
                                 onMouseDown={mouseDown}
                                 onTouchStart={mouseDown}
+                                onClick={this.clipboardClosure(event)}
                             >
                                 {event.name}
                             </div>,
@@ -210,7 +236,7 @@ class Day extends Component {
                         return eventHTML;
                     })}
                 </div>
-                <div className="calHours">
+                <div className="calHours" onClick={this.onPaste}>
                     { Day.generateHours(day) }
                 </div>
             </div>

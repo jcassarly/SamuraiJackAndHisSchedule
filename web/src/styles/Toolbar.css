@@ -13,6 +13,7 @@
     background: transparent;
     height: 3em;
     border-right: 1px solid #bdbdbd;
+    min-width: 3em;
 }
 
 .toolbar > button:hover:not(:focus), .toolbar > .selected {

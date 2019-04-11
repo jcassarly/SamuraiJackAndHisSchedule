@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import '../styles/MainCalendar.css';
 import { Event } from '../events/Event';
 import { moveEvent, changeStart, changeEnd } from '../actions/changeEvent';
+import { cut, copy, paste } from '../actions/clipboard';
 
 import CalHeader from './CalHeader';
 import Toolbar from './Toolbar';
@@ -18,6 +19,9 @@ const modes = {
     NORMAL: 0,
     DRAG_DROP: 1,
     RESIZE: 2,
+    CUT: 3,
+    COPY: 4,
+    PASTE: 5,
 };
 
 // the types of calendars that can be displayed
@@ -47,6 +51,9 @@ class MainCalendar extends Component {
         moveEvent: PropTypes.func.isRequired,
         changeStart: PropTypes.func.isRequired,
         changeEnd: PropTypes.func.isRequired,
+        cut: PropTypes.func.isRequired,
+        copy: PropTypes.func.isRequired,
+        paste: PropTypes.func.isRequired,
     };
 
     /**
@@ -141,6 +148,9 @@ class MainCalendar extends Component {
             moveEvent,
             changeStart,
             changeEnd,
+            cut,
+            copy,
+            paste,
         } = this.props;
         let { events } = this.props;
         events = Object.values(events);
@@ -159,6 +169,9 @@ class MainCalendar extends Component {
                     changeEnd={changeEnd}
                     events={events}
                     day={date}
+                    cut={cut}
+                    copy={copy}
+                    paste={paste}
                 />
             );
             break;
@@ -171,6 +184,9 @@ class MainCalendar extends Component {
                     changeEnd={changeEnd}
                     events={events}
                     week={date}
+                    cut={cut}
+                    copy={copy}
+                    paste={paste}
                 />
             );
             break;
@@ -191,6 +207,9 @@ class MainCalendar extends Component {
                                 events={events}
                                 id={date.month()}
                                 month={date}
+                                cut={cut}
+                                copy={copy}
+                                paste={paste}
                             />
                         </div>
                     </div>
@@ -229,5 +248,5 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { moveEvent, changeStart, changeEnd })(MainCalendar);
+export default connect(mapStateToProps, { moveEvent, changeStart, changeEnd, cut, copy, paste })(MainCalendar);
 export { modes, types };

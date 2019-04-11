@@ -2,7 +2,7 @@
     overflow: scroll;
 }
 
-.calDay.drag .dayEvents {
+.calDay.tool .dayEvents, .calDay.paste {
     touch-action: none;
     cursor: pointer;
 }

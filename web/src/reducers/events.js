@@ -1,6 +1,12 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
+import {
+    CUT,
+    COPY,
+    PASTE,
+    SET_DAY,
+} from '../actions/clipboard';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
 import { deserialize } from '../events/Event';
@@ -13,6 +19,7 @@ const initialState = {
     events: {},
     maxDeadlineId: 0,
     deadlines: {},
+    clipboard: null,
 };
 
 /**
@@ -148,6 +155,9 @@ const reducer = (state = initialState, action) => {
         }
         case CHANGE_START: {
             const { id, start } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
             const newEvent = newState.events[id].clone();
             try {
                 newEvent.startTime = start;
@@ -160,6 +170,9 @@ const reducer = (state = initialState, action) => {
         }
         case CHANGE_END: {
             const { id, end } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
             const newEvent = newState.events[id].clone();
             try {
                 newEvent.endTime = end;
@@ -168,6 +181,50 @@ const reducer = (state = initialState, action) => {
             }
             newEvent.id = id;
             newState.events[id] = newEvent;
+            break;
+        }
+        case CUT: {
+            const { id } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            newState.clipboard = newState.events[id].clone();
+            delete newState.events[id];
+            break;
+        }
+        case COPY: {
+            const { id } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            newState.clipboard = newState.events[id].clone();
+            break;
+        }
+        case PASTE: {
+            if (newState.clipboard == null) {
+                break;
+            }
+            const { type } = action.payload;
+            const time = action.payload.time.clone();
+            const newEvent = newState.clipboard.clone();
+            const length = newEvent.endTime.diff(newEvent.startTime);
+
+            if (type === SET_DAY) {
+                time.hour(newEvent.startTime.hour());
+                time.minute(newEvent.startTime.minute());
+            }
+            time.second(0);
+            time.millisecond(0);
+            if (time.diff(newEvent.startTime) < 0) {
+                newEvent.startTime = time;
+                newEvent.endTime = time.clone().add(length, 'ms');
+            } else {
+                newEvent.endTime = time.clone().add(length, 'ms');
+                newEvent.startTime = time;
+            }
+            newEvent.id = [state.maxEventId];
+            newState.events[state.maxEventId] = newEvent;
+            newState.maxEventId += 1;
             break;
         }
         case SYNC_FROM: {
