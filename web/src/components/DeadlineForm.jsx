@@ -120,8 +120,6 @@ class DeadlineForm extends React.Component {
             returnHome,
         } = this.props;
 
-        // try to create the deadline object
-        // try {
         const deadline = new Deadline(
             name,
             description,
