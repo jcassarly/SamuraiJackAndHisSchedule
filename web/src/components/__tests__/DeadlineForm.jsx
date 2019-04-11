@@ -139,7 +139,7 @@ test('changes location correctly', () => {
 
     // find the location input field
     const input = getByPlaceholderText('Event Location');
-    expect(input.value).toEqual('');
+    expect(input.value).toEqual('anywhere');
 
     // change the value of the field
     fireEvent.change(input, { target: { value: 'test' } });
@@ -172,7 +172,7 @@ test('changes use location value correctly', () => {
  * @param {string} placeholderText the text to search for to find the input field
  * @param {node}   nodeToRender    the Deadline form JSX to render
  */
-function testNumberInput(placeholderText, nodeToRender) {
+function testNumberInput(placeholderText, nodeToRender, startValue) {
     // render the node
     const { getByPlaceholderText } = render(
         nodeToRender,
@@ -180,7 +180,7 @@ function testNumberInput(placeholderText, nodeToRender) {
 
     // find the number input field
     const input = getByPlaceholderText(placeholderText);
-    expect(input.value).toEqual('0');
+    expect(input.value).toEqual(startValue);
 
     // change the input field
     input.value = 123;
@@ -194,6 +194,7 @@ test('changes min event time correctly', () => {
     testNumberInput(
         'Min Scheduled Event Time',
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        '15',
     );
 });
 
@@ -201,6 +202,7 @@ test('changes max event time correctly', () => {
     testNumberInput(
         'Max Scheduled Event Time',
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        '120',
     );
 });
 
@@ -208,6 +210,7 @@ test('changes min break time correctly', () => {
     testNumberInput(
         'Min Time Between Events',
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        '15',
     );
 });
 
@@ -215,5 +218,6 @@ test('changes total time correctly', () => {
     testNumberInput(
         'Total Time to Complete',
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
+        '42',
     );
 });
