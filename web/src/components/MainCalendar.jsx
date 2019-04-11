@@ -6,7 +6,7 @@ import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
 import { Event } from '../events/Event';
-import { moveEvent } from '../actions/changeEvent';
+import { moveEvent, changeStart, changeEnd } from '../actions/changeEvent';
 
 import CalHeader from './CalHeader';
 import Toolbar from './Toolbar';
@@ -17,6 +17,7 @@ import Day from './Day';
 const modes = {
     NORMAL: 0,
     DRAG_DROP: 1,
+    RESIZE: 2,
 };
 
 // the types of calendars that can be displayed
@@ -44,6 +45,8 @@ class MainCalendar extends Component {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
         moveEvent: PropTypes.func.isRequired,
+        changeStart: PropTypes.func.isRequired,
+        changeEnd: PropTypes.func.isRequired,
     };
 
     /**
@@ -84,7 +87,7 @@ class MainCalendar extends Component {
      */
     onSwitch = () => {
         const { type } = this.state;
-        this.setState({ type: (type + 1) % typesToString.length });
+        this.setState({ type: (type + 1) % typesToString.length, mode: modes.NORMAL });
     }
 
     /**
@@ -133,7 +136,12 @@ class MainCalendar extends Component {
             pos, type,
         } = this.state;
         // see propTypes
-        const { navNewEvent, moveEvent } = this.props;
+        const {
+            navNewEvent,
+            moveEvent,
+            changeStart,
+            changeEnd,
+        } = this.props;
         let { events } = this.props;
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
@@ -143,10 +151,28 @@ class MainCalendar extends Component {
         //     being displayed
         switch (type) {
         case types.DAY:
-            calElem = <Day mode={mode} moveEvent={moveEvent} events={events} day={date} />;
+            calElem = (
+                <Day
+                    mode={mode}
+                    moveEvent={moveEvent}
+                    changeStart={changeStart}
+                    changeEnd={changeEnd}
+                    events={events}
+                    day={date}
+                />
+            );
             break;
         case types.WEEK:
-            calElem = <Week mode={mode} moveEvent={moveEvent} events={events} week={date} />;
+            calElem = (
+                <Week
+                    mode={mode}
+                    moveEvent={moveEvent}
+                    changeStart={changeStart}
+                    changeEnd={changeEnd}
+                    events={events}
+                    week={date}
+                />
+            );
             break;
         default:
         case types.MONTH:
@@ -162,7 +188,6 @@ class MainCalendar extends Component {
                         <div className="calContainer" style={{ top: `${pos}px` }}>
                             <Month
                                 mode={mode}
-                                moveEvent={moveEvent}
                                 events={events}
                                 id={date.month()}
                                 month={date}
@@ -204,5 +229,5 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { moveEvent })(MainCalendar);
+export default connect(mapStateToProps, { moveEvent, changeStart, changeEnd })(MainCalendar);
 export { modes, types };

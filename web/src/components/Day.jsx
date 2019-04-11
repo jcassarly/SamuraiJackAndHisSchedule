@@ -21,6 +21,8 @@ class Day extends Component {
         events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
         mode: PropTypes.number.isRequired,
         moveEvent: PropTypes.func.isRequired,
+        changeStart: PropTypes.func.isRequired,
+        changeEnd: PropTypes.func.isRequired,
     }
 
 
@@ -50,9 +52,10 @@ class Day extends Component {
     }
 
     state = {
-        selectedEvent: -1,
+        selectedEvent: null,
         initialPos: 0,
         mouseMove: 0,
+        startSelected: false,
     }
 
     static getYPos(e) {
@@ -65,14 +68,18 @@ class Day extends Component {
         return yPos;
     }
 
-    mouseDownClosure = i => (e) => {
-        this.setState({ selectedEvent: i, initialPos: Day.getYPos(e) });
+    mouseDownClosureResize = (event, startSelected) => (e) => {
+        this.setState({ selectedEvent: event, initialPos: Day.getYPos(e), startSelected });
+    };
+
+    mouseDownClosureDrag = event => (e) => {
+        this.setState({ selectedEvent: event, initialPos: Day.getYPos(e) });
         e.preventDefault();
     };
 
     mouseMove = (e) => {
         const { selectedEvent, initialPos } = this.state;
-        if (selectedEvent < 0) {
+        if (selectedEvent == null) {
             return;
         }
         this.setState({ mouseMove: Day.getYPos(e) - initialPos });
@@ -80,22 +87,47 @@ class Day extends Component {
     }
 
     mouseUp = (e) => {
-        const { selectedEvent, mouseMove } = this.state;
-        const { moveEvent } = this.props;
-        if (selectedEvent < 0) {
+        const { selectedEvent, mouseMove, startSelected } = this.state;
+        const {
+            moveEvent,
+            changeStart,
+            changeEnd,
+            mode,
+        } = this.props;
+        if (selectedEvent == null) {
             return;
         }
-        this.setState({ selectedEvent: -1, initialPos: 0, mouseMove: 0 });
-        // mouseMove is in pixels, so convert to em, divide by 3 to convert to hours,
-        // then multiply by 60 to get minutes
-        moveEvent(selectedEvent, Math.round(mouseMove / em / 3 * 60), 'minutes');
+        this.setState({
+            selectedEvent: null,
+            initialPos: 0,
+            mouseMove: 0,
+            startSelected: false,
+        });
+        const timeDiff = Math.round(mouseMove / em / 3 * 60);
+        if (mode === modes.DRAG_DROP) {
+            // mouseMove is in pixels, so convert to em, divide by 3 to convert to hours,
+            // then multiply by 60 to get minutes
+            moveEvent(selectedEvent.id, timeDiff, 'minutes');
+        } else if (mode === modes.RESIZE) {
+            if (startSelected) {
+                const startTime = selectedEvent.startTime.clone().add(timeDiff, 'minutes');
+                changeStart(selectedEvent.id, startTime);
+            } else {
+                const endTime = selectedEvent.endTime.clone().add(timeDiff, 'minutes');
+                changeEnd(selectedEvent.id, endTime);
+            }
+        }
         e.preventDefault();
     }
 
     render() {
-        const { selectedEvent, mouseMove } = this.state;
+        const { selectedEvent, mouseMove, startSelected } = this.state;
         // see propTypes
-        const { day, events, mode } = this.props;
+        const {
+            day,
+            events,
+            mode,
+        } = this.props;
 
         // start and end of the day
         const dayStart = day.clone().startOf('day');
@@ -123,29 +155,59 @@ class Day extends Component {
 
                         // convert to hours, then ems for positioning of the element
                         let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
-                        const length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
+                        let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
 
-                        if (selectedEvent === i) {
+                        if (selectedEvent
+                            && selectedEvent.id === event.id
+                            && (mode !== modes.RESIZE || startSelected)) {
                             startPos += mouseMove / em;
+                        }
+                        if (mode === modes.RESIZE) {
+                            if (startSelected) {
+                                length -= mouseMove / em;
+                            } else {
+                                length += mouseMove / em;
+                            }
                         }
 
                         let mouseDown = () => {};
                         if (mode === modes.DRAG_DROP) {
-                            mouseDown = this.mouseDownClosure(i);
+                            mouseDown = this.mouseDownClosureDrag(event);
                         }
 
-                        // returns a correctly positioned div representing an event
-                        // The events get positioned overtop of calHours
-                        return (
+                        const eventHTML = [
                             <div
-                                key={event.name}
+                                key={event.id}
                                 style={{ top: `${startPos}em`, height: `${length}em` }}
                                 onMouseDown={mouseDown}
                                 onTouchStart={mouseDown}
                             >
                                 {event.name}
-                            </div>
-                        );
+                            </div>,
+                        ];
+
+                        if (mode === modes.RESIZE) {
+                            const mouseDownStart = this.mouseDownClosureResize(event, true);
+                            const mouseDownEnd = this.mouseDownClosureResize(event, false);
+                            eventHTML.unshift(<div
+                                className="resize"
+                                key={`${event.id}_start`}
+                                style={{ top: `${startPos - 0.5}em` }}
+                                onMouseDown={mouseDownStart}
+                                onTouchStart={mouseDownStart}
+                            />);
+                            eventHTML.push(<div
+                                className="resize"
+                                key={`${event.id}_end`}
+                                style={{ top: `${startPos + length - 0.5}em` }}
+                                onMouseDown={mouseDownEnd}
+                                onTouchStart={mouseDownEnd}
+                            />);
+                        }
+
+                        // returns a correctly positioned div representing an event
+                        // The events get positioned overtop of calHours
+                        return eventHTML;
                     })}
                 </div>
                 <div className="calHours">

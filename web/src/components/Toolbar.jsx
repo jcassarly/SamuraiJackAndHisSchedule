@@ -103,6 +103,7 @@ class Toolbar extends React.Component {
         if (calType !== types.MONTH) {
             buttons.push(
                 <button key="drag-drop" className={currMode === modes.DRAG_DROP ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</button>,
+                <button key="resize" className={currMode === modes.RESIZE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.RESIZE); }}>Resize</button>,
             );
         }
 
@@ -124,11 +125,9 @@ class Toolbar extends React.Component {
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
-<<<<<<< HEAD
     toggleMode: PropTypes.func.isRequired,
     currMode: PropTypes.number.isRequired,
     calType: PropTypes.number.isRequired,
-=======
     syncFromAsync: PropTypes.func.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     events: PropTypes.object.isRequired,
@@ -136,7 +135,6 @@ Toolbar.propTypes = {
     deadlines: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     settings: PropTypes.instanceOf(Settings).isRequired,
->>>>>>> jcassarly/server
 };
 
 const mapStateToProps = state => (

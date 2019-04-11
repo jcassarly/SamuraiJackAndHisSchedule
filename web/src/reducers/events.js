@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
-import { MOVE_EVENT } from '../actions/changeEvent';
+import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
 import { deserialize } from '../events/Event';
@@ -129,6 +129,9 @@ const reducer = (state = initialState, action) => {
         }
         case MOVE_EVENT: {
             const { id, amount, type } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
             const newEvent = newState.events[id].clone();
             const start = newEvent.startTime.clone().add(amount, type);
             const end = newEvent.endTime.clone().add(amount, type);
@@ -139,7 +142,34 @@ const reducer = (state = initialState, action) => {
                 newEvent.startTime = start;
                 newEvent.endTime = end;
             }
+            newEvent.id = id;
             newState.events[id] = newEvent;
+            break;
+        }
+        case CHANGE_START: {
+            const { id, start } = action.payload;
+            const newEvent = newState.events[id].clone();
+            try {
+                newEvent.startTime = start;
+            } catch {
+                break;
+            }
+            newEvent.id = id;
+            newState.events[id] = newEvent;
+            break;
+        }
+        case CHANGE_END: {
+            const { id, end } = action.payload;
+            const newEvent = newState.events[id].clone();
+            try {
+                newEvent.endTime = end;
+            } catch {
+                break;
+            }
+            newEvent.id = id;
+            newState.events[id] = newEvent;
+            break;
+        }
         case SYNC_FROM: {
             // deserialize the events and deadlines lists passed in through the payload
             const {

@@ -23,6 +23,12 @@
     border-radius: 0.5em;
 }
 
+.calDay .dayEvents > .resize {
+    height: 1em;
+    opacity: 0;
+    cursor: pointer;
+}
+
 .calHours {
     display: grid;
     grid-template-columns: 2em 1fr;
