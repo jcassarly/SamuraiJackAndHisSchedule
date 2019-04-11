@@ -16,6 +16,13 @@ class Day extends Component {
     /**
      * day: the day to be displayed
      * events: a list of events to display, can be empty
+     * mode: the toolbar mode it is currently in
+     * moveEvent: handler for when drag drops happen
+     * changeStart: handler to change the start of the event for resize
+     * changeEnd: handler to change the end of the event for resize
+     * cut: handler to cut an event
+     * copy: handler to copy an event
+     * paste: handler to paste an event
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -55,6 +62,13 @@ class Day extends Component {
         return hours;
     }
 
+    /**
+     * selectedEvent: the event being modified drag/drop or resize
+     * initialPos: the initial position that the user started dragging
+     * mouseMove: the amount the user has moved from initialPos
+     * startSelected: during resize, whether the user clicked the start
+     *     (false if they clicked the end)
+     */
     state = {
         selectedEvent: null,
         initialPos: 0,
@@ -62,6 +76,10 @@ class Day extends Component {
         startSelected: false,
     }
 
+    /**
+     * helper method
+     * gets the correct clientY whether passed in a click or touch event
+     */
     static getYPos(e) {
         let yPos;
         if (e.touches) {
@@ -72,6 +90,10 @@ class Day extends Component {
         return yPos;
     }
 
+    /**
+     * Returns a handler for clicking on an event in cop/cut mode
+     * @param {event} the event the handler is for
+     */
     clipboardClosure = event => () => {
         const { cut, copy, mode } = this.props;
         if (mode === modes.CUT) {
@@ -81,27 +103,55 @@ class Day extends Component {
         }
     };
 
+    /**
+     * handler for when the user pastes an event in paste mode
+     */
     onPaste = (e) => {
         const { paste, mode, day } = this.props;
         if (mode !== modes.PASTE) {
             return;
         }
-        const pos = e.clientY - e.currentTarget.getBoundingClientRect().top;
+        // gets the y position relative to the calHours element
+        const pos = Day.getYPos(e) - e.currentTarget.getBoundingClientRect().top;
+        // gets the current day
         const time = day.clone();
+        // sets hours, pos/em converts it to em, each hour takes up 3 em
+        // so dividing by 3 gives the offset in hours
         time.hour(Math.floor(pos / em / 3), 'hours');
+        // sets minutes, converts to hours, then multiply by 60 to get total minutes
+        // then mod 60 to get the minutes within the hour.
         time.minute(Math.floor((pos / em / 3 * 60) % 60));
+
+        // paste an event at the new time (using minute granularity with SET_MIN)
         paste(time, SET_MIN);
     }
 
+    /**
+     * returns a handler for resize events
+     * selectedEvent is the event being resized
+     * sets startSelected to whatever is passed in
+     */
     mouseDownClosureResize = (event, startSelected) => (e) => {
         this.setState({ selectedEvent: event, initialPos: Day.getYPos(e), startSelected });
     };
 
+    /**
+     * returns a handler for drag events
+     * selectedEvent is the event being dragged
+     */
     mouseDownClosureDrag = event => (e) => {
+        const { mode } = this.props;
+        if (mode !== modes.DRAG_DROP) {
+            return;
+        }
         this.setState({ selectedEvent: event, initialPos: Day.getYPos(e) });
         e.preventDefault();
     };
 
+    /**
+     * mouse move event handler
+     * sets the mouseMove state to the correct value
+     */
     mouseMove = (e) => {
         const { selectedEvent, initialPos } = this.state;
         if (selectedEvent == null) {
@@ -111,6 +161,10 @@ class Day extends Component {
         e.preventDefault();
     }
 
+    /**
+     * mouse Up event handler
+     * calls the correct handler for resizing or drag/dropping an event
+     */
     mouseUp = (e) => {
         const { selectedEvent, mouseMove, startSelected } = this.state;
         const {
@@ -119,25 +173,30 @@ class Day extends Component {
             changeEnd,
             mode,
         } = this.props;
+        // the user isn't dragging or resizing an event
         if (selectedEvent == null) {
             return;
         }
+        // reset state to normal
         this.setState({
             selectedEvent: null,
             initialPos: 0,
             mouseMove: 0,
             startSelected: false,
         });
+        // figure out the time difference based on how far the user moved their mouse
+        // divides by em to get in ems, then by 3 to get hours, then multiplies by 60 to get minutes
         const timeDiff = Math.round(mouseMove / em / 3 * 60);
         if (mode === modes.DRAG_DROP) {
-            // mouseMove is in pixels, so convert to em, divide by 3 to convert to hours,
-            // then multiply by 60 to get minutes
+            // move the event some number of minutes based on mouse move
             moveEvent(selectedEvent.id, timeDiff, 'minutes');
         } else if (mode === modes.RESIZE) {
             if (startSelected) {
+                // change the start time based on how the user resized the event
                 const startTime = selectedEvent.startTime.clone().add(timeDiff, 'minutes');
                 changeStart(selectedEvent.id, startTime);
             } else {
+                // change the end time based on how the user resized the event
                 const endTime = selectedEvent.endTime.clone().add(timeDiff, 'minutes');
                 changeEnd(selectedEvent.id, endTime);
             }
@@ -146,6 +205,7 @@ class Day extends Component {
     }
 
     render() {
+        // see state definition
         const { selectedEvent, mouseMove, startSelected } = this.state;
         // see propTypes
         const {
@@ -182,12 +242,16 @@ class Day extends Component {
                         let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
                         let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
 
+                        // if the event is being modified by the user with drag/drop or resize
                         if (selectedEvent
                             && selectedEvent.id === event.id
                             && (mode !== modes.RESIZE || startSelected)) {
+                            // move the start to the correct position
                             startPos += mouseMove / em;
                         }
+                        // If the event is being resized
                         if (mode === modes.RESIZE) {
+                            // move the end to the correct position
                             if (startSelected) {
                                 length -= mouseMove / em;
                             } else {
@@ -195,11 +259,10 @@ class Day extends Component {
                             }
                         }
 
-                        let mouseDown = () => {};
-                        if (mode === modes.DRAG_DROP) {
-                            mouseDown = this.mouseDownClosureDrag(event);
-                        }
+                        // create an event handler for drag start events for this event
+                        const mouseDown = this.mouseDownClosureDrag(event);
 
+                        // the html to add for the event
                         const eventHTML = [
                             <div
                                 key={event.id}
@@ -212,9 +275,17 @@ class Day extends Component {
                             </div>,
                         ];
 
+                        // add extra divs to catch attempts to resize
                         if (mode === modes.RESIZE) {
+                            // create a handler for when the user starts dragging
+                            // the start of the event
                             const mouseDownStart = this.mouseDownClosureResize(event, true);
+                            // create a handler for when the user starts dragging
+                            // the end of the event
                             const mouseDownEnd = this.mouseDownClosureResize(event, false);
+                            // add an element positioned right at the start of the event
+                            // the element is 1em, so it positions the start of the event
+                            // directly in the center of the element
                             eventHTML.unshift(<div
                                 className="resize"
                                 key={`${event.id}_start`}
@@ -222,6 +293,9 @@ class Day extends Component {
                                 onMouseDown={mouseDownStart}
                                 onTouchStart={mouseDownStart}
                             />);
+                            // add an element positioned right at the end of the event
+                            // the element is 1em, so it positions the end of the event
+                            // directly in the center of the element
                             eventHTML.push(<div
                                 className="resize"
                                 key={`${event.id}_end`}
