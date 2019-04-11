@@ -16,6 +16,8 @@ import { LocationEvent, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
+import Settings from '../events/Settings';
+
 /**
  * Create a react component that handles location event input
  */
@@ -37,10 +39,10 @@ class LocationEventForm extends React.Component {
             location: '',
             description: '',
             eventStart: moment(),
-            eventEnd: moment().add(1, 'hour'),
+            eventEnd: moment().add(props.settings.eventLength, 'minutes'),
             frequency: '',
-            notifications: '',
-            notificationTime: 0,
+            notifications: props.settings.notifications,
+            notificationTime: props.settings.notificationTime,
             error: false,
             errorMsg: 'No Error',
         };
@@ -60,6 +62,7 @@ class LocationEventForm extends React.Component {
             returnHome: PropTypes.func.isRequired,
             createEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
@@ -250,4 +253,12 @@ class LocationEventForm extends React.Component {
     }
 }
 
-export default connect(null, { createEvent })(LocationEventForm);
+// maps the state settings to the redux store settings
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { createEvent })(LocationEventForm);
+
