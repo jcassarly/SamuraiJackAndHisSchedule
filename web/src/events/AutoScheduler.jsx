@@ -444,9 +444,11 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
  * @param {*} ranges 
  */
 function printRanges(ranges) {
+    let acc = 'Printing Ranges:\n';
     for (let j = 0; j < ranges.length; j += 1) {
-        console.log(`    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}`);
+        acc + `    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}\n`;
     }
+    console.log(acc);
 }
 
 /**
