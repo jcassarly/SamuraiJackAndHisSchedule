@@ -170,6 +170,16 @@ class BinaryTimeRangeHeap {
  */
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
+    console.log('Deadline Parameters' + 
+                `\n    MinEventTime: ${deadline.minEventTime}` +
+                `\n    MaxEventTime: ${deadline.maxEventTime}` +
+                `\n    MinBreakTime: ${deadline.minBreak}` + 
+                `\n    TotalWorkTime: ${deadline.totalWorkTime}` + 
+                `\n    Start Work: ${deadline.startWorkTime.utc()}` + 
+                `\n    end Work: ${deadline.deadline.utc()}` + 
+                `\n    workHoursStart: ${workHoursStart.utc()}` + 
+                `\n    workHoursEnd: ${workHoursFin.utc()}`)
+    printRanges(eventToRanges(oldSchedule));
     // eslint-disable-next-line prefer-const
     let validTimes = [];
 
@@ -178,14 +188,17 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     let start = moment(moment.max(deadline.startWorkTime, dailyStart));
     const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
     const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
-
+    console.log(`Initial Values` + 
+                `\n    dailyStart: ${dailyStart.utc()}` + 
+                `\n    start: ${start.utc()}` + 
+                `\n    dailyEnd: ${dailyEnd.utc()}` + 
+                `\n    finalEnd: ${finalEnd.utc()}`)
     if (start.isAfter(dailyEnd)) {
         start = moment(dailyStart.add(1, 'days'));
         dailyEnd.add(1, 'days');
     }
 
     while (start.isBefore(finalEnd)) {
-        console.log(`Current Range: ${start.format('LLL')} to ${dailyEnd.format('LLL')}`)
         validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
         start = dailyStart.add(1, 'days');
         dailyEnd.add(1, 'days'), finalEnd;
@@ -205,7 +218,6 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                 validTimes[i].trim(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak);
 
                 if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
-                    console.log(`Current Range: ${validTimes[i].start.format('LLL')} to ${validTimes[i].end.format('LLL')}`)
                     const prevEnd = moment(validTimes[i].end);
 
                     let validBefore = true;
@@ -372,7 +384,7 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
 
 function printRanges(ranges) {
     for (let j = 0; j < ranges.length; j += 1) {
-        console.log(`    Range: ${j}\n    Start: ${ranges[j].start.format('MMMM Do YYYY, h:mm:ss a')}\n    End: ${ranges[j].end.format('MMMM Do YYYY, h:mm:ss a')}\n    Duration: ${ranges[j].duration()}`);
+        console.log(`    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}`);
     }
 }
 
@@ -389,3 +401,4 @@ export default autoSchedule;
 export { getValidTimes };
 export { createEvents };
 export { TimeRange };
+export { printRanges };
