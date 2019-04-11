@@ -67,7 +67,6 @@ test('Valid Range Split', () => {
     const deadline = new Deadline('Work Times Test', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-    printRanges(validTimes);
     const correctTimes = [
         new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T17:00:00Z')),
         new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T17:00:00Z')),
@@ -83,16 +82,16 @@ test('Valid Range Split', () => {
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 });
 
-// test('Create Events Empty Schedule', () => {
-//     const deadline = new Deadline('Work Times Test', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
-//     const validTimes = getValidTimes([], deadline,
-//         moment().hour(9).minute(0), moment().hour(17).minute(0));
-//     // console.log(validTimes.map(displayRange));
-//     const newSchedule = createEvents([], deadline, validTimes);
-//     const correctEvents = [
-//         new Event('Work Times Test', null, moment('2019-03-25T09:00:00Z'), moment('2019-03-25T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-26T09:00:00Z'), moment('2019-03-26T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-30T09:00:00Z'), moment('2019-03-30T10:00:00Z')),
-//     ];
-//     expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
-// });
+test('Create Events Empty Schedule One Day', () => {
+    const deadline = new Deadline('Work Times Test', moment('2019-03-24T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const validTimes = getValidTimes([], deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    // console.log(validTimes.map(displayRange));
+    const newSchedule = createEvents([], deadline, validTimes);
+    const correctEvents = [
+        new Event('Work Times Test', null, moment('2019-03-25T09:00:00Z'), moment('2019-03-25T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-26T09:00:00Z'), moment('2019-03-26T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-30T09:00:00Z'), moment('2019-03-30T10:00:00Z')),
+    ];
+    expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
+});

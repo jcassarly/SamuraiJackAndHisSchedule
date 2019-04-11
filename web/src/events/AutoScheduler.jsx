@@ -44,10 +44,17 @@ class TimeRange {
         }
     }
 
+    /**
+     * Returns true if given moment is within this range, false if not
+     * @param {*} time 
+     */
     inRange(time) {
         return (this.start.isBefore(time) && this.end.isAfter(time)); // Use moment().format('x') to get time in Unix time (seconds since 1970)
     }
 
+    /**
+     * Returns the duration of this event in minutes
+     */
     duration() {
         return (this.end.format('x') - this.start.format('x')) / 60 / 1000;
     }
@@ -71,6 +78,11 @@ class TimeRange {
         return returnValue;
     }
 
+    /**
+     * If the given range overlaps with this event, shorten this range so no overlap.
+     * @param {*} range 
+     * @param {*} breakTime 
+     */
     trim(range, breakTime) {
         // timerange's start time is within the given range, move it to after the range's end
         if (range.inRange(this.start)) { 
@@ -84,6 +96,9 @@ class TimeRange {
     }
 }
 
+/**
+ * A heap data structure that stores time ranges and places the longest duration range on top
+ */
 class BinaryTimeRangeHeap {
     constructor(array) {
         this.array = [];
@@ -91,11 +106,16 @@ class BinaryTimeRangeHeap {
         this.heapify();
     }
 
+    /**
+     * Move the specified element up the heap
+     * @param {*} givenIndex 
+     */
     siftUp(givenIndex) {
         let index = givenIndex;
         if (index > 0 && index < this.array.length) {
             while (index > 0) {
                 const parent = Math.floor((index - 1) / 2);
+                // If this node is longer than its parent, swap places.
                 if (this.array[index].duration() > this.array[parent].duration()) {
                     const temp = this.array[index];
                     this.array[index] = this.array[parent];
@@ -106,6 +126,10 @@ class BinaryTimeRangeHeap {
         }
     }
 
+    /**
+     * Move the specified element down the heap
+     * @param {*} givenIndex 
+     */
     siftDown(givenIndex) {
         let index = givenIndex;
         if (index >= 0 && index < this.array.length) {
@@ -114,6 +138,7 @@ class BinaryTimeRangeHeap {
                 const rightChild = 2 * index + 2;
                 let largerChild;
 
+                // Compare children, find the larger one
                 if (rightChild < this.array.length && 
                     this.array[leftChild].duration() < this.array[rightChild].duration()) {
                     largerChild = rightChild;
@@ -121,6 +146,7 @@ class BinaryTimeRangeHeap {
                     largerChild = leftChild;
                 }
 
+                // If the larger child is larger than this node, swap places
                 if (this.array[largerChild].duration() > this.array[index].duration()) {
                     const temp = this.array[index];
                     this.array[index] = this.array[largerChild];
@@ -131,17 +157,27 @@ class BinaryTimeRangeHeap {
         }
     }
 
+    /**
+     * Convert the array in to a heap data structure 
+     */
     heapify() {
         for (let i = this.array.length - 1; i >= 0; i -= 1) {
             this.siftUp(i);
         }
     }
 
+    /**
+     * Add a new timerange to the heap
+     * @param {*} newRange 
+     */
     push(newRange) {
         this.array.push(newRange); // Add the new timerange to the this.array
         this.siftUp(this.array.length - 1); // Sift the new timerange up
     }
 
+    /**
+     * Remove the longest time range in the heap
+     */
     pop() {
         const returnValue = this.array.shift(); // Save the first range in the this.array (longest duration)
         if (this.array.length > 0){
@@ -151,6 +187,9 @@ class BinaryTimeRangeHeap {
         return returnValue; // return the original top of the heap
     }
 
+    /**
+     * Get the number of timeranges in the heap
+     */
     get length() {
         return this.array.length;
     }
@@ -169,7 +208,10 @@ class BinaryTimeRangeHeap {
  * @param {*} workHoursFin    Moment object for time of day user cannot work after.
  */
 function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { // eslint-disable-line
+    // The valid timerange events can be within
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
+
+    // Debugging console outputs
     console.log('Deadline Parameters' + 
                 `\n    MinEventTime: ${deadline.minEventTime}` +
                 `\n    MaxEventTime: ${deadline.maxEventTime}` +
@@ -179,25 +221,34 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                 `\n    end Work: ${deadline.deadline.utc()}` + 
                 `\n    workHoursStart: ${workHoursStart.utc()}` + 
                 `\n    workHoursEnd: ${workHoursFin.utc()}`)
-    printRanges(eventToRanges(oldSchedule));
+    // printRanges(eventToRanges(oldSchedule));
+
     // eslint-disable-next-line prefer-const
     let validTimes = [];
 
-    // Add valid ranges for the valid working times of each day between startWorkTime and deadline.
+    // Used for setting the start of a valid time range of a day
     const dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+    // Used as the start of the added time ranges
     let start = moment(moment.max(deadline.startWorkTime, dailyStart));
+    // The end of a valid time range during a day
     const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
+    // The deadline
     const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
+    
+    // Debugging console outputs
     console.log(`Initial Values` + 
                 `\n    dailyStart: ${dailyStart.utc()}` + 
                 `\n    start: ${start.utc()}` + 
                 `\n    dailyEnd: ${dailyEnd.utc()}` + 
                 `\n    finalEnd: ${finalEnd.utc()}`)
+
+    // Accounting for if the given start time is after specified working hours
     if (start.isAfter(dailyEnd)) {
         start = moment(dailyStart.add(1, 'days'));
         dailyEnd.add(1, 'days');
     }
 
+    // Add Valid time ranges during the day
     while (start.isBefore(finalEnd)) {
         validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
         start = dailyStart.add(1, 'days');
@@ -270,18 +321,17 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 function createEvents(oldSchedule, deadline, givenValidTimes) {
     let remainingTime = deadline.totalWorkTime;
 
+    // Sanity checkign the parameters
     if (remainingTime < deadline.minChildEventTime) {
-        return null;
+        throw "Auto Schedule unable to schedule: Initial Total Work time less than minimum event time."
     }
 
     const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
-    const validTimes = new BinaryTimeRangeHeap(givenValidTimes);
-    let counter = 0;
-
-    console.log('Given ValidTimes')
-    printRanges(validTimes.array);
+    const validTimes = new BinaryTimeRangeHeap(givenValidTimes); // Use Binary Heap data structure
+    let counter = 0; // For debugging purposes if the loop goes infinite
 
     while (validTimes.length > 0 && remainingTime > 0) {
+        // Just in case the loop goes infinite. For debuggint purposes
         counter += 1;
         if (counter > 100) {
             console.log(`Exceeded 100 iterations.`);
@@ -294,23 +344,17 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
         const range = validTimes.pop(); // Get the longest duration TimeRange
         let duration = range.duration();
 
-        // console.log(`counter: ${counter}`)
-        // console.log(`validTimes.length: ${validTimes.length}`);
-        // console.log(`remainingTime: ${remainingTime}`);
-        // console.log(`duration: ${duration}`);
-        // console.log(`Current Range: ${range.start.format('LLL')} to ${range.end.format('LLL')}`)
-        // console.log('A')
-
-        //                                                                                                      TODO: think about how to prevent ending up with remainingTime < minChildEventTime
-        if (duration >= deadline.minEventTime) { // Time range is not too short
-            // Time range is larger than maximum child event duration.
-            // Make new event with max child event time, add a new range into list.
-            console.log(`Max Event Time: ${deadline.maxEventTime}, type: ${typeof deadline.maxEventTime}`)
+        // Time range is not too short
+        if (duration >= deadline.minEventTime) { 
+            
+            // If remaining time can fit into this time range
             if (remainingTime < duration && remainingTime < Number(deadline.maxEventTime)) {
                 duration = remainingTime;
-            } else if (duration > deadline.maxEventTime) {
+            } else if (duration > deadline.maxEventTime) { // Time range is larger than maximum child event duration.
+                // Use the maximum event time as duration
                 duration = deadline.maxEventTime;
 
+                // Re-add the remaining time in this range
                 const newStart = moment(range.start).add(Number(deadline.maxEventTime) + Number(deadline.minBreak), 'm');
                 const newDuration = (range.end.format('x') - newStart.format('x')) / 60 / 1000;
                 if (newDuration > deadline.minEventTime) {
@@ -323,7 +367,6 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // Subtract duration of auto-scheduled event
             remainingTime -= duration;
 
-
             // If remaining time insufficient for another auto-scheduled event, reduce duration of
             // event currently being scheduled by the difference, so that another event
             // with the minimum child event time can be scheduled.
@@ -332,12 +375,11 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
                 remainingTime = deadline.minEventTime;
             }
 
-            // console.log(`new remainingTime: ${remainingTime}`);
-            // console.log(`new duration: ${duration}`);
+            // Create a new event with the specified duration
             const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
                 moment(range.start).add(Number(duration), 'minutes'), deadline.location, false, deadline.notifications, deadline);
-            // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
-            // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
+            
+            // Add event to the scheudle and the deadline's list of child events
             newSchedule.push(debugEvent);
             deadline.createdEvents.push(debugEvent);
         } else {
@@ -363,31 +405,54 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
  * @param {*} workHoursFin    Moment object for time of day user cannot work after.
  */
 function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
+    // Debugging console
     console.log('Deadline Parameters')
     console.log(`    MinEventTime: ${deadline.minEventTime}`)
     console.log(`    MaxEventTime: ${deadline.maxEventTime}`)
     console.log(`    MinBreakTime: ${deadline.minBreak}`)
     console.log(`    TotalWorkTime: ${deadline.totalWorkTime}`)
+
+    // Create a list of just the events from the old schdule
     const oldVals = Object.values(oldSchedule);
+
+    // Debugging console outputs
     console.log('Currently existing Events')
     printRanges(eventToRanges(oldVals))
+
+    // Get valid time ranges the function can place events within
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
+
+    // Debugging console outputs
     console.log('Values of ValidTimes after getValidTimes():')
     printRanges(validTimes);
     console.log('Types of validTimes after getValidTimes():');
     console.log(validTimes);
+
+    // Create a new schedule with events for this deadline
     let returnvalue =  createEvents(oldVals, deadline, validTimes);
+
+    // debugging console outputs
     console.log('Events:')
     printRanges(eventToRanges(returnvalue));
+
+    // Return teh new schedule (will be merged with createEvents line w/o debugging)
     return returnvalue;
 }
 
+/**
+ * A function for debugging lists of time ranges
+ * @param {*} ranges 
+ */
 function printRanges(ranges) {
     for (let j = 0; j < ranges.length; j += 1) {
         console.log(`    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}`);
     }
 }
 
+/**
+ * A function for debugging event lists
+ * @param {*} schedule 
+ */
 function eventToRanges(schedule) {
     let newSchedule = Object.values(schedule);
     let newRanges = [];
@@ -402,3 +467,4 @@ export { getValidTimes };
 export { createEvents };
 export { TimeRange };
 export { printRanges };
+export { eventToRanges };
