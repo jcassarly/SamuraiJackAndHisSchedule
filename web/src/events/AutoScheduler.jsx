@@ -446,7 +446,7 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
 function printRanges(ranges) {
     let acc = 'Printing Ranges:\n';
     for (let j = 0; j < ranges.length; j += 1) {
-        acc + `    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}\n`;
+        acc = acc + `    Range: ${j}\n    Start: ${ranges[j].start.utc()}\n    End: ${ranges[j].end.utc()}\n    Duration: ${ranges[j].duration()}\n\n`;
     }
     console.log(acc);
 }
