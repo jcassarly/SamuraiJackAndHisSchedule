@@ -30,7 +30,7 @@ function syncFrom(eventsJson, deadlinesJson, settingsJson) {
 function syncFromAsync() {
     return (dispatch) => {
         request
-            .get('http://127.0.0.1:8000/proto/get') // TODO: remove hardcoded URL
+            .get('/proto/get')
             .then((res) => {
                 // create the JSON object from the string received
                 const parsed = JSON.parse(res.text);

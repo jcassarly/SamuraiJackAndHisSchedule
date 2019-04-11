@@ -5,5 +5,5 @@ from django.contrib import admin
 
 from .models import Events
 
-# Register your models here.
+# Registers the account data object in the database
 admin.site.register(Events)

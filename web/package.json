@@ -26,6 +26,7 @@
     "test": "jest --coverage --runInBand"
   },
   "jest": {
+    "testURL": "https://localhost",
     "setupFilesAfterEnv": [
       "./src/setupTests.js"
     ],

@@ -44,6 +44,7 @@ class Toolbar extends React.Component {
     syncTo() {
         const { events, deadlines, settings } = this.props;
 
+        console.log('uyeeeeee');
         // serialize the events
         const eventsClone = {};
         Object.keys(events).forEach((key) => {
@@ -63,9 +64,11 @@ class Toolbar extends React.Component {
             settings: JSON.stringify(settings.serialize()),
         });
 
+        console.log(syncData);
+
         // send the data to the server
         request
-            .post('http://127.0.0.1:8000/proto/set') // TODO: remove hardocded URL
+            .post('/proto/set')
             .set('X-CSRFToken', unescape(Cookie.get('csrftoken'))) // for security
             .set('Content-Type', 'application/json') // sending a JSON object
             .send(syncData)
@@ -86,8 +89,7 @@ class Toolbar extends React.Component {
             this.setState({
                 logout: false,
             });
-            // TODO: remove hardcoded URL
-            window.location.replace('http://127.0.0.1:8000/accounts/logout/');
+            window.location.pathname = '/accounts/logout/';
         }
 
         // see propTypes

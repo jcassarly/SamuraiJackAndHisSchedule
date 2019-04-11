@@ -19,7 +19,7 @@ test('toolbar works', () => {
         <Provider store={store}><Toolbar navNewEvent={navNewEvent} /></Provider>,
     );
 
-    const newEventButton = getByText('Logout');
+    const newEventButton = getByText('New Event');
 
     fireEvent.click(newEventButton);
 
