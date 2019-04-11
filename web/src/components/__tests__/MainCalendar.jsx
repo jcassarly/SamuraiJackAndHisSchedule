@@ -4,11 +4,20 @@ import createStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import moment from 'moment-timezone';
 import MainCalendar from '../MainCalendar';
+import { Settings } from '../../events/Settings';
 
 const currDate = new Date('2019-03-19T08:00:00Z');
 moment.now = () => currDate;
 const navNewEvent = jest.fn(() => {});
-const store = createStore()({ events: { maxId: 0, events: {} } });
+const store = createStore()({
+    events: {
+        maxEventId: 0,
+        events: {},
+        maxDeadlineId: 0,
+        deadlines: {},
+    },
+    settings: new Settings(),
+});
 let calendar = mount(
     <Provider store={store}><MainCalendar navNewEvent={navNewEvent} /></Provider>,
 ).find('MainCalendar').at(0);

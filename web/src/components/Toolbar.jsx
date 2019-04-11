@@ -44,7 +44,6 @@ class Toolbar extends React.Component {
     syncTo() {
         const { events, deadlines, settings } = this.props;
 
-        console.log('uyeeeeee');
         // serialize the events
         const eventsClone = {};
         Object.keys(events).forEach((key) => {
@@ -63,8 +62,6 @@ class Toolbar extends React.Component {
             deadlines: JSON.stringify(deadlinesClone),
             settings: JSON.stringify(settings.serialize()),
         });
-
-        console.log(syncData);
 
         // send the data to the server
         request
