@@ -84,6 +84,21 @@ function deserializeSyncPayload(events, deadlines) {
     };
 }
 
+/**
+ * Serializes the the lists of events and deadlines along with the settings
+ * serialized objects are put into an object that is then stringified:
+ *
+ * @param {*} events the list of events to serialized
+ * @param {*} deadlines the list of deadlines to serialize
+ * @param {*} settings the settings object to serialize
+ *
+ * Returns an object in the form:
+ * {
+ *     events:    <serialized list of events>
+ *     deadliens: <serialized list of deadlines>
+ *     settings:  <serialized settings>
+ * }
+ */
 function serializeSyncPayload(events, deadlines, settings) {
     // serialize the events
     const eventsClone = {};
