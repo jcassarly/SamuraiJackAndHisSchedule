@@ -41,8 +41,8 @@ class LocationEventForm extends React.Component {
             eventStart: moment(),
             eventEnd: moment().add(props.settings.eventLength, 'minutes'),
             frequency: '',
-            notifications: props.settings.notifications,
-            notificationTime: props.settings.notificationTime,
+            notifications: props.settings.defaultNotificationType,
+            notificationTime: props.settings.defaultNotificationTimeBefore,
             error: false,
             errorMsg: 'No Error',
         };

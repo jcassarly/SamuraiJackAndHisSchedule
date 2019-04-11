@@ -55,27 +55,23 @@ class SettingsForm extends React.Component {
         super(props);
 
         // get the default settings
-        const defaults = new Settings();
         this.state = {
             title: 'General Settings',
-            location: defaults.defaultLocation,
-            notifications: defaults.defaultNotificationType,
-            notificationTime: defaults.defaultNotificationTimeBefore,
-            snapToGrid: defaults.defaultSnapToGrid,
-            minBreak: defaults.minBreakTime,
-            minTime: defaults.minWorkTime,
-            maxTime: defaults.maxWorkTime,
-            language: defaults.defaultLanguage,
-            duration: defaults.eventLength,
-            timeBeforeDue: defaults.timeBeforeDue,
-            timeToComplete: defaults.timeToComplete,
+            location: props.settings.defaultLocation,
+            notifications: props.settings.defaultNotificationType,
+            notificationTime: props.settings.defaultNotificationTimeBefore,
+            snapToGrid: props.settings.defaultSnapToGrid,
+            minBreak: props.settings.minBreakTime,
+            minTime: props.settings.minWorkTime,
+            maxTime: props.settings.maxWorkTime,
+            language: props.settings.defaultLanguage,
+            duration: props.settings.eventLength,
+            timeBeforeDue: props.settings.timeBeforeDue,
+            timeToComplete: props.settings.timeToComplete,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleStartDateChange = this.handleStartDateChange.bind(this);
-        this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.returnHome = this.returnHome.bind(this);
     }
 
     /**
@@ -85,6 +81,7 @@ class SettingsForm extends React.Component {
         return {
             returnHome: PropTypes.func.isRequired,
             updateSettings: PropTypes.func.isRequired,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
@@ -291,4 +288,11 @@ class SettingsForm extends React.Component {
     }
 }
 
-export default connect(null, { updateSettings })(SettingsForm);
+// maps the state settings to the redux store settings
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { updateSettings })(SettingsForm);
