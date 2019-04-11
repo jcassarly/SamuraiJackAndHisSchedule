@@ -6,12 +6,46 @@ import moment from 'moment-timezone';
 
 import '../styles/MainCalendar.css';
 import { Event } from '../events/Event';
+import { moveEvent, changeStart, changeEnd } from '../actions/changeEvent';
+import { cut, copy, paste } from '../actions/clipboard';
 
 import CalHeader from './CalHeader';
 import Toolbar from './Toolbar';
 import Month from './Month';
 import Week from './Week';
 import Day from './Day';
+
+/**
+ * calendar editing modes
+ * NORMAL: normal view mode
+ * DRAG_DROP: allow the user to drag and drop events
+ * RESIZE: allow the user to resize events
+ * CUT: allow the user to cut events
+ * COPY: allow the user to copy events
+ * PASTE: allow the user to paste events from the clipboard
+ */
+const modes = {
+    NORMAL: 0,
+    DRAG_DROP: 1,
+    RESIZE: 2,
+    CUT: 3,
+    COPY: 4,
+    PASTE: 5,
+};
+
+/**
+ * the types of calendars that can be displayed
+ * MONTH: month view
+ * WEEK: week view
+ * DAY: day view
+ */
+const types = {
+    MONTH: 0,
+    WEEK: 1,
+    DAY: 2,
+};
+// converts from the type of calendar value (0, 1, 2) to the correct string
+const typesToString = ['month', 'week', 'day'];
 
 /**
  * Main component for diplaying the calendar
@@ -21,30 +55,40 @@ class MainCalendar extends Component {
     // when the user is scrolling, this represents the position that the user started scrolling from
     startPos = 0;
 
-    // the types of calendars that can be displayed
-    // does not change
-    types = ['month', 'week', 'day'];
-
     /**
      * events: An array of events passed in by redux: state.events.events
      * navNewEvent: A handler for navigating to the new event form, gets passed in by the
      *     App component
+     * moveEvent: A handler for moving an event (used for drag-drop)
+     * changeStart: A handler for changing the start of an event (used for resize)
+     * changeEnd: A handler for changing the end of an event (used for resize)
+     * cut: A handler for cutting an event
+     * copy: A handler for copying an event
+     * paste: A handler for pasting an event
      */
     static propTypes = {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
         navSettings: PropTypes.func.isRequired,
+        moveEvent: PropTypes.func.isRequired,
+        changeStart: PropTypes.func.isRequired,
+        changeEnd: PropTypes.func.isRequired,
+        cut: PropTypes.func.isRequired,
+        copy: PropTypes.func.isRequired,
+        paste: PropTypes.func.isRequired,
     };
 
     /**
      * date: the current date being displayed by the calendar, defaults to the current date
      * type: the type of calendar to display, defaults to month, see types
      * pos: the current scroll position of the calendar
+     * mode: the current editor mode the user is in, see modes above
      */
     state = {
         date: moment().tz(moment.tz.guess()),
-        type: this.types[0],
+        type: types.MONTH,
         pos: 0,
+        mode: 0,
     };
 
     /**
@@ -54,7 +98,7 @@ class MainCalendar extends Component {
      */
     onLeft = () => {
         const { date, type } = this.state;
-        this.setState({ date: date.clone().subtract(1, type) });
+        this.setState({ date: date.clone().subtract(1, typesToString[type]) });
     }
 
     /**
@@ -64,7 +108,7 @@ class MainCalendar extends Component {
      */
     onRight = () => {
         const { date, type } = this.state;
-        this.setState({ date: date.clone().add(1, type) });
+        this.setState({ date: date.clone().add(1, typesToString[type]) });
     }
 
     /**
@@ -73,7 +117,7 @@ class MainCalendar extends Component {
      */
     onSwitch = () => {
         const { type } = this.state;
-        this.setState({ type: this.types[(this.types.indexOf(type) + 1) % this.types.length] });
+        this.setState({ type: (type + 1) % typesToString.length, mode: modes.NORMAL });
     }
 
     /**
@@ -101,14 +145,39 @@ class MainCalendar extends Component {
     }
 
     /**
+     * switch to the passed in mode
+     */
+    toggleMode = (newMode) => {
+        const { mode } = this.state;
+        if (newMode === mode) {
+            this.setState({ mode: modes.NORMAL });
+        } else {
+            this.setState({ mode: newMode });
+        }
+    }
+
+    /**
      * main render method
      */
     render() {
         // see state
-        const { date, pos, type } = this.state;
+        const {
+            mode, date,
+            pos, type,
+        } = this.state;
         // see propTypes
-        const { navNewEvent, navSettings } = this.props;
+        const {
+            navNewEvent,
+            navSettings,
+            moveEvent,
+            changeStart,
+            changeEnd,
+            cut,
+            copy,
+            paste,
+        } = this.props;
         let { events } = this.props;
+        // converts to an array
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
         let calElem;
@@ -116,14 +185,38 @@ class MainCalendar extends Component {
         // selects the calendar component to display depending on the type of calendar
         //     being displayed
         switch (type) {
-        case 'day':
-            calElem = <Day events={events} day={date} />;
+        case types.DAY:
+            calElem = (
+                <Day
+                    mode={mode}
+                    moveEvent={moveEvent}
+                    changeStart={changeStart}
+                    changeEnd={changeEnd}
+                    events={events}
+                    day={date}
+                    cut={cut}
+                    copy={copy}
+                    paste={paste}
+                />
+            );
             break;
-        case 'week':
-            calElem = <Week events={events} week={date} />;
+        case types.WEEK:
+            calElem = (
+                <Week
+                    mode={mode}
+                    moveEvent={moveEvent}
+                    changeStart={changeStart}
+                    changeEnd={changeEnd}
+                    events={events}
+                    week={date}
+                    cut={cut}
+                    copy={copy}
+                    paste={paste}
+                />
+            );
             break;
         default:
-        case 'month':
+        case types.MONTH:
             calElem = (
                 <div className="calendarSlider" style={{ display: 'block' }}>
                     <div
@@ -134,7 +227,15 @@ class MainCalendar extends Component {
                         onTouchCancel={this.endScroll}
                     >
                         <div className="calContainer" style={{ top: `${pos}px` }}>
-                            <Month events={events} id={date.month()} month={date} />
+                            <Month
+                                mode={mode}
+                                events={events}
+                                id={date.month()}
+                                month={date}
+                                cut={cut}
+                                copy={copy}
+                                paste={paste}
+                            />
                         </div>
                     </div>
                 </div>
@@ -153,7 +254,13 @@ class MainCalendar extends Component {
                     onRight={this.onRight}
                     onSwitch={this.onSwitch}
                 />
-                <Toolbar navNewEvent={navNewEvent} navSettings={navSettings} />
+                <Toolbar
+                    currMode={mode}
+                    calType={type}
+                    toggleMode={this.toggleMode}
+                    navNewEvent={navNewEvent}
+                    navSettings={navSettings}
+                />
                 {calElem}
             </div>
         );
@@ -167,4 +274,12 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps)(MainCalendar);
+export default connect(mapStateToProps, {
+    moveEvent,
+    changeStart,
+    changeEnd,
+    cut,
+    copy,
+    paste,
+})(MainCalendar);
+export { modes, types };

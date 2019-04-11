@@ -201,6 +201,20 @@ class Event {
         return false;
     }
 
+    clone() {
+        return new Event(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.parent,
+            this.color,
+        );
+    }
+
     /**
      * Serialize this event object so it can be stored
      * returns a JSON string with the event object
@@ -235,6 +249,17 @@ class LocationEvent extends Event {
         super(name, description, startTime, endTime, name, true, notifications, null, color);
     }
 
+    clone() {
+        return new LocationEvent(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.notifications,
+            this.color,
+        );
+    }
+
     /**
      * Serialize this location event object so it can be stored
      * returns a JSON string with the location event object
@@ -254,6 +279,22 @@ class RecurringEvent extends Event {
         notifications, color, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null, color);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
+    }
+
+    // creates a new event that is a copy of this one
+    clone() {
+        return new RecurringEvent(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.color,
+            this.frequency,
+            this.optionalCustomFrequency,
+        );
     }
 
     // returns frequency

@@ -1,5 +1,12 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
+import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
+import {
+    CUT,
+    COPY,
+    PASTE,
+    SET_DAY,
+} from '../actions/clipboard';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
 import { deserialize } from '../events/Event';
@@ -73,6 +80,7 @@ function deserializeSyncPayload(events, deadlines) {
         maxEventId: largestKey,
         deadlines: newDeadlines,
         maxDeadlineId: Object.values(newDeadlines).length,
+        clipboard: null,
     };
 }
 
@@ -151,6 +159,99 @@ const reducer = (state = initialState, action) => {
                 newState.deadlines[state.maxDeadlineId].id = state.maxDeadlineId;
                 newState.maxDeadlineId = state.maxDeadlineId + 1;
             }
+            break;
+        }
+        case MOVE_EVENT: {
+            const { id, amount, type } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            const newEvent = newState.events[id].clone();
+            const start = newEvent.startTime.clone().add(amount, type);
+            const end = newEvent.endTime.clone().add(amount, type);
+            if (amount > 0) {
+                newEvent.endTime = end;
+                newEvent.startTime = start;
+            } else {
+                newEvent.startTime = start;
+                newEvent.endTime = end;
+            }
+            newEvent.id = id;
+            newState.events[id] = newEvent;
+            break;
+        }
+        case CHANGE_START: {
+            const { id, start } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            const newEvent = newState.events[id].clone();
+            try {
+                newEvent.startTime = start;
+            } catch {
+                break;
+            }
+            newEvent.id = id;
+            newState.events[id] = newEvent;
+            break;
+        }
+        case CHANGE_END: {
+            const { id, end } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            const newEvent = newState.events[id].clone();
+            try {
+                newEvent.endTime = end;
+            } catch {
+                break;
+            }
+            newEvent.id = id;
+            newState.events[id] = newEvent;
+            break;
+        }
+        case CUT: {
+            const { id } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            newState.clipboard = newState.events[id].clone();
+            delete newState.events[id];
+            break;
+        }
+        case COPY: {
+            const { id } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            newState.clipboard = newState.events[id].clone();
+            break;
+        }
+        case PASTE: {
+            if (newState.clipboard == null) {
+                break;
+            }
+            const { type } = action.payload;
+            const time = action.payload.time.clone();
+            const newEvent = newState.clipboard.clone();
+            const length = newEvent.endTime.diff(newEvent.startTime);
+
+            if (type === SET_DAY) {
+                time.hour(newEvent.startTime.hour());
+                time.minute(newEvent.startTime.minute());
+            }
+            time.second(0);
+            time.millisecond(0);
+            if (time.diff(newEvent.startTime) < 0) {
+                newEvent.startTime = time;
+                newEvent.endTime = time.clone().add(length, 'ms');
+            } else {
+                newEvent.endTime = time.clone().add(length, 'ms');
+                newEvent.startTime = time;
+            }
+            newEvent.id = [state.maxEventId];
+            newState.events[state.maxEventId] = newEvent;
+            newState.maxEventId += 1;
             break;
         }
         case SYNC_FROM: {
