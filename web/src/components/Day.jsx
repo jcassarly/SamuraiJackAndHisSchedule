@@ -243,19 +243,19 @@ class Day extends Component {
                         let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
 
                         // if the event is being modified by the user with drag/drop or resize
-                        if (selectedEvent
-                            && selectedEvent.id === event.id
-                            && (mode !== modes.RESIZE || startSelected)) {
-                            // move the start to the correct position
-                            startPos += mouseMove / em;
-                        }
-                        // If the event is being resized
-                        if (mode === modes.RESIZE) {
-                            // move the end to the correct position
-                            if (startSelected) {
-                                length -= mouseMove / em;
-                            } else {
-                                length += mouseMove / em;
+                        if (selectedEvent && selectedEvent.id === event.id) {
+                            if (mode !== modes.RESIZE || startSelected) {
+                                // move the start to the correct position
+                                startPos += mouseMove / em;
+                            }
+                            // If the event is being resized
+                            if (mode === modes.RESIZE) {
+                                // move the end to the correct position
+                                if (startSelected) {
+                                    length -= mouseMove / em;
+                                } else {
+                                    length += mouseMove / em;
+                                }
                             }
                         }
 

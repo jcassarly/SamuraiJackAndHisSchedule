@@ -80,9 +80,16 @@ class Toolbar extends React.Component {
      * Render the Toolbar object
      */
     render() {
+        // see state definition
         const { logout } = this.state;
         // see propTypes
-        const { navNewEvent, toggleMode, currMode, calType, syncFromAsync } = this.props;
+        const {
+            navNewEvent,
+            toggleMode,
+            currMode,
+            calType,
+            syncFromAsync,
+        } = this.props;
 
         // if the user clicked logout, go to the logout URL
         if (logout) {
@@ -93,25 +100,24 @@ class Toolbar extends React.Component {
             window.location.replace('http://127.0.0.1:8000/accounts/logout/');
         }
 
+        // add buttons
         const buttons = [
             <button key="new-ev" type="button" onClick={navNewEvent}>New Event</button>,
             <button key="logout" type="button" onClick={this.logout}>Logout</button>,
             <button key="sync-from" type="button" onClick={this.syncTo}>Sync To Server</button>,
             <button key="sync-to" type="button" onClick={syncFromAsync}>Sync From Server</button>,
+            <button key="cut" className={currMode === modes.CUT ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.CUT); }}>cut</button>,
+            <button key="copy" className={currMode === modes.COPY ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.COPY); }}>copy</button>,
+            <button key="paste" className={currMode === modes.PASTE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.PASTE); }}>paste</button>,
         ];
 
+        // add buttons that don't appear when in month view
         if (calType !== types.MONTH) {
             buttons.push(
                 <button key="drag-drop" className={currMode === modes.DRAG_DROP ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</button>,
                 <button key="resize" className={currMode === modes.RESIZE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.RESIZE); }}>Resize</button>,
             );
         }
-
-        buttons.push(
-            <button key="cut" className={currMode === modes.CUT ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.CUT); }}>cut</button>,
-            <button key="copy" className={currMode === modes.COPY ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.COPY); }}>copy</button>,
-            <button key="paste" className={currMode === modes.PASTE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.PASTE); }}>paste</button>,
-        );
 
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
@@ -124,6 +130,9 @@ class Toolbar extends React.Component {
 
 /**
  * navNewEvent: navigates to the form for creating a new event
+ * toggleMode: toggles the mode of the calendar (eg. drag/drop mode, resize, etc.)
+ * currMode: the current mode that the calednar is in
+ * calType: the type of calendar being displayed
  * syncFromAsync: pulls the events from the server to the redux store
  * events: the list of events from the redux store
  * deadlines: the list of deadlines from the redux store

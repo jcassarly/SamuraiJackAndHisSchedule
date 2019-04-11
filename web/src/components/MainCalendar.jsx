@@ -15,6 +15,15 @@ import Month from './Month';
 import Week from './Week';
 import Day from './Day';
 
+/**
+ * calendar editing modes
+ * NORMAL: normal view mode
+ * DRAG_DROP: allow the user to drag and drop events
+ * RESIZE: allow the user to resize events
+ * CUT: allow the user to cut events
+ * COPY: allow the user to copy events
+ * PASTE: allow the user to paste events from the clipboard
+ */
 const modes = {
     NORMAL: 0,
     DRAG_DROP: 1,
@@ -24,12 +33,18 @@ const modes = {
     PASTE: 5,
 };
 
-// the types of calendars that can be displayed
+/**
+ * the types of calendars that can be displayed
+ * MONTH: month view
+ * WEEK: week view
+ * DAY: day view
+ */
 const types = {
     MONTH: 0,
     WEEK: 1,
     DAY: 2,
 };
+// converts from the type of calendar value (0, 1, 2) to the correct string
 const typesToString = ['month', 'week', 'day'];
 
 /**
@@ -44,6 +59,12 @@ class MainCalendar extends Component {
      * events: An array of events passed in by redux: state.events.events
      * navNewEvent: A handler for navigating to the new event form, gets passed in by the
      *     App component
+     * moveEvent: A handler for moving an event (used for drag-drop)
+     * changeStart: A handler for changing the start of an event (used for resize)
+     * changeEnd: A handler for changing the end of an event (used for resize)
+     * cut: A handler for cutting an event
+     * copy: A handler for copying an event
+     * paste: A handler for pasting an event
      */
     static propTypes = {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
@@ -60,6 +81,7 @@ class MainCalendar extends Component {
      * date: the current date being displayed by the calendar, defaults to the current date
      * type: the type of calendar to display, defaults to month, see types
      * pos: the current scroll position of the calendar
+     * mode: the current editor mode the user is in, see modes above
      */
     state = {
         date: moment().tz(moment.tz.guess()),
@@ -153,6 +175,7 @@ class MainCalendar extends Component {
             paste,
         } = this.props;
         let { events } = this.props;
+        // converts to an array
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
         let calElem;
@@ -248,5 +271,12 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { moveEvent, changeStart, changeEnd, cut, copy, paste })(MainCalendar);
+export default connect(mapStateToProps, {
+    moveEvent,
+    changeStart,
+    changeEnd,
+    cut,
+    copy,
+    paste,
+})(MainCalendar);
 export { modes, types };
