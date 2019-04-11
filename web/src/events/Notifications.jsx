@@ -16,14 +16,17 @@ class Notifications {
         this.notificationType = notificationType;
     }
 
+    // returns the type of notification as a String
     get notificationType() {
         return this._notificationType;
     }
 
+    // returns the time before the event at which the notification is issued
     get notificationTime() {
         return this._notificationTime;
     }
 
+    // sets notificationType to a string based on an enum
     set notificationType(value) {
         switch (value) {
         case Notifications.noteEnum.EMAIL:
@@ -43,10 +46,12 @@ class Notifications {
         }
     }
 
+    // sets notificationTime to a number
     set notificationTime(value) {
         this._notificationTime = value;
     }
 
+    // checks if this notification is equal to an input notification, true if true, false otherwise
     equals(notification) {
         if (notification._notificationTime.getTime() === this._notificationTime.getTime()
         && notification._notificationType.valueOf() === this._notificationType.valueOf()) {

@@ -51,86 +51,107 @@ class Settings {
         return newSettings;
     }
 
+    // returns eventLength
     get eventLength() {
         return this._eventLength;
     }
 
+    // returns location
     get defaultLocation() {
         return this._defaultLocation;
     }
 
+    // returns notificationTimeBefore
     get defaultNotificationTimeBefore() {
         return this._defaultNotificationTimeBefore;
     }
 
+    // returns notificationType
     get defaultNotificationType() {
         return this._defaultNotificationType;
     }
 
+    // returns locked
     get locked() {
         return this._locked;
     }
 
+    // returns language
     get language() {
         return this._language;
     }
 
+    // returns snapToGrid value
     get snapToGrid() {
         return this._snapToGrid;
     }
 
+    // returns timeBeforeDue
     get timeBeforeDue() {
         return this._timeBeforeDue;
     }
 
+    // returns minWorkTime
     get minWorkTime() {
         return this._minWorkTime;
     }
 
+    // returns maxWorkTime
     get maxWorkTime() {
         return this._maxWorkTime;
     }
 
+    // returns minBreakTime
     get minBreakTime() {
         return this._minBreakTime;
     }
 
+    // returns timeToComplete
     get timeToComplete() {
         return this._timeToComplete;
     }
 
+    // sets eventLength to a number
     set eventLength(value) {
         this._eventLength = value;
     }
 
+    // sets location to a string
     set defaultLocation(value) {
         this._defaultLocation = value;
     }
 
+    // sets TimeBefore to a number
     set defaultNotificationTimeBefore(value) {
         this._defaultNotificationTimeBefore = value;
     }
 
+    // sets notificationType to a string based on an enum
     set defaultNotificationType(value) {
         this._defaultNotificationType = value;
     }
 
+    // sets locked to a boolean
     set locked(value) {
         this._locked = value;
     }
 
+    // sets language to a string from a list
     set language(value) {
         this._language = value;
     }
 
+    // sets snapToGrid to a number
     set snapToGrid(value) {
         this._snapToGrid = value;
     }
 
+    // sets timeBeforeDue to a number
     set timeBeforeDue(value) {
         this._timeBeforeDue = value;
     }
 
+    // sets minWorkTime to a number, provided it is not more than maxWorkTime
     set minWorkTime(value) {
         if (value > this.maxWorkTime) {
             throw new Error('minimum must be less than maximum');
@@ -139,6 +160,7 @@ class Settings {
         }
     }
 
+    // sets maxWorkTime to a number, provided it is not less than minWorkTime
     set maxWorkTime(value) {
         if (value < this.minWorkTime) {
             throw new Error('maximum must be greater than minimum');
@@ -147,10 +169,12 @@ class Settings {
         }
     }
 
+    // sets minBreakTime to a number
     set minBreakTime(value) {
         this._minBreakTime = value;
     }
 
+    // sets timeToComplete to a number
     set timeToComplete(value) {
         if (value > this.timeBeforeDue) {
             throw new Error('not enough time to work before deadline');
