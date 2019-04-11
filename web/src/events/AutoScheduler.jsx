@@ -178,7 +178,14 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     let start = moment(moment.max(deadline.startWorkTime, dailyStart));
     const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
     const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
+
+    if (start.isAfter(dailyEnd)) {
+        start = moment(dailyStart.add(1, 'days'));
+        dailyEnd.add(1, 'days');
+    }
+
     while (start.isBefore(finalEnd)) {
+        console.log(`Current Range: ${start.format('LLL')} to ${dailyEnd.format('LLL')}`)
         validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
         start = dailyStart.add(1, 'days');
         dailyEnd.add(1, 'days'), finalEnd;
