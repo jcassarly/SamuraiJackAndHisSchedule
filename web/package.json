@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "lodash": "^4.17.11",
     "js-cookie": "^2.2.0",
+    "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "normalize.css": "^8.0.1",
@@ -16,13 +16,14 @@
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "superagent": "^5.0.2",
     "superagent-csrf-middleware": "^0.3.0"
   },
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --open --config ./webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "test": "jest --coverage"
+    "test": "jest --coverage --runInBand"
   },
   "jest": {
     "setupFilesAfterEnv": [

@@ -1,5 +1,6 @@
 import Frequency from './Frequency';
 import Notifications from './Notifications';
+import { Deadline } from './Deadline';
 
 const moment = require('moment-timezone');
 
@@ -37,6 +38,8 @@ class Event {
         this.locked = locked;
         this.notifications = notifications;
         this.parent = parent;
+
+        this.id = -1; // default is no ID - to be set later
     }
 
     get name() {
@@ -69,6 +72,13 @@ class Event {
 
     get parent() {
         return this._parent;
+    }
+
+    /**
+     * Returns the id of the event in the redux store. -1 if it has not been set yet
+     */
+    get id() {
+        return this._id;
     }
 
     set name(value) {
@@ -105,6 +115,14 @@ class Event {
 
     set parent(value) {
         this._parent = value;
+    }
+
+    /**
+     * Set the id of the Event in the redux store to value
+     * @param {int} value the new id
+     */
+    set id(value) {
+        this._id = value;
     }
 
     addNotification(timeBefore, type) {
@@ -146,10 +164,15 @@ class Event {
         );
     }
 
+    /**
+     * Serialize this event object so it can be stored
+     * returns a JSON string with the event object
+     */
     serialize() {
         return {
             type: EVENT_TYPES.EVENT,
             obj: {
+                id: this.id,
                 name: this.name,
                 description: this.description,
                 startTime: this.startTime,
@@ -157,7 +180,12 @@ class Event {
                 location: this.location,
                 locked: this.locked,
                 notifications: this.notifications,
-                parent: this.parent,
+                // if the parent is not null, use the id, otherwise there is no id, so -1
+                parent: (
+                    this.parent !== null
+                    && this.parent !== undefined
+                    && this.parent instanceof Deadline
+                ) ? this.parent.id : -1,
             },
         };
     }
@@ -179,7 +207,12 @@ class LocationEvent extends Event {
         );
     }
 
+    /**
+     * Serialize this location event object so it can be stored
+     * returns a JSON string with the location event object
+     */
     serialize() {
+        // all the serialization is the same as the event except that the type is location
         const retval = super.serialize();
         retval.type = EVENT_TYPES.LOCATION;
 
@@ -217,9 +250,17 @@ class RecurringEvent extends Event {
         this._frequency = value;
     }
 
+    /**
+     * Serialize this recurring event object so it can be stored
+     * returns a JSON string with the recurring event object
+     */
     serialize() {
         const retval = super.serialize();
+
+        // set the type of event for when deserialization happens
         retval.type = EVENT_TYPES.RECURRING;
+
+        // add the frequency fields
         retval.obj = {
             ...retval.obj,
             frequency: this._frequency.timing,
@@ -229,13 +270,25 @@ class RecurringEvent extends Event {
     }
 }
 
+/**
+ * Deserializes a JSON string containing an event object
+ * (should have the same form as the output of the serialize methods for its respective type)
+ * @param {string} jsonStr a JSON string containing one Event or Event subclass
+ * Returns an Event or subclass of event parsed from the jsonStr
+ *
+ * class is based on the type field
+ */
 function deserialize(jsonStr) {
     const json = JSON.parse(jsonStr);
     const { type, obj } = json;
 
+    let newEvent = null;
+
+    // check the type
     switch (type) {
+    // type is normal event
     case EVENT_TYPES.EVENT:
-        return new Event(
+        newEvent = new Event(
             obj.name,
             obj.description,
             moment(obj.startTime),
@@ -245,16 +298,23 @@ function deserialize(jsonStr) {
             obj.notifications,
             obj.parent,
         );
+        break;
+    // type is location event
     case EVENT_TYPES.LOCATION:
-        return new LocationEvent(
+        newEvent = new LocationEvent(
             obj.name,
             obj.description,
             moment(obj.startTime),
             moment(obj.endTime),
             obj.notifications,
         );
+
+        // location events never have parents and needs to be set to -1 when deserializing
+        newEvent.parent = -1;
+        break;
+    // type is recurring event
     case EVENT_TYPES.RECURRING:
-        return new RecurringEvent(
+        newEvent = new RecurringEvent(
             obj.name,
             obj.description,
             moment(obj.startTime),
@@ -265,9 +325,15 @@ function deserialize(jsonStr) {
             obj.frequency,
             obj.optionalCustomFrequency,
         );
+
+        // recurring events never have parents and needs to be set to -1 when deserializing
+        newEvent.parent = -1;
+        break;
     default:
         throw new Error('Invalid type to deserialize');
     }
+
+    return newEvent;
 }
 
 export {

@@ -12,7 +12,7 @@ import {
     NumberInput,
 } from './InputFormComponents';
 import '../styles/StandardEventForm.css';
-import Deadline from '../events/Deadline';
+import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
 
@@ -130,7 +130,7 @@ class DeadlineForm extends React.Component {
                 minBreak,
                 taskStart,
                 location,
-                // TODO: add uselocation to deadline
+            // TODO: add uselocation to deadline
             );
 
             // add the deadline event to the calendar

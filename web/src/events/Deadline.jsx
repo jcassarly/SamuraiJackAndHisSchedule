@@ -1,4 +1,5 @@
 // the class for handling deadlines
+import moment from 'moment-timezone';
 import { verifyTimes } from './Event';
 
 class Deadline {
@@ -16,6 +17,8 @@ class Deadline {
         this.maxEventTime = maxEventTime;
         this.minBreak = minBreak;
         this.location = location;
+
+        this.id = -1; // default is no id - it gets set later
     }
 
     get name() {
@@ -54,6 +57,13 @@ class Deadline {
         return this._location;
     }
 
+    /**
+     * Returns the id of the deadline in the redux store. -1 if it has not been set yet
+     */
+    get id() {
+        return this._id;
+    }
+
     set name(value) {
         this._name = value;
     }
@@ -88,6 +98,18 @@ class Deadline {
         this._location = value;
     }
 
+    /**
+     * Set the id of the Deadline in the redux store to value
+     * @param {int} value the new id
+     */
+    set id(value) {
+        this._id = value;
+    }
+
+    setEvent(index, newEvent) {
+        this._createdEvents[index] = newEvent;
+    }
+
     addEvent(event) {
         this._createdEvents.push(event);
     }
@@ -96,6 +118,61 @@ class Deadline {
         const toRemove = this._createdEvents.findIndex(item => item === event);
         this._createdEvents.splice(toRemove);
     }
+
+    /**
+     * Serialize this deadline object so it can be stored
+     * returns a JSON string with the deadline object
+     */
+    serialize() {
+        // convert the created events to their IDs for serialization
+        const childEvents = [];
+        this._createdEvents.forEach((child) => {
+            childEvents.push(child.id);
+        });
+
+        return {
+            id: this.id,
+            name: this.name,
+            createdEvents: childEvents,
+            deadline: this._deadline,
+            startWorkTime: this._startWorkTime,
+            totalWorkTime: this.totalWorkTime,
+            minEventTime: this.minEventTime,
+            maxEventTime: this.maxEventTime,
+            minBreak: this.minBreak,
+            location: this.location,
+        };
+    }
 }
 
-export default Deadline;
+/**
+ * Deserializes a JSON string containing a Deadline object
+ * (should have the same form as the output of the serialize methods for a Deadline)
+ * @param {string} jsonStr a JSON string containing one Deadline
+ * Returns a Deadline parsed from the jsonStr
+ */
+function deserializeDeadline(jsonStr) {
+    const json = JSON.parse(jsonStr);
+    const dl = new Deadline(
+        json.name,
+        moment(json.deadline),
+        json.totalWorkTime,
+        json.minEventTime,
+        json.maxEventTime,
+        json.minBreak,
+        moment(json.startWorkTime),
+        json.location,
+    );
+
+    // add the child events to the json object
+    json.createdEvents.forEach((e) => {
+        dl.addEvent(e);
+    });
+
+    return dl;
+}
+
+export {
+    Deadline,
+    deserializeDeadline,
+};

@@ -6,7 +6,7 @@ import {
     CREATE_DEADLINE_EVENT,
 } from '../createEvent';
 import { Event } from '../../events/Event';
-import Deadline from '../../events/Deadline';
+import { Deadline } from '../../events/Deadline';
 
 const eventTime = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 

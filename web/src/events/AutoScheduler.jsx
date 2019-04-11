@@ -250,10 +250,11 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
             const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline.parent);
+                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline);
             // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
             // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
             newSchedule.push(debugEvent);
+            deadline.createdEvents.push(debugEvent);
         }
     }
     return newSchedule;

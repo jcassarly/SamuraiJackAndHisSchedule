@@ -30,6 +30,7 @@ class App extends Component {
      */
     returnHome = () => {
         this.setState({ nav: 'main' });
+        console.log('back to home');
     }
 
     /**

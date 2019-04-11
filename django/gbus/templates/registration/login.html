@@ -4,3 +4,7 @@
   {{ form.as_p }}
   <button type="submit">Login</button>
 </form>
+<form action="/accounts/signup/" method="post">
+  {% csrf_token %}
+  <button type="submit">Sign Up</button>
+</form>

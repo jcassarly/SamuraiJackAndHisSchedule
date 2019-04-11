@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url('', include('calendar.urls')),
+    url(r'^accounts/', include('accounts.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
 ]

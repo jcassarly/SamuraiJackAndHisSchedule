@@ -6,13 +6,23 @@ import {
     createDeadlineEvent,
 } from '../../actions/createEvent';
 import { Event } from '../../events/Event';
-import Deadline from '../../events/Deadline';
+import { Deadline } from '../../events/Deadline';
 
 jest.mock('../../events/AutoScheduler');
 
-const state = { maxId: 0, events: {} };
+const state = {
+    maxEventId: 0,
+    events: {},
+    maxDeadlineId: 0,
+    deadlines: {},
+};
 // note, do not change to original=state, must be independent copies
-const originalState = { maxId: 0, events: {} };
+const originalState = {
+    maxEventId: 0,
+    events: {},
+    maxDeadlineId: 0,
+    deadlines: {},
+};
 const eventTime = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 const event = new Event('test', 'description', eventTime.clone(), eventTime.clone().add(1, 'hour'));
 const deadline = new Deadline('test', eventTime.clone().add(10, 'days'), 360, 10, 60, 10, eventTime.clone().add(2, 'hours'), 10, eventTime.clone());
