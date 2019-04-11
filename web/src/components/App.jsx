@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import MainCalendar from './MainCalendar';
 import ChooseEventType from './ChooseEventType';
+import SettingsForm from './SettingsForm';
 
 /**
  * Primary toplevel app component.
@@ -26,6 +27,14 @@ class App extends Component {
     }
 
     /**
+     * Navigate to the SettingsForm
+     */
+    navSettings = () => {
+        this.setState({ nav: 'settings'});
+        console.log('to Settings Menu');
+    }
+
+    /**
      * Navigate to the main calendar view
      */
     returnHome = () => {
@@ -42,6 +51,8 @@ class App extends Component {
         switch (nav) {
         case 'createEvent':
             return <ChooseEventType returnHome={this.returnHome} />;
+        case 'settings':
+            return <SettingsForm returnHome={this.returnHome} />;
         case 'main':
         default:
             return <MainCalendar navNewEvent={this.navNewEvent} />;

@@ -3,20 +3,22 @@ import moment from 'moment-timezone';
 import { verifyTimes } from './Event';
 
 class Deadline {
-    constructor(name, deadline, totalWorkTime, minEventTime, maxEventTime,
-        minBreak, startWorkTime, location) {
+    constructor(name, description, deadline, totalWorkTime, minEventTime, maxEventTime,
+        minBreak, startWorkTime, location, useLocation) {
         this.name = name;
         this._createdEvents = [];
 
         verifyTimes(startWorkTime, deadline);
         this._deadline = deadline.clone();
         this._startWorkTime = startWorkTime.clone();
+        this.description = description;
 
         this.totalWorkTime = totalWorkTime;
         this.minEventTime = minEventTime;
         this.maxEventTime = maxEventTime;
         this.minBreak = minBreak;
         this.location = location;
+        this.useLocation = useLocation;
 
         this.id = -1; // default is no id - it gets set later
     }
