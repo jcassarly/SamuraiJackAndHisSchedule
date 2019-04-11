@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import { Event, deserialize } from '../events/Event';
 import { Settings, deserializeSettings } from '../events/Settings';
 import { deserializeSyncPayload, serializeSyncPayload } from './events';
 
@@ -16,21 +14,21 @@ const initialState = {
 };
 
 const loadState = () => {
-    const state = {};
+    const state = initialState;
     try {
         // get the local storage
-        const serializedEvents = localStorage.getItem('events');
-        const serializedDeadlines = localStorage.getItem('deadlines');
-        const serializedSettings = localStorage.getItem('settings');
+        const parsedStorage = JSON.parse(localStorage.getItem('state'));
 
-        // deserialize the events
-        state.events = deserializeSyncPayload(serializedEvents, serializedDeadlines);
-
-        if (serializedSettings == null) {
-            state.settings = initialState.settings;
-        } else {
-            state.settings = deserializeSettings(serializedSettings);
+        if (parsedStorage != null) {
+            // deserialize the events and deadlines
+            state.events = deserializeSyncPayload(
+                JSON.parse(parsedStorage.events),
+                JSON.parse(parsedStorage.deadlines),
+            );
+            state.settings.settings = deserializeSettings(parsedStorage.settings);
         }
+
+
         return state;
     } catch (err) {
         console.error(err);
@@ -41,18 +39,13 @@ const loadState = () => {
 
 const saveState = (state) => {
     try {
-        const {
-            serializedEvents,
-            serializedDeadlines,
-            serializedSettings,
-        } = serializeSyncPayload(
+        const serializedState = serializeSyncPayload(
             state.events.events,
             state.events.deadlines,
             state.settings.settings,
         );
-        localStorage.setItem('events', serializedEvents);
-        localStorage.setItem('deadlines', serializedDeadlines);
-        localStorage.setItem('settings', serializedSettings);
+
+        localStorage.setItem('state', serializedState);
     } catch (err) {
         console.error(err);
         console.error('no localStorage available');

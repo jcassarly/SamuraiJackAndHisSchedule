@@ -1,6 +1,4 @@
 import moment from 'moment';
-import Cookie from 'js-cookie';
-import request from 'superagent';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
@@ -90,6 +88,10 @@ function serializeSyncPayload(events, deadlines, settings) {
     Object.keys(deadlines).forEach((key) => {
         deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
     });
+
+    console.log(eventsClone);
+    console.log(deadlinesClone);
+    console.log(settings);
 
     // takes the serialized lists and settings and combine them into one object
     return JSON.stringify({

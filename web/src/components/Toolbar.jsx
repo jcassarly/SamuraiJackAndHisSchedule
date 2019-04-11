@@ -68,6 +68,7 @@ class Toolbar extends React.Component {
             this.setState({
                 logout: false,
             });
+            localStorage.removeItem('state');
             window.location.pathname = '/accounts/logout/';
         }
 
