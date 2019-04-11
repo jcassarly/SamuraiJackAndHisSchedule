@@ -135,6 +135,7 @@ class Deadline {
         return {
             id: this.id,
             name: this.name,
+            description: this.description,
             createdEvents: childEvents,
             deadline: this._deadline,
             startWorkTime: this._startWorkTime,
@@ -143,6 +144,7 @@ class Deadline {
             maxEventTime: this.maxEventTime,
             minBreak: this.minBreak,
             location: this.location,
+            useLocation: this.useLocation,
         };
     }
 }
@@ -157,6 +159,7 @@ function deserializeDeadline(jsonStr) {
     const json = JSON.parse(jsonStr);
     const dl = new Deadline(
         json.name,
+        json.description,
         moment(json.deadline),
         json.totalWorkTime,
         json.minEventTime,
@@ -164,6 +167,7 @@ function deserializeDeadline(jsonStr) {
         json.minBreak,
         moment(json.startWorkTime),
         json.location,
+        json.useLocation,
     );
 
     // add the child events to the json object

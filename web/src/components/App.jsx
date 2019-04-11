@@ -30,7 +30,7 @@ class App extends Component {
      * Navigate to the SettingsForm
      */
     navSettings = () => {
-        this.setState({ nav: 'settings'});
+        this.setState({ nav: 'settings' });
         console.log('to Settings Menu');
     }
 
