@@ -2,6 +2,18 @@
 import moment from 'moment-timezone';
 import { verifyTimes } from './Event';
 
+/**
+ * @param name name of the deadline
+ * @param description description of deadline activity
+ * @param deadline time by which the events created by this deadline must end
+ * @param totalWorkTime minimum amount of time the events must collectively include
+ * @param minEventTime minimum time an event created by this deadline can take up
+ * @param maxEventTime maximum time an event created by this deadline can take up
+ * @param minBreak minimum break time between events created by this deadline
+ * @param startWorkTime the time after which events created by this deadline are created
+ * @param location the location of this event, if it has one
+ * @param useLocation whether this event uses a location
+ */
 class Deadline {
     constructor(name, description, deadline, totalWorkTime, minEventTime, maxEventTime,
         minBreak, startWorkTime, location, useLocation) {
@@ -23,40 +35,54 @@ class Deadline {
         this.id = -1; // default is no id - it gets set later
     }
 
+    // returns name
     get name() {
         return this._name;
     }
 
+    // returns createdEvents
     get createdEvents() {
         return this._createdEvents;
     }
 
+    // returns deadline
     get deadline() {
         return this._deadline;
     }
 
+    // returns totalWorkTime
     get totalWorkTime() {
         return this._totalWorkTime;
     }
 
+    // returns minEventTime
     get minEventTime() {
         return this._minEventTime;
     }
 
+    // returns maxEventTime
     get maxEventTime() {
         return this._maxEventTime;
     }
 
+    // returns minBreak
     get minBreak() {
         return this._minBreak;
     }
 
+    // returns startWorkTime
     get startWorkTime() {
         return this._startWorkTime;
     }
 
+    // returns location
     get location() {
         return this._location;
+    }
+
+    // return useLocation
+    get useLocation() {
+        return this._useLocation;
     }
 
     /**
@@ -66,38 +92,51 @@ class Deadline {
         return this._id;
     }
 
+    // sets the value of name to a string
     set name(value) {
         this._name = value;
     }
 
+    // sets the value of deadline to a string
     set deadline(value) {
         verifyTimes(this._startWorkTime, value);
         this._startWorkTime = value;
     }
 
+    // sets totalWorkTime to a number
     set totalWorkTime(value) {
         this._totalWorkTime = value;
     }
 
+    // sets minEventTime to a number
     set minEventTime(value) {
         this._minEventTime = value;
     }
 
+    // sets maxEventTime to a number
     set maxEventTime(value) {
         this._maxEventTime = value;
     }
 
+    // sets minBreak to a number
     set minBreak(value) {
         this._minBreak = value;
     }
 
+    // sets startWorkTime to a moment
     set startWorkTime(value) {
         verifyTimes(value, this._deadline);
         this._startWorkTime = value;
     }
 
+    // sets location to a string
     set location(value) {
         this._location = value;
+    }
+
+    // sets the value of uselocation to a boolean
+    set useLocation(value) {
+        this._useLocation = value;
     }
 
     /**
@@ -108,14 +147,27 @@ class Deadline {
         this._id = value;
     }
 
+    /**
+     * Sets the event at an index to newEvent
+     * @param {*} index the index at which to add an event
+     * @param {*} newEvent the event to be added
+     */
     setEvent(index, newEvent) {
         this._createdEvents[index] = newEvent;
     }
 
+    /**
+     * adds an event to createdEvents
+     * @param {*} event the event to be added
+     */
     addEvent(event) {
         this._createdEvents.push(event);
     }
 
+    /**
+     * removes an event from createdEvents
+     * @param {*} event the event to be removed
+     */
     removeEvent(event) {
         const toRemove = this._createdEvents.findIndex(item => item === event);
         this._createdEvents.splice(toRemove);
