@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ColorEnum from './ColorEnum';
 import { Event } from '../events/Event';
 
 import '../styles/MonthCell.css';
@@ -18,7 +19,7 @@ const MonthCell = (props) => {
         <div className={`monthCell ${(current ? 'current' : '')}`}>
             <div className="monthDay">{date}</div>
             {events.map(event => (
-                <div key={event.name} className="monthEvent">{event.name}</div>
+                <div key={event.name} style={{ backgroundColor: ColorEnum.backColor[event.color], color: ColorEnum.textColor[event.color] }} className="monthEvent">{event.name}</div>
             ))}
         </div>
     );

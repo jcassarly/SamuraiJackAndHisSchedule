@@ -11,6 +11,7 @@ import {
     NotificationTime,
     FrequencySelect,
     LockEventInput,
+    ColorSelect,
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { createEvent } from '../actions/createEvent';
@@ -18,7 +19,6 @@ import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
-
 /**
  * React Component that handles standard event input gathering
  */
@@ -29,7 +29,6 @@ class StandardEventForm extends React.Component {
      * @param {func}   props.createEvent a function to create an event in the redux store
      *                                   with the gathered input from the form
      * @param {string} props.title       the name of the event form
-     * @param {bool}   props.hideLock    true if the lock form field should be hidden,
      *                                   false if it should appear
      */
     constructor(props) {
@@ -45,6 +44,7 @@ class StandardEventForm extends React.Component {
             frequency: '',
             notifications: '',
             notificationTime: 0,
+            color: '',
             locked: true,
             error: false,
             errorMsg: 'No Error',
@@ -65,7 +65,6 @@ class StandardEventForm extends React.Component {
             returnHome: PropTypes.func.isRequired,
             createEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
-            hideLock: PropTypes.bool,
         };
     }
 
@@ -76,7 +75,6 @@ class StandardEventForm extends React.Component {
     static get defaultProps() {
         return {
             title: 'Standard Event Form',
-            hideLock: false,
         };
     }
 
@@ -99,7 +97,6 @@ class StandardEventForm extends React.Component {
     handleInputChange(event) {
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
-
         this.setState({
             [inputName]: newValue,
         });
@@ -139,6 +136,7 @@ class StandardEventForm extends React.Component {
             location,
             locked,
             notifications,
+            color,
             frequency,
         } = this.state;
 
@@ -160,6 +158,7 @@ class StandardEventForm extends React.Component {
                     locked,
                     notifications, // TODO: use notification object here instead
                     null,
+                    color,
                 );
             // create a recurring event otherwise with the chosen frequency
             } else {
@@ -171,6 +170,7 @@ class StandardEventForm extends React.Component {
                     location,
                     locked,
                     notifications,
+                    color,
                     frequency,
                     null,
                 ); // TODO: handle custom frequency
@@ -198,7 +198,6 @@ class StandardEventForm extends React.Component {
     render() {
         const {
             returnHome,
-            hideLock,
         } = this.props;
 
         const {
@@ -211,6 +210,7 @@ class StandardEventForm extends React.Component {
             frequency,
             notifications,
             notificationTime,
+            color,
             locked,
             error,
             errorMsg,
@@ -268,7 +268,13 @@ class StandardEventForm extends React.Component {
                     name="locked"
                     checked={locked}
                     onChange={this.handleInputChange}
-                    hide={hideLock}
+                    hide={false}
+                />
+
+                <ColorSelect
+                    name="color"
+                    value={color}
+                    onChange={this.handleInputChange}
                 />
 
             </InputForm>

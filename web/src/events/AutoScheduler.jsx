@@ -2,6 +2,7 @@
 /* eslint max-len: 0 */
 import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
+import ColorEnum from '../components/ColorEnum';
 
 /**
  * Represents a range of time.
@@ -250,7 +251,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             // console.log(`new remainingTime: ${remainingTime}`);
             // console.log(`new duration: ${duration}`);
             const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline);
+                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
             // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
             // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
             newSchedule.push(debugEvent);

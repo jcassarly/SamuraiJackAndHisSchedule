@@ -6,3 +6,5 @@
 .vroot
 *.pyc
 tags
+
+*.pyc

@@ -1,6 +1,7 @@
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 import { Deadline } from './Deadline';
+import ColorEnum from '../components/ColorEnum';
 
 const moment = require('moment-timezone');
 
@@ -26,7 +27,17 @@ function verifyTimes(start, end) {
 
 // Class for events
 class Event {
-    constructor(name, description, startTime, endTime, location, locked, notifications, parent) {
+    constructor(
+        name,
+        description,
+        startTime,
+        endTime,
+        location,
+        locked,
+        notifications,
+        parent,
+        color,
+    ) {
         this.name = name;
         this.description = description;
 
@@ -40,6 +51,7 @@ class Event {
         this.parent = parent;
 
         this.id = -1; // default is no ID - to be set later
+        this.color = (color === null || color === undefined) ? ColorEnum.BLUE_BLACK : color;
     }
 
     get name() {
@@ -79,6 +91,13 @@ class Event {
      */
     get id() {
         return this._id;
+    }
+
+    /**
+     * Returns the color of the event
+     */
+    get color() {
+        return this._color;
     }
 
     set name(value) {
@@ -125,6 +144,13 @@ class Event {
         this._id = value;
     }
 
+    /**
+     * Set the color of the event to the value
+     */
+    set color(value) {
+        this._color = value;
+    }
+
     addNotification(timeBefore, type) {
         this._notifications.push(new Notifications(type, timeBefore, this._startTime));
     }
@@ -167,6 +193,7 @@ class Event {
                 location: this.location,
                 locked: this.locked,
                 notifications: this.notifications,
+                color: this.color,
                 // if the parent is not null, use the id, otherwise there is no id, so -1
                 parent: (
                     this.parent !== null
@@ -180,8 +207,8 @@ class Event {
 
 // Class for events denoting only location which extends Event
 class LocationEvent extends Event {
-    constructor(name, description, startTime, endTime, notifications) {
-        super(name, description, startTime, endTime, name, true, notifications, null);
+    constructor(name, description, startTime, endTime, notifications, color) {
+        super(name, description, startTime, endTime, name, true, notifications, null, color);
     }
 
     /**
@@ -200,8 +227,8 @@ class LocationEvent extends Event {
 // Class for recurring events
 class RecurringEvent extends Event {
     constructor(name, description, startTime, endTime, location, locked,
-        notifications, frequency, optionalCustomFrequency) {
-        super(name, description, startTime, endTime, location, locked, notifications, null);
+        notifications, color, frequency, optionalCustomFrequency) {
+        super(name, description, startTime, endTime, location, locked, notifications, null, color);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
     }
 
@@ -260,6 +287,7 @@ function deserialize(jsonStr) {
             obj.locked,
             obj.notifications,
             obj.parent,
+            obj.color,
         );
         break;
     // type is location event
