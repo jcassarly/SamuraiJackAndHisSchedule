@@ -3,25 +3,22 @@
  */
 
 const ColorEnum = {
-    WHITE_BLACK: {
-        description: 'White + Black text',
-        textColor: 0xFFFFFF,
-        backColor: 0x000000,
+    WHITE_BLACK: 1,
+    BLUE_BLACK: 2,
+    GREEN_BLACK: 3,
+    ORANGE_BLACK: 4,
+    backColor: {
+        1: '#000000',
+        2: '#0800FF',
+        3: '#229954',
+        4: '#FFA600',
     },
-    BLUE_BLACK: {
-        description: 'Blue + Black text',
-        textColor: 0x000000,
-        backColor: 0x0800FF,
-    },
-    GREEN_BLACK: {
-        description: 'Green + Black text',
-        textColor: 0x000000,
-        backColor: 0x229954,
-    },
-    ORANGE_BLACK: {
-        description: 'Orange + Black text',
-        textColor: 0x000000,
-        backColor: 0xFFA600,
+
+    textColor: {
+        1: '#DDDDDD',
+        2: '#000000',
+        3: '#000000',
+        4: '#000000',
     },
 };
 

@@ -19,7 +19,7 @@ const MonthCell = (props) => {
         <div className={`monthCell ${(current ? 'current' : '')}`}>
             <div className="monthDay">{date}</div>
             {events.map(event => (
-                <div key={event.name} style={{ backgroundColor: event.color.backColor, color: event.color.textColor }} className="monthEvent">{event.name}</div>
+                <div key={event.name} style={{ backgroundColor: ColorEnum.backColor[event.color], color: ColorEnum.textColor[event.color] }} className="monthEvent">{event.name}</div>
             ))}
         </div>
     );

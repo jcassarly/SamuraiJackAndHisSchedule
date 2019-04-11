@@ -567,9 +567,8 @@ function ColorSelect(props) {
     } = props;
     return (
         <SelectInput prompt="Color Scheme" name={name} value={value} onChange={onChange}>
-            <option value="">None</option>
-            <option value={ColorEnum.WHITE_BLACK}>White + Black Text</option>
             <option value={ColorEnum.BLUE_BLACK}>Blue + Black Text</option>
+            <option value={ColorEnum.WHITE_BLACK}>Gray + Black Text</option>
             <option value={ColorEnum.GREEN_BLACK}>Green + Black Text</option>
             <option value={ColorEnum.ORANGE_BLACK}>Orange + Black Text</option>
         </SelectInput>
@@ -602,4 +601,5 @@ export {
     TextInput,
     SelectInput,
     CheckboxInput,
+    ColorSelect,
 };

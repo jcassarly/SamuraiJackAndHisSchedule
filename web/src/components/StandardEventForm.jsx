@@ -11,6 +11,7 @@ import {
     NotificationTime,
     FrequencySelect,
     LockEventInput,
+    ColorSelect,
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { createEvent } from '../actions/createEvent';
@@ -18,6 +19,7 @@ import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
 import '../styles/StandardEventForm.css';
+import ColorEnum from './ColorEnum';
 
 /**
  * React Component that handles standard event input gathering
@@ -97,7 +99,6 @@ class StandardEventForm extends React.Component {
     handleInputChange(event) {
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
-
         this.setState({
             [inputName]: newValue,
         });
@@ -275,7 +276,7 @@ class StandardEventForm extends React.Component {
                 <ColorSelect
                     name="color"
                     value={color}
-                    onChnage={this.handleInputChange}
+                    onChange={this.handleInputChange}
                 />
 
             </InputForm>
