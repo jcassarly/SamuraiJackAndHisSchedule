@@ -50,7 +50,8 @@ class TimeRange {
      * @param {*} time
      */
     inRange(time) {
-        return (this.start.isBefore(time) && this.end.isAfter(time)); // Use moment().format('x') to get time in Unix time (seconds since 1970)
+        return ((this.start.isBefore(time) || this.start.isSame(time)) && 
+                (this.end.isAfter(time)    || this.end.isSame(time))); // Use moment().format('x') to get time in Unix time (seconds since 1970)
     }
 
     /**
