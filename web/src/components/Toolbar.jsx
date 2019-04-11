@@ -5,6 +5,7 @@ import request from 'superagent';
 import { connect } from 'react-redux';
 import { syncFromAsync } from '../actions/sync';
 import { Settings } from '../events/Settings';
+import { serializeSyncPayload } from '../reducers/events';
 
 import '../styles/Toolbar.css';
 
@@ -44,33 +45,14 @@ class Toolbar extends React.Component {
     syncTo() {
         const { events, deadlines, settings } = this.props;
 
-        // serialize the events
-        const eventsClone = {};
-        Object.keys(events).forEach((key) => {
-            eventsClone[key] = JSON.stringify(events[key].serialize());
-        });
-
-        // serialize the deadlines
-        const deadlinesClone = {};
-        Object.keys(deadlines).forEach((key) => {
-            deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
-        });
-
-        // takes the serialized lists and settings and combine them into one object
-        const syncData = JSON.stringify({
-            events: JSON.stringify(eventsClone),
-            deadlines: JSON.stringify(deadlinesClone),
-            settings: JSON.stringify(settings.serialize()),
-        });
-
         // send the data to the server
         request
             .post('/proto/set')
             .set('X-CSRFToken', unescape(Cookie.get('csrftoken'))) // for security
             .set('Content-Type', 'application/json') // sending a JSON object
-            .send(syncData)
+            .send(serializeSyncPayload(events, deadlines, settings))
             .then((res) => {
-                // echo the response on the console
+            // echo the response on the console
                 console.log(res.text);
             });
     }

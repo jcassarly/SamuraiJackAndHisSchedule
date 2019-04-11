@@ -1,18 +1,16 @@
 import moment from 'moment';
+import Cookie from 'js-cookie';
+import request from 'superagent';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
 import { deserialize } from '../events/Event';
 import { deserializeDeadline } from '../events/Deadline';
+import { loadState } from './persistState';
 
 // the user starts out with no events
 // each event needs an id, these ids are assigned in order, maxId keeps track of the largest
-const initialState = {
-    maxEventId: 0,
-    events: {},
-    maxDeadlineId: 0,
-    deadlines: {},
-};
+const initialState = loadState().events;
 
 /**
  * Deserializes the JSON objects that are in the elements of the parsed objects passed in
@@ -46,7 +44,11 @@ function deserializeSyncPayload(events, deadlines) {
 
     // deserialize the events
     const newEvents = {};
+    let largestKey = 0;
     Object.keys(events).forEach((key) => {
+        if (key > largestKey) {
+            largestKey = key;
+        }
         // get the event from the response
         newEvents[key] = deserialize(events[key]);
 
@@ -69,9 +71,32 @@ function deserializeSyncPayload(events, deadlines) {
     });
 
     return {
-        newEvents,
-        newDeadlines,
+        events: newEvents,
+        maxEventId: largestKey,
+        deadlines: newDeadlines,
+        maxDeadlineId: Object.values(newDeadlines).length,
     };
+}
+
+function serializeSyncPayload(events, deadlines, settings) {
+    // serialize the events
+    const eventsClone = {};
+    Object.keys(events).forEach((key) => {
+        eventsClone[key] = JSON.stringify(events[key].serialize());
+    });
+
+    // serialize the deadlines
+    const deadlinesClone = {};
+    Object.keys(deadlines).forEach((key) => {
+        deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
+    });
+
+    // takes the serialized lists and settings and combine them into one object
+    return JSON.stringify({
+        events: JSON.stringify(eventsClone),
+        deadlines: JSON.stringify(deadlinesClone),
+        settings: JSON.stringify(settings.serialize()),
+    });
 }
 
 /**
@@ -79,7 +104,7 @@ function deserializeSyncPayload(events, deadlines) {
  */
 const reducer = (state = initialState, action) => {
     // copy the old state
-    const newState = { ...state };
+    let newState = { ...state };
     newState.events = { ...state.events };
     newState.deadlines = { ...state.deadlines };
 
@@ -128,22 +153,10 @@ const reducer = (state = initialState, action) => {
         }
         case SYNC_FROM: {
             // deserialize the events and deadlines lists passed in through the payload
-            const {
-                newEvents,
-                newDeadlines,
-            } = deserializeSyncPayload(action.payload.eventsJson, action.payload.deadlinesJson);
-
-            // change the event list to the new one and update the length
-            newState.events = {
-                ...newEvents,
-            };
-            newState.maxEventId = Object.keys(newEvents).length;
-
-            // change the deadline list to the new one and update the length
-            newState.deadlines = {
-                ...newDeadlines,
-            };
-            newState.maxDeadlineId = Object.keys(newEvents).length;
+            newState = deserializeSyncPayload(
+                action.payload.eventsJson,
+                action.payload.deadlinesJson,
+            );
 
             break;
         }
@@ -155,3 +168,4 @@ const reducer = (state = initialState, action) => {
 };
 
 export default reducer;
+export { deserializeSyncPayload, serializeSyncPayload };
