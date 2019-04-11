@@ -5,7 +5,7 @@ import LocationEventForm from './LocationEventForm';
 import DeadlineForm from './DeadlineForm';
 import InputForm from './InputForm';
 
-import '../styles/StandardEventForm.css';
+import '../../styles/StandardEventForm.css';
 
 /**
  * Event Enum class that represents the choices of event types available.

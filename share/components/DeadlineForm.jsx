@@ -11,7 +11,7 @@ import {
     UseLocationInput,
     NumberInput,
 } from './InputFormComponents';
-import '../styles/StandardEventForm.css';
+import '../../styles/StandardEventForm.css';
 import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';

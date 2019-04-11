@@ -9,7 +9,7 @@ import { Event } from '../events/Event';
 import { modes } from './MainCalendar';
 import { SET_MIN } from '../actions/clipboard';
 import em from '../em2px';
-import '../styles/Day.css';
+import '../../styles/Day.css';
 
 /**
  * The component for displaying the schedule for a single day in the day view

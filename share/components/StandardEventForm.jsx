@@ -18,7 +18,7 @@ import { createEvent } from '../actions/createEvent';
 import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from './ErrorMessage';
-import '../styles/StandardEventForm.css';
+import '../../styles/StandardEventForm.css';
 import Settings from '../events/Settings';
 import ColorEnum from './ColorEnum';
 

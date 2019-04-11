@@ -8,7 +8,7 @@ import { Settings } from '../events/Settings';
 import { serializeSyncPayload } from '../reducers/events';
 
 import { modes, types } from './MainCalendar';
-import '../styles/Toolbar.css';
+import '../../styles/Toolbar.css';
 
 /**
  * Class to represent the Toolbar on the homscreen

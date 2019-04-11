@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../styles/ErrorMessage.css';
+import '../../styles/ErrorMessage.css';
 
 /**
  * Create a react component that displays an error message for invalid date entry

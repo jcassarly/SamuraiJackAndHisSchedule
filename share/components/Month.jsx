@@ -6,7 +6,7 @@ import moment from 'moment-timezone';
 
 import { Event } from '../events/Event';
 import MonthCell from './MonthCell';
-import '../styles/Month.css';
+import '../../styles/Month.css';
 
 /**
  * Helper function to generate monthCells depending on the month

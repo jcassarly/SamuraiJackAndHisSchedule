@@ -6,8 +6,8 @@ import ColorEnum from './ColorEnum';
 import Frequency from '../events/Frequency';
 import Notifications from '../events/Notifications';
 
-import '../styles/StandardEventForm.css';
-import '../styles/InputFields.css';
+import '../../styles/StandardEventForm.css';
+import '../../styles/InputFields.css';
 
 /**
  * Create a React Component that contains a text and input field

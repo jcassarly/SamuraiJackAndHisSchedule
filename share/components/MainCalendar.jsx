@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
-import '../styles/MainCalendar.css';
+import '../../styles/MainCalendar.css';
 import { Event } from '../events/Event';
 import { moveEvent, changeStart, changeEnd } from '../actions/changeEvent';
 import { cut, copy, paste } from '../actions/clipboard';

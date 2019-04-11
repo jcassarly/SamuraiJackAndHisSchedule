@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../styles/App.css';
+import '../../styles/App.css';
 import MainCalendar from './MainCalendar';
 import ChooseEventType from './ChooseEventType';
 import SettingsForm from './SettingsForm';

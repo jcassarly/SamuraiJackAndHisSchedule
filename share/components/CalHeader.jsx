@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 
 import { types } from './MainCalendar';
-import '../styles/CalHeader.css';
+import '../../styles/CalHeader.css';
 
 /**
  * Component for the header of the calendar

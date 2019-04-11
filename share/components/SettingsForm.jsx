@@ -10,7 +10,7 @@ import {
 } from './InputFormComponents';
 import InputForm from './InputForm';
 import { Settings } from '../events/Settings';
-import '../styles/SettingsForm.css';
+import '../../styles/SettingsForm.css';
 import { updateSettings } from '../actions/updateSettings';
 
 /**
