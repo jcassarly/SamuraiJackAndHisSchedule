@@ -4,4 +4,7 @@
 
 .notags
 .vroot
+*.pyc
 tags
+
+*.pyc

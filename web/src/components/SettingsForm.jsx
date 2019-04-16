@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     LocationInput,
     NotificationSelect,
@@ -8,15 +9,22 @@ import {
     SelectInput,
 } from './InputFormComponents';
 import InputForm from './InputForm';
-import Frequency from '../events/Frequency';
-import Settings from '../events/Settings';
+import { Settings } from '../events/Settings';
 import '../styles/SettingsForm.css';
+import { updateSettings } from '../actions/updateSettings';
 
+/**
+ * Creates a section of settings for organization of related settings
+ * @param {string} props.title    the title of the section
+ * @param {node}   props.children the input fields for the settings in the section
+ */
 function SettingsSection(props) {
     const {
         title,
         children,
     } = props;
+
+    // create a JSX object with the title above the children and appropriate CSS
     return (
         <div className="sectionBorder">
             <div className="titleLine">
@@ -29,53 +37,58 @@ function SettingsSection(props) {
     );
 }
 
+// defines the object that checks the props passed into the SettingsSection
 SettingsSection.propTypes = {
     title: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
 };
 
+/**
+ * React Component that handles input gathering for the general settings of the app
+ */
 class SettingsForm extends React.Component {
+    /**
+     * Creates the form used to change the user settings of the app
+     * @param {returnHome} props.returnHome a function to send the user back to the homescreen
+     */
     constructor(props) {
         super(props);
 
-        const defaults = new Settings();
+        // get the default settings
         this.state = {
             title: 'General Settings',
-            location: defaults.defaultLocation,
-            notifications: defaults.defaultNotificationType,
-            notificationTime: defaults.defaultNotificationTimeBefore,
-            snapToGrid: defaults.defaultSnapToGrid,
-            minBreak: defaults.minBreakTime,
-            minTime: defaults.minWorkTime,
-            maxTime: defaults.maxWorkTime,
-            language: defaults.defaultLanguage,
-            duration: defaults.eventLength,
-            timeBeforeDue: defaults.timeBeforeDue,
-            timeToComplete: defaults.timeToComplete,
+            location: props.settings.defaultLocation,
+            notifications: props.settings.defaultNotificationType,
+            notificationTime: props.settings.defaultNotificationTimeBefore,
+            snapToGrid: props.settings.defaultSnapToGrid,
+            minBreak: props.settings.minBreakTime,
+            minTime: props.settings.minWorkTime,
+            maxTime: props.settings.maxWorkTime,
+            language: props.settings.defaultLanguage,
+            duration: props.settings.eventLength,
+            timeBeforeDue: props.settings.timeBeforeDue,
+            timeToComplete: props.settings.timeToComplete,
         };
 
-        this.frequencySelectChange = this.frequencySelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleStartDateChange = this.handleStartDateChange.bind(this);
-        this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.returnHome = this.returnHome.bind(this);
     }
 
+    /**
+     * Gets the required types for the props passed into the constructor
+     */
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
+            updateSettings: PropTypes.func.isRequired,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
-    frequencySelectChange(event) {
-        this.setState({ frequency: event.target.value });
-
-        if (event.target.value === Frequency.freqEnum.CUSTOM) {
-            alert('TODO: open custom choice menu');
-        }
-    }
-
+    /**
+     * Updates the state with the change to the input form the user made
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleInputChange(event) {
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
@@ -85,34 +98,59 @@ class SettingsForm extends React.Component {
         });
     }
 
-    handleStartDateChange(time) {
-        this.setState({
-            eventStart: time,
-        });
-    }
-
-    handleEndDateChange(time) {
-        this.setState({
-            eventEnd: time,
-        });
-    }
-
+    /**
+     * Updates the Settings object, changes to the redux store, and returns to the home screen
+     * @param {obj} event the event object that stores the event that called this function
+     */
     handleSubmit(event) {
-        alert(`
-            Adding a new standard event with the following info:
-            Name:              ${this.state.name}
-            Description:       ${this.state.description}
-            Start Time:        ${this.state.eventStart}
-            End Time:          ${this.state.eventEnd}
-            Location:          ${this.state.location}
-            Frequency:         ${this.state.frequency}
-            Notifications:     ${this.state.notifications}
-            Notification Time: ${this.state.notificationTime}
-            Locked:            ${this.state.locked}
-        `);
         event.preventDefault();
+        const {
+            location,
+            notifications,
+            notificationTime,
+            snapToGrid,
+            minBreak,
+            minTime,
+            maxTime,
+            language,
+            duration,
+            timeBeforeDue,
+            timeToComplete,
+        } = this.state;
+
+        const {
+            returnHome,
+        } = this.props;
+
+        // attempt to create the new event and add it to the redux store
+        let sett = null;
+        // create a Settings object
+        sett = Settings.createSettingsfromInfo(
+            duration,
+            location,
+            notifications,
+            notificationTime,
+            true,
+            language,
+            snapToGrid,
+            timeBeforeDue,
+            minTime,
+            maxTime,
+            minBreak,
+            timeToComplete,
+        );
+
+        // add the Settings to the redux store
+        // eslint-disable-next-line react/destructuring-assignment
+        this.props.updateSettings(sett);
+
+        // send the user back to home screen
+        returnHome();
     }
 
+    /**
+     * Loads the input form
+     */
     render() {
         const {
             returnHome,
@@ -133,6 +171,7 @@ class SettingsForm extends React.Component {
             timeToComplete,
         } = this.state;
 
+        // generate the input form based on the Settings input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
                 <SettingsSection title="Home Screen">
@@ -249,4 +288,11 @@ class SettingsForm extends React.Component {
     }
 }
 
-export default SettingsForm;
+// maps the state settings to the redux store settings
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { updateSettings })(SettingsForm);

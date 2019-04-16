@@ -12,11 +12,20 @@ import {
     NumberInput,
 } from './InputFormComponents';
 import '../styles/StandardEventForm.css';
-import Deadline from '../events/Deadline';
+import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
+import Settings from '../events/Settings';
 
+/**
+ * Class to handle gathering input form the user to create a Deadline object
+ */
 class DeadlineForm extends React.Component {
+    /**
+     * Creates the form to get the input for the deadline event.
+     * @param {func} props.returnHome    function to send the user back to the home screen
+     * @param {func} createDeadlineEvent function to add the deadline event to the redux store
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -24,13 +33,13 @@ class DeadlineForm extends React.Component {
             name: '',
             description: '',
             taskStart: moment(),
-            taskDeadline: moment().add(1, 'hour'),
-            location: '',
-            useLocation: true,
-            minTime: 0,
-            maxTime: 0,
-            minBreak: 0,
-            totalTime: 0,
+            taskDeadline: moment().add(props.settings.timeBeforeDue, 'hour'),
+            location: props.settings.defaultLocation,
+            useLocation: false,
+            minTime: props.settings.minWorkTime,
+            maxTime: props.settings.maxWorkTime,
+            minBreak: props.settings.minBreakTime,
+            totalTime: props.settings.timeToComplete,
             error: false,
             errorMsg: 'No Error',
         };
@@ -41,44 +50,66 @@ class DeadlineForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    /**
+     * Gets the required types for the props passed into the constructor
+     */
     static get propTypes() {
         return {
             returnHome: PropTypes.func.isRequired,
             createDeadlineEvent: PropTypes.func.isRequired,
+            settings: PropTypes.instanceOf(Settings).isRequired,
         };
     }
 
+    /**
+     * Updates the state with the change to the input form the user made
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleInputChange(event) {
+        // if the event was triggered by a checkbox, get the checked value, otherwise use the value
         const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         const inputName = event.target.name;
 
+        // update the state
         this.setState({
             [inputName]: newValue,
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the start date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleStartDateChange(time) {
         this.setState({
             taskStart: time,
         });
     }
 
+    /**
+     * Updates the state with the change the user made to the end date
+     * @param {obj} event the event object that stores the change the user made
+     */
     handleEndDateChange(time) {
         this.setState({
             taskDeadline: time,
         });
     }
 
+    /**
+     * Creates the Deadline object, adds it to the redux store, and returns to the home screen
+     * @param {obj} event the event object that stores the event that called this function
+     */
     handleSubmit(event) {
         event.preventDefault();
 
         const {
             name,
-            description, // eslint-disable-line
+            description,
             taskStart,
             taskDeadline,
             location,
-            useLocation, // eslint-disable-line
+            useLocation,
             minTime,
             maxTime,
             minBreak,
@@ -89,10 +120,11 @@ class DeadlineForm extends React.Component {
             returnHome,
         } = this.props;
 
+        // try to create the deadline object
         try {
             const deadline = new Deadline(
                 name,
-                // TODO: add description to deadline
+                description,
                 taskDeadline,
                 totalTime,
                 minTime,
@@ -100,7 +132,7 @@ class DeadlineForm extends React.Component {
                 minBreak,
                 taskStart,
                 location,
-                // TODO: add uselocation to deadline
+                useLocation,
             );
 
             // add the deadline event to the calendar
@@ -108,7 +140,9 @@ class DeadlineForm extends React.Component {
             this.props.createDeadlineEvent(deadline);
 
             returnHome();
+        // if there was an error creating the deadline object, display it to the user.
         } catch (e) {
+            console.error(e);
             this.setState({
                 error: true,
                 errorMsg: e.message,
@@ -116,6 +150,9 @@ class DeadlineForm extends React.Component {
         }
     }
 
+    /**
+     * Loads the correct input form
+     */
     render() {
         const { returnHome } = this.props;
         const {
@@ -134,6 +171,7 @@ class DeadlineForm extends React.Component {
             errorMsg,
         } = this.state;
 
+        // generate the input form based on the Deadline input form in the design doc
         return (
             <InputForm
                 onSubmit={this.handleSubmit}
@@ -209,4 +247,11 @@ class DeadlineForm extends React.Component {
     }
 }
 
-export default connect(null, { createDeadlineEvent })(DeadlineForm);
+// maps state to settings from redux store
+const mapStateToProps = state => (
+    {
+        settings: state.settings.settings,
+    }
+);
+
+export default connect(mapStateToProps, { createDeadlineEvent })(DeadlineForm);

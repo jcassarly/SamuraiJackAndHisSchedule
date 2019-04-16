@@ -2,7 +2,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import moment from 'moment-timezone';
 
-import CalHeader from './CalHeader';
+import CalHeader from '../CalHeader';
+
+jest.mock('../../em2px');
 
 const onLeft = jest.fn(() => {});
 const onRight = jest.fn(() => {});

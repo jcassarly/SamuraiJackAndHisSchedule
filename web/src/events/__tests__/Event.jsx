@@ -1,6 +1,6 @@
-import { Event } from './Event';
-import Notifications from './Notifications';
-import Deadline from './Deadline';
+import { Event } from '../Event';
+import Notifications from '../Notifications';
+import { Deadline } from '../Deadline';
 
 const moment = require('moment-timezone');
 

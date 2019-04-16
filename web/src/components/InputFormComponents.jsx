@@ -2,12 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import DateTime from 'react-datetime';
+import ColorEnum from './ColorEnum';
 import Frequency from '../events/Frequency';
 import Notifications from '../events/Notifications';
 
 import '../styles/StandardEventForm.css';
 import '../styles/InputFields.css';
 
+/**
+ * Create a React Component that contains a text and input field
+ * @param {string} props.description the description of the input to gather
+ * @param {string} props.type        the type of input to gather
+ * @param {string} props.name        the name of the input field
+ * @param {any}    props.value       the value stored in the input field
+ * @param {bool}   props.checked     whether or not the input field is checked
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ * @param {node}   props.children    Extra text to show after the input field for
+ *                                   further directions for the user
+ */
 function BaseInput(props) {
     const {
         description,
@@ -35,6 +47,7 @@ function BaseInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the BaseInput
 BaseInput.propTypes = {
     description: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
@@ -46,12 +59,22 @@ BaseInput.propTypes = {
     children: PropTypes.node,
 };
 
+// defines the object that specified the default values for non-required props
 BaseInput.defaultProps = {
     value: undefined,
     checked: false,
     children: null,
 };
 
+/**
+ * Create a React Component that gets text input from the user
+ * @param {string} props.description the description of the input to gather
+ * @param {string} props.name        the name of the input field
+ * @param {string} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ * @param {node}   props.children    Extra text to show after the input field for
+ *                                   further directions for the user
+ */
 function TextInput(props) {
     const {
         description,
@@ -73,6 +96,7 @@ function TextInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the TextInput
 TextInput.propTypes = {
     description: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -81,10 +105,20 @@ TextInput.propTypes = {
     children: PropTypes.node,
 };
 
+// defines the object that specified the default values for non-required props
 TextInput.defaultProps = {
     children: null,
 };
 
+/**
+ * Create a React Component that gets numeric input from the user
+ * @param {string} props.description the description of the input to gather
+ * @param {string} props.name        the name of the input field
+ * @param {number} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ * @param {node}   props.children    Extra text to show after the input field for
+ *                                   further directions for the user
+ */
 function NumberInput(props) {
     const {
         description,
@@ -106,6 +140,7 @@ function NumberInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the NumberInput
 NumberInput.propTypes = {
     description: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -114,10 +149,20 @@ NumberInput.propTypes = {
     children: PropTypes.node,
 };
 
+// defines the object that specified the default values for non-required props
 NumberInput.defaultProps = {
     children: null,
 };
 
+/**
+ * Create a React Component that get boolean input from the user
+ * @param {string} props.description the description of the input to gather
+ * @param {string} props.name        the name of the input field
+ * @param {bool}   props.checked     whether or not the input field is checked
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ * @param {node}   props.children    Extra text to show after the input field for
+ *                                   further directions for the user
+ */
 function CheckboxInput(props) {
     const {
         description,
@@ -139,6 +184,7 @@ function CheckboxInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the CheckboxInput
 CheckboxInput.propTypes = {
     description: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -147,10 +193,17 @@ CheckboxInput.propTypes = {
     children: PropTypes.node,
 };
 
+// defines the object that specified the default values for non-required props
 CheckboxInput.defaultProps = {
     children: null,
 };
 
+/**
+ * Create a React Component that gets an event name from the user
+ * @param {string} props.name        the name of the input field
+ * @param {string} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function NameInput(props) {
     const {
         name,
@@ -167,12 +220,19 @@ function NameInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the NameInput
 NameInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
+/**
+ * Create a React Component that gets an event description from the user
+ * @param {string} props.name        the name of the input field
+ * @param {string} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function DescriptionInput(props) {
     const {
         name,
@@ -189,12 +249,22 @@ function DescriptionInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the DescriptionInput
 DescriptionInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
+/**
+ * Create a react component that gets a start and end time from a user
+ * @param {string} props.startDescription The description of the start time
+ * @param {moment} props.start            The object that stores the start time
+ * @param {func}   props.onStartChange    The function that handles changes to the start input
+ * @param {string} props.endDescription   The description of the end time
+ * @param {moment} props.end              The object that stores the end time
+ * @param {func}   props.onEndChange      The function that handles changes to the end input
+ */
 function StartEndInput(props) {
     const {
         startDescription,
@@ -233,6 +303,7 @@ function StartEndInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the StartEndInput
 StartEndInput.propTypes = {
     startDescription: PropTypes.string.isRequired,
     start: PropTypes.instanceOf(moment).isRequired,
@@ -243,6 +314,12 @@ StartEndInput.propTypes = {
     onEndChange: PropTypes.func.isRequired,
 };
 
+/**
+ * Create a React Component that gets an event location from the user
+ * @param {string} props.name        the name of the input field
+ * @param {string} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function LocationInput(props) {
     const {
         name,
@@ -259,13 +336,21 @@ function LocationInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the LocationInput
 LocationInput.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-
+/**
+ * Create a React Component that gets input from a select field with a prompt
+ * @param {string} props.prompt   a description of the input the user is entering
+ * @param {string} props.name     the name of the React Component
+ * @param {string} props.value    the selection
+ * @param {func}   props.onChange a function to handle changes to the input field
+ * @param {node}   props.children the options the user has
+ */
 function SelectInput(props) {
     const {
         prompt,
@@ -285,6 +370,7 @@ function SelectInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the SelectionInput
 SelectInput.propTypes = {
     prompt: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -293,10 +379,17 @@ SelectInput.propTypes = {
     children: PropTypes.node,
 };
 
+// defines the object that specified the default values for non-required props
 SelectInput.defaultProps = {
     children: null,
 };
 
+/**
+ * Create a React Component that gets a selection from a list of notification types
+ * @param {string} props.name     the name of the React Component
+ * @param {string} props.value    the selection
+ * @param {func}   props.onChange a function to handle changes to the input field
+ */
 function NotificationSelect(props) {
     const {
         name,
@@ -314,16 +407,24 @@ function NotificationSelect(props) {
     );
 }
 
+// defines the object that checks the props passed into the NotificationSelect
 NotificationSelect.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
 };
 
+// defines the object that specified the default values for non-required props
 NotificationSelect.defaultProps = {
     value: '',
 };
 
+/**
+ * Create a React Component that gets a selection from a list of frequency types
+ * @param {string} props.name     the name of the React Component
+ * @param {string} props.value    the selection
+ * @param {func}   props.onChange a function to handle changes to the input field
+ */
 function FrequencySelect(props) {
     const {
         name,
@@ -342,16 +443,24 @@ function FrequencySelect(props) {
     );
 }
 
+// defines the object that checks the props passed into the FrequencySelect
 FrequencySelect.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
 };
 
+// defines the object that specified the default values for non-required props
 FrequencySelect.defaultProps = {
     value: '',
 };
 
+/**
+ * Create a React Component that gets numeric input from the user
+ * @param {string} props.name        the name of the input field
+ * @param {number} props.value       the value stored in the input field
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function NotificationTime(props) {
     const {
         name,
@@ -368,12 +477,19 @@ function NotificationTime(props) {
     );
 }
 
+// defines the object that checks the props passed into the NotificationTime
 NotificationTime.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
+/**
+ * Create a React Component that gets whether an event should be locked or not
+ * @param {string} props.name        the name of the input field
+ * @param {bool}   props.checked     whether or not the input field is checked
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function LockEventInput(props) {
     const {
         name,
@@ -382,7 +498,10 @@ function LockEventInput(props) {
         hide,
     } = props;
 
+    // if the field should be hiden, return null
     let retval = null;
+
+    // otherwise return the JSX object that gets boolean input
     if (hide === false) {
         retval = (
             <CheckboxInput
@@ -397,6 +516,7 @@ function LockEventInput(props) {
     return retval;
 }
 
+// defines the object that checks the props passed into the LockEventInput
 LockEventInput.propTypes = {
     name: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
@@ -404,6 +524,12 @@ LockEventInput.propTypes = {
     hide: PropTypes.bool.isRequired,
 };
 
+/**
+ * Create a React Component that gets whether location should be used or not
+ * @param {string} props.name        the name of the input field
+ * @param {bool}   props.checked     whether or not the input field is checked
+ * @param {func}   props.onChange    a function to handle changes to the input field
+ */
 function UseLocationInput(props) {
     const {
         name,
@@ -420,10 +546,45 @@ function UseLocationInput(props) {
     );
 }
 
+// defines the object that checks the props passed into the UseLocationInput
 UseLocationInput.propTypes = {
     name: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
+};
+
+/**
+ * Create a React Component that gets a selection from a list of color schemes
+ * @param {string} props.name     the name of the React Component
+ * @param {string} props.value    the selection
+ * @param {func}   props.onChange a function to handle changes to the input field
+ */
+function ColorSelect(props) {
+    const {
+        name,
+        value,
+        onChange,
+    } = props;
+    return (
+        <SelectInput prompt="Color Scheme" name={name} value={value} onChange={onChange}>
+            <option value={ColorEnum.BLUE_BLACK}>Blue + Black Text</option>
+            <option value={ColorEnum.WHITE_BLACK}>Gray + Black Text</option>
+            <option value={ColorEnum.GREEN_BLACK}>Green + Black Text</option>
+            <option value={ColorEnum.ORANGE_BLACK}>Orange + Black Text</option>
+        </SelectInput>
+    );
+}
+
+// defines the object that checks the props passed into the NotificationSelect
+ColorSelect.propTypes = {
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
+
+// defines the object that specified the default values for non-required props
+ColorSelect.defaultProps = {
+    value: '',
 };
 
 export {
@@ -440,4 +601,5 @@ export {
     TextInput,
     SelectInput,
     CheckboxInput,
+    ColorSelect,
 };

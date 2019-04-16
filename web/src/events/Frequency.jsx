@@ -9,16 +9,23 @@ class Frequency {
     }
 
     // Constructor should recieve an event object and two strings.
-    // optionalCustomOptions should be null is value is not 'custom'
+    // optionalCustomOptions should be null if value is not 'custom'
     constructor(event, timing, optionalCustomOptions) {
         this.eventPattern = event;
         this.setTiming(timing, optionalCustomOptions);
     }
 
+    // returns timing
     get timing() {
         return this._timing;
     }
 
+    // returns customSettings
+    get customSettings() {
+        return this._customSettings;
+    }
+
+    // sets Timing to a string based on an enum, TODO:OptionalCustomOptions does anything
     setTiming(value, optionalCustomOptions) {
         switch (value) {
         case Frequency.freqEnum.DAILY:

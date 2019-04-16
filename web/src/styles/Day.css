@@ -2,6 +2,11 @@
     overflow: scroll;
 }
 
+.calDay.tool .dayEvents, .calDay.paste {
+    touch-action: none;
+    cursor: pointer;
+}
+
 .calDay .dayEvents {
     position: relative;
     width: 100%;
@@ -16,6 +21,13 @@
     background-color: blue;
     color: white;
     border-radius: 0.5em;
+}
+
+.calDay .dayEvents > .resize {
+    touch-action: none;
+    height: 1em;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .calHours {
