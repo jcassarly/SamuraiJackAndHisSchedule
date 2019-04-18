@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ColorEnum from './ColorEnum';
-import { Event } from '../events/Event';
+import { Event } from '../share/events/Event';
 
-import '../../styles/MonthCell.css';
+import '../styles/MonthCell.css';
 
 /**
  * pure display component

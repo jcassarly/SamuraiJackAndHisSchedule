@@ -5,8 +5,8 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 
 import { Event } from '../events/Event';
-import MonthCell from './MonthCell';
-import '../../styles/Month.css';
+import MonthCell from '../../components/MonthCell';
+import Month from '../../components/Month';
 
 /**
  * Helper function to generate monthCells depending on the month
@@ -38,7 +38,7 @@ function createDayList(date, events) {
     return dates;
 }
 
-class Month extends Component {
+class MonthController extends Component {
     /**
      * increases performance, if the month prop does not change to a different month, don't rerender
      * used by react
@@ -53,9 +53,9 @@ class Month extends Component {
         const { month, events } = this.props;
         // uses createDayList to add the MonthCell grid to the calendar
         return (
-            <div className="calMonth">
+            <Month>
                 {createDayList(month, events)}
-            </div>
+            </Month>
         );
     }
 }
@@ -64,9 +64,9 @@ class Month extends Component {
  * month: the current month being displayed
  * events: an array of events to display
  */
-Month.propTypes = {
+MonthController.propTypes = {
     month: PropTypes.instanceOf(moment).isRequired,
     events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
 };
 
-export default Month;
+export default MonthController;
