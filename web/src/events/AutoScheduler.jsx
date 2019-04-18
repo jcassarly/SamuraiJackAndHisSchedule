@@ -4,11 +4,11 @@ import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
 import ColorEnum from '../components/ColorEnum';
 
-const TimeRangeRelation = {
-    BEFORE: -1,
-    OVERLAP: 0,
-    AFTER: 1,
-}
+/* Constants for TimeRange relations */
+const BEFORE   = -1;
+const OVERLAP  = 0;
+const CONTAINS = 1;
+const AFTER    = 2;
 
 /**
  * Represents a range of time.
@@ -27,6 +27,22 @@ class TimeRange {
 
     get end() {
         return this._end;
+    }
+
+    static get BEFORE() {
+        return BEFORE;
+    }
+
+    static get OVERLAP() {
+        return OVERLAP;
+    }
+
+    static get CONTAINS() {
+        return CONTAINS;
+    }
+
+    static get AFTER() {
+        return AFTER;
     }
 
     set start(newStart) {
@@ -71,11 +87,13 @@ class TimeRange {
     inRelationTo(range) {
         let returnValue;
         if (this.end.isBefore(range.start)) {
-            returnValue = -1;
+            returnValue = BEFORE;
+        } else if (range.inRange(this.start) && range.inRange(this.end)) {
+            returnValue = CONTAINS;
         } else if (range.inRange(this.start) || range.inRange(this.end)) {
-            returnValue = 0;
+            returnValue = OVERLAP;
         } else {
-            returnValue = 1;
+            returnValue = AFTER;
         }
         return returnValue;
     }
