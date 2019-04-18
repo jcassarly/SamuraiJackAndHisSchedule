@@ -4,13 +4,14 @@ import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
 import ColorEnum from '../components/ColorEnum';
 
-/* Constants for TimeRange relations */
-const BEFORE   = -2;
+/*  Constants for TimeRange relations: 
+    Details on what they mean in the header comments of inRelationTo function */
+const BEFORE          = -2;
 const OVERLAP_BEFORE  = -1;
-const CONTAINS = 0;
-const CONTAINED = 1;
-const OVERLAP_AFTER = 2;
-const AFTER    = 3;
+const CONTAINS        = 0;
+const CONTAINED       = 1;
+const OVERLAP_AFTER   = 2;
+const AFTER           = 3;
 
 /**
  * Represents a range of time.
@@ -88,10 +89,13 @@ class TimeRange {
     }
 
     /**
-     * Returns:
-     *      -1 this TimeRange is before the given TimeRange
-     *       0 this TimeRange overlaps with given TimeRange
-     *       1 this TimeRange is after the given TimeRange
+     *  Returns:
+     *      TimeRange.BEFORE         - this TimeRange is before the given TimeRange
+     *      TimeRange.OVERLAP_BEFORE - this TimeRange begins before and ends during given TimeRange
+     *      TimeRange.CONTAINED      - this TimeRange is contained within the given TimeRange
+     *      TimeRange.CONTAINS       - this TimeRange contains the given TimeRange
+     *      TimeRange.OVERLAP_AFTER  - this TimeRange begins during and ends after given TimeRange
+     *      TimeRange.AFTER          - this TimeRange is after the given TimeRange.
      * @param {*} range
      */
     inRelationTo(range) {
@@ -116,7 +120,8 @@ class TimeRange {
 
     /**
      * Splits this range using the given range and buffer so that there is no overlap.
-     * Returns empty list if it's not possible to split this range
+     * Returns a list of the resulting ranges. Invalid events have 0 duration, but will still be added to the list.
+     * Returns empty list if it's not possible to split this range.
      * @param {*} range
      * @param {*} buffer
      */
@@ -125,7 +130,7 @@ class TimeRange {
         const relation = this.inRelationTo(range);
         
         if (relation == OVERLAP_BEFORE || relation == CONTAINS){
-                newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
+            newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
         }
         
         if (relation == OVERLAP_AFTER || relation == CONTAINS) {
