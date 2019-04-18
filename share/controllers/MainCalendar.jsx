@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
-import '../../styles/MainCalendar.css';
 import { Event } from '../events/Event';
 import { moveEvent, changeStart, changeEnd } from '../actions/changeEvent';
 import { cut, copy, paste } from '../actions/clipboard';
@@ -14,6 +13,8 @@ import Toolbar from './Toolbar';
 import Month from './Month';
 import Week from './Week';
 import Day from './Day';
+
+import MainCalendar from '../../components/MainCalendar';
 
 /**
  * calendar editing modes
@@ -51,7 +52,7 @@ const typesToString = ['month', 'week', 'day'];
  * Main component for diplaying the calendar
  * Calendar can be a month, week, or day calendar depending on its state
  */
-class MainCalendar extends Component {
+class MainCalendarComponent extends Component {
     // when the user is scrolling, this represents the position that the user started scrolling from
     startPos = 0;
 
@@ -124,16 +125,16 @@ class MainCalendar extends Component {
      * begin touch
      * sets the start position to the current position the user is touching
      */
-    beginScroll = (e) => {
-        this.startPos = e.touches[0].pageY;
+    beginScrollClose = getPos => (...args) => {
+        this.startPos = getPos(...args);
     }
 
     /**
      * touch change handler
      * sets the position to scroll the page depending on where the user moves their finger
      */
-    scroll = (e) => {
-        this.setState({ pos: e.touches[0].pageY - this.startPos });
+    scrollClose = getPos => (...args) => {
+        this.setState({ pos: getPos(...args) - this.startPos });
     }
 
     /**
@@ -218,27 +219,15 @@ class MainCalendar extends Component {
         default:
         case types.MONTH:
             calElem = (
-                <div className="calendarSlider" style={{ display: 'block' }}>
-                    <div
-                        className="slideContainer"
-                        onTouchStart={this.beginScroll}
-                        onTouchMove={this.scroll}
-                        onTouchEnd={this.endScroll}
-                        onTouchCancel={this.endScroll}
-                    >
-                        <div className="calContainer" style={{ top: `${pos}px` }}>
-                            <Month
-                                mode={mode}
-                                events={events}
-                                id={date.month()}
-                                month={date}
-                                cut={cut}
-                                copy={copy}
-                                paste={paste}
-                            />
-                        </div>
-                    </div>
-                </div>
+                <Month
+                    mode={mode}
+                    events={events}
+                    id={date.month()}
+                    month={date}
+                    cut={cut}
+                    copy={copy}
+                    paste={paste}
+                />
             );
         }
 
@@ -246,7 +235,15 @@ class MainCalendar extends Component {
         //     followed by a Toolbar element,
         //     followed by the correct main calendar element
         return (
-            <div className="calHome">
+            <MainCalendar
+                type={type}
+                types={types}
+                calElem={calElem}
+                pos={pos}
+                beginScrollClose={this.beginScrollClose}
+                scrollClose={this.scrollClose}
+                endScroll={this.endScroll}
+            >
                 <CalHeader
                     type={type}
                     date={date}
@@ -261,8 +258,7 @@ class MainCalendar extends Component {
                     navNewEvent={navNewEvent}
                     navSettings={navSettings}
                 />
-                {calElem}
-            </div>
+            </MainCalendar>
         );
     }
 }
@@ -281,5 +277,5 @@ export default connect(mapStateToProps, {
     cut,
     copy,
     paste,
-})(MainCalendar);
+})(MainCalendarComponent);
 export { modes, types };
