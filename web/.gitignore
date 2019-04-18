@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 
+src/share
 # testing
 /coverage
 /src/share

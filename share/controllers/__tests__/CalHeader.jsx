@@ -4,6 +4,8 @@ import moment from 'moment-timezone';
 
 import CalHeader from '../CalHeader';
 
+jest.mock('../../em2px');
+
 const onLeft = jest.fn(() => {});
 const onRight = jest.fn(() => {});
 const onSwitch = jest.fn(() => {});

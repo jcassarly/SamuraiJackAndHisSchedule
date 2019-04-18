@@ -6,4 +6,4 @@ sudo rm ../django/gbus/calendar/static/bundle.js
 sudo rm ../django/gbus/calendar/static/bundle.js.map
 cp ./build/* ../django/gbus/calendar/static/
 cd ../django/gbus
-python manage.py runserver
+python manage.py runserver 0.0.0.0:8000
