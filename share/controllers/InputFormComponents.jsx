@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import DateTime from 'react-datetime';
-import ColorEnum from './ColorEnum';
+import ColorEnum from '../ColorEnum';
 import Frequency from '../events/Frequency';
 import Notifications from '../events/Notifications';
 

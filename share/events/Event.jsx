@@ -1,7 +1,7 @@
 import Frequency from './Frequency';
 import Notifications from './Notifications';
 import { Deadline } from './Deadline';
-import ColorEnum from '../controllers/ColorEnum';
+import ColorEnum from '../ColorEnum';
 
 const moment = require('moment-timezone');
 
