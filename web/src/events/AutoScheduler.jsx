@@ -125,7 +125,7 @@ class TimeRange {
      * @param {*} range
      * @param {*} buffer
      */
-    trim(range, buffer) {
+    split(range, buffer) {
         let newRanges = [];
         const relation = this.inRelationTo(range);
         
@@ -135,6 +135,10 @@ class TimeRange {
         
         if (relation == OVERLAP_AFTER || relation == CONTAINS) {
             newRanges.push(new TimeRange(moment(range.end).add(Number(buffer), 'minutes'), moment(this.end)));
+        }
+
+        if (relation == BEFORE || relation == AFTER) {
+            newRanges.push(this);
         }
         
         return newRanges();
@@ -303,47 +307,19 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
-    for (let j = 0; j < oldSchedule.length; j += 1) {
-        const event = oldSchedule[j];
+    oldSchedule.map(function(event) {
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
-            for (let i = validTimes.length - 1; i >= 0; i -= 1) {
-
-                // If the event slightly overlaps the beginning or end of this time range, trim the edges
-                validTimes[i].trim(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak);
-
-                if (validTimes[i].inRange(event.startTime) && validTimes[i].inRange(event.endTime)) { // The event is contained within a valid time range, split into two separate time ranges before and after
-                    const prevEnd = moment(validTimes[i].end);
-
-                    let validBefore = true;
-                    const newEnd = moment(event.startTime).subtract(Number(deadline.minBreak), 'minutes');
-                    if (validTimes[i].start.isBefore(newEnd)) { // If there is a valid period before the event
-                        validTimes[i].end = moment(newEnd); // Change the valid time range's end to before the start of the event and a break
-                    } else {
-                        validBefore = false; // Else there is no valid time range before the event
-                    }
-
-                    let validAfter = true;
-                    const newStart = moment(event.endTime).add(Number(deadline.minBreak), 'minutes');
-
-                    if (prevEnd.isAfter(newStart)) { // If there is a valid period after the event
-                        if (validBefore) { // If there was a valid period before, insert a new time period afer the event
-                            validTimes.splice(i + 1, 0, new TimeRange(moment(newStart), moment(prevEnd)));
-                        } else { // If there was not a valid period before, replace the current time period with the period after the event.
-                            validTimes[i].start = newStart;
-                        }
-                    } else {
-                        validAfter = false; // Else there is no valid time range after the event
-                    }
-
-                    if (!validBefore && !validAfter) { // No more valid times within this time range, remove this time range.
-                        validTimes.splice(i, 1);
-                    }
-                }
-            }
+            const newRanges = []
+            validTimes.map(function(validTime) {
+                const splitRanges = validTime.split(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak); // Get a list of ranges split by event
+                splitRanges = splitRanges.filter(element => element.duration() < deadline.minEventTime); // remove all ranges shorter than minEventTime
+                newRanges.concat(splitRanges);
+            })
+            validTimes = newRanges;
         }
-    }
+    });
 
     return validTimes;
 }
@@ -356,7 +332,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 *                            Interface Used:
  *                              - get deadline
  *                              - get totalDuration
- *                              - get minChildEventTime
+ *                              - get minEventTime
  *                              - get maxChildEventTime
  *                              - get minBreak
  *                              - get startWorkTime
@@ -367,7 +343,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     let remainingTime = deadline.totalWorkTime;
 
     // Sanity checkign the parameters
-    if (remainingTime < deadline.minChildEventTime) {
+    if (remainingTime < deadline.minEventTime) {
         throw "Auto Schedule unable to schedule: Initial Total Work time less than minimum event time."
     }
 
@@ -444,7 +420,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
  *                            Interface Used:
  *                              - get deadline
  *                              - get totalDuration
- *                              - get minChildEventTime
+ *                              - get minEventTime
  *                              - get maxChildEventTime
  *                              - get minBreak
  *                              - get startWorkTime
