@@ -5,10 +5,12 @@ import { Event } from './Event';
 import ColorEnum from '../components/ColorEnum';
 
 /* Constants for TimeRange relations */
-const BEFORE   = -1;
-const OVERLAP  = 0;
-const CONTAINS = 1;
-const AFTER    = 2;
+const BEFORE   = -2;
+const OVERLAP_BEFORE  = -1;
+const CONTAINS = 0;
+const CONTAINED = 1;
+const OVERLAP_AFTER = 2;
+const AFTER    = 3;
 
 /**
  * Represents a range of time.
@@ -33,12 +35,20 @@ class TimeRange {
         return BEFORE;
     }
 
-    static get OVERLAP() {
-        return OVERLAP;
+    static get OVERLAP_BEFORE() {
+        return OVERLAP_BEFORE;
     }
 
     static get CONTAINS() {
         return CONTAINS;
+    }
+
+    static get CONTAINED() {
+        return CONTAINED;
+    }
+
+    static get OVERLAP_AFTER() {
+        return OVERLAP_AFTER;
     }
 
     static get AFTER() {
@@ -47,7 +57,7 @@ class TimeRange {
 
     set start(newStart) {
         if (newStart.isAfter(this.end)) {
-            throw 'Invalid TimeRange: start cannot be after end'
+            this._start = moment(this.end);
         } else {
             this._start = moment(newStart);
         }
@@ -55,7 +65,7 @@ class TimeRange {
 
     set end(newEnd) {
         if (newEnd.isBefore(this.start)) {
-            throw 'Invalid TimeRange: end cannot be before start'
+            this._end = moment(this.start);
         } else {
             this._end = moment(newEnd);
         }
@@ -86,33 +96,43 @@ class TimeRange {
      */
     inRelationTo(range) {
         let returnValue;
-        if (this.end.isBefore(range.start)) {
+        const endInRange   = range.inRange(this.end); // If this range's end is within given range
+        const startInRange = range.inRange(this.start); // If this range's start is within given range
+        if (this.end.isBefore(range.start)) { // If this range ends before given range begins
             returnValue = BEFORE;
-        } else if (range.inRange(this.start) && range.inRange(this.end)) {
+        } else if (this.start.isBefore(range.start) && endInRange) { // If this range ends before but runs into given range.
+            returnValue = OVERLAP_BEFORE;
+        } else if (startInRange && endInRange) { // If this range is contained within the given range
+            returnValue = CONTAINED;
+        } else if (this.inRange(range.start) && this.inRange(range.end)) { // If this range contains the given range.
             returnValue = CONTAINS;
-        } else if (range.inRange(this.start) || range.inRange(this.end)) {
-            returnValue = OVERLAP;
-        } else {
+        } else if (startInRange && this.end.isAfter(range.end)) { // If this range begins during and continues after given range.
+            returnValue = OVERLAP_AFTER;
+        } else { // If this range occurs after the given range.
             returnValue = AFTER;
         }
         return returnValue;
     }
 
     /**
-     * If the given range overlaps with this event, shorten this range so no overlap.
+     * Splits this range using the given range and buffer so that there is no overlap.
+     * Returns empty list if it's not possible to split this range
      * @param {*} range
-     * @param {*} breakTime
+     * @param {*} buffer
      */
-    trim(range, breakTime) {
-        // timerange's start time is within the given range, move it to after the range's end
-        if (range.inRange(this.start)) {
-            this.start = moment(range.end).add(Number(breakTime), 'minutes');
+    trim(range, buffer) {
+        let newRanges = [];
+        const relation = this.inRelationTo(range);
+        
+        if (relation == OVERLAP_BEFORE || relation == CONTAINS){
+                newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
         }
-
-        // timerange's end time is within given range, move it to before range starts
-        if (range.inRange(this.end)) {
-            this.end = moment(range.start).subtract(Number(breakTime), 'minutes');
+        
+        if (relation == OVERLAP_AFTER || relation == CONTAINS) {
+            newRanges.push(new TimeRange(moment(range.end).add(Number(buffer), 'minutes'), moment(this.end)));
         }
+        
+        return newRanges();
     }
 }
 
