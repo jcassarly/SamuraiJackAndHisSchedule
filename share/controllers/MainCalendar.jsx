@@ -52,7 +52,7 @@ const typesToString = ['month', 'week', 'day'];
  * Main component for diplaying the calendar
  * Calendar can be a month, week, or day calendar depending on its state
  */
-class MainCalendarComponent extends Component {
+class MainCalendarController extends Component {
     // when the user is scrolling, this represents the position that the user started scrolling from
     startPos = 0;
 
@@ -277,5 +277,5 @@ export default connect(mapStateToProps, {
     cut,
     copy,
     paste,
-})(MainCalendarComponent);
+})(MainCalendarController);
 export { modes, types };

@@ -1,6 +1,4 @@
 import React from 'react';
-
-import Week from '../../components/Week';
 // import PropTypes from 'prop-types';
 
 // import moment from 'moment-timezone';
@@ -8,6 +6,6 @@ import Week from '../../components/Week';
 /**
  * Component for displaying the calendar in Week view
  */
-const WeekController = () => <Week />;
+const Week = () => <div />;
 
-export default WeekController;
+export default Week;
