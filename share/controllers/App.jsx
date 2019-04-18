@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 
-import '../../styles/App.css';
 import MainCalendar from './MainCalendar';
 import ChooseEventType from './ChooseEventType';
 import SettingsForm from './SettingsForm';
+import App from '../../components/App';
 
 /**
  * Primary toplevel app component.
  * renders different toplevel components based on the nav state.
  */
-class App extends Component {
+class AppController extends Component {
     /**
      * App component keeps track of the current navigation in state.nav
      * default on page startup is main
@@ -64,10 +64,10 @@ class App extends Component {
     render() {
         const { nav } = this.state;
         return (
-            <div className="app">
+            <App>
                 {this.pickComp(nav)}
-            </div>
+            </App>
         );
     }
 }
-export default App;
+export default AppController;
