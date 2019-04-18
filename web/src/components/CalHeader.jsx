@@ -8,19 +8,32 @@ import '../styles/CalHeader.css';
  * Displays the date and navigation for changing the date and calendar type
  */
 const CalHeader = (props) => {
-    const { children } = props;
+    const {
+        onLeft,
+        onRight,
+        onSwitch,
+        date,
+    } = props;
     return (
         <div className="calHeader">
-            {children}
+            <button type="button" className="nav" onClick={onLeft}>&lt;</button>
+            <button type="button" onClick={onSwitch}>{date}</button>
+            <button type="button" className="nav" onClick={onRight}>&gt;</button>
         </div>
     );
 };
 
 /**
- * children: the button children that the calheader contains
+ * onLeft: handler for when the user navigates left
+ * onRight: handler for when the user navigates right
+ * onSwitch: handler for when the user navigates to the next type of calendar
+ * date: the date to display preformatted
  */
 CalHeader.propTypes = {
-    children: PropTypes.node.isRequired,
+    onLeft: PropTypes.func.isRequired,
+    onRight: PropTypes.func.isRequired,
+    onSwitch: PropTypes.func.isRequired,
+    date: PropTypes.node.isRequired,
 };
 
 export default CalHeader;

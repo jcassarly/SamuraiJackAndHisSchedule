@@ -37,11 +37,12 @@ const CalHeaderController = (props) => {
     }
 
     return (
-        <CalHeader>
-            <button type="button" className="nav" onClick={onLeft}>&lt;</button>
-            <button type="button" onClick={onSwitch}>{date.format(format)}</button>
-            <button type="button" className="nav" onClick={onRight}>&gt;</button>
-        </CalHeader>
+        <CalHeader
+            onLeft={onLeft}
+            onRight={onRight}
+            onSwitch={onSwitch}
+            date={date.format(format)}
+        />
     );
 };
 
