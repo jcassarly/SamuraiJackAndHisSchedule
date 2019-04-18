@@ -8,12 +8,14 @@ import { Settings } from '../events/Settings';
 import { serializeSyncPayload } from '../reducers/events';
 
 import { modes, types } from './MainCalendar';
-import '../../styles/Toolbar.css';
+
+import Toolbar from '../../components/Toolbar';
+import ToolbarButton from '../../components/ToolbarButton';
 
 /**
  * Class to represent the Toolbar on the homscreen
  */
-class Toolbar extends React.Component {
+class ToolbarController extends React.Component {
     /**
      * Create a new user
      * @param {*} props the arguments passed into the Toolbar
@@ -85,29 +87,29 @@ class Toolbar extends React.Component {
 
         // add buttons
         const buttons = [
-            <button key="new-ev" type="button" onClick={navNewEvent}>New Event</button>,
-            <button key="logout" type="button" onClick={this.logout}>Logout</button>,
-            <button key="sync-from" type="button" onClick={this.syncTo}>Sync To Server</button>,
-            <button key="sync-to" type="button" onClick={syncFromAsync}>Sync From Server</button>,
-            <button key="general-settings" type="button" onClick={navSettings}>General Settings</button>,
-            <button key="cut" className={currMode === modes.CUT ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.CUT); }}>cut</button>,
-            <button key="copy" className={currMode === modes.COPY ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.COPY); }}>copy</button>,
-            <button key="paste" className={currMode === modes.PASTE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.PASTE); }}>paste</button>,
+            <ToolbarButton key="new-ev" click={navNewEvent}>New Event</ToolbarButton>,
+            <ToolbarButton key="logout" click={this.logout}>Logout</ToolbarButton>,
+            <ToolbarButton key="sync-from" click={this.syncTo}>Sync To Server</ToolbarButton>,
+            <ToolbarButton key="sync-to" click={syncFromAsync}>Sync From Server</ToolbarButton>,
+            <ToolbarButton key="general-settings" click={navSettings}>General Settings</ToolbarButton>,
+            <ToolbarButton key="cut" selected={currMode === modes.CUT} click={() => { toggleMode(modes.CUT); }}>cut</ToolbarButton>,
+            <ToolbarButton key="copy" selected={currMode === modes.COPY} click={() => { toggleMode(modes.COPY); }}>copy</ToolbarButton>,
+            <ToolbarButton key="paste" selected={currMode === modes.PASTE} click={() => { toggleMode(modes.PASTE); }}>paste</ToolbarButton>,
         ];
 
         // add buttons that don't appear when in month view
         if (calType !== types.MONTH) {
             buttons.push(
-                <button key="drag-drop" className={currMode === modes.DRAG_DROP ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</button>,
-                <button key="resize" className={currMode === modes.RESIZE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.RESIZE); }}>Resize</button>,
+                <ToolbarButton key="drag-drop" selected={currMode === modes.DRAG_DROP} click={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</ToolbarButton>,
+                <ToolbarButton key="resize" selected={currMode === modes.RESIZE} click={() => { toggleMode(modes.RESIZE); }}>Resize</ToolbarButton>,
             );
         }
 
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
-            <div className="toolbar">
+            <Toolbar>
                 {buttons}
-            </div>
+            </Toolbar>
         );
     }
 }
@@ -123,7 +125,7 @@ class Toolbar extends React.Component {
  * settings: the settings object from the redux store
  * navSettings: navigates to the form for managing settings
  */
-Toolbar.propTypes = {
+ToolbarController.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
     currMode: PropTypes.number.isRequired,
@@ -146,4 +148,4 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { syncFromAsync })(Toolbar);
+export default connect(mapStateToProps, { syncFromAsync })(ToolbarController);
