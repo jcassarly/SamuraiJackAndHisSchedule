@@ -242,6 +242,14 @@ class BinaryTimeRangeHeap {
     get length() {
         return this.array.length;
     }
+
+    get totalTime() {
+        let accumulator = 0;
+        this.array.map(function(element) {
+            accumulator += element.duration();
+        });
+        return accumulator;
+    }
 }
 
 /**
@@ -325,91 +333,131 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 }
 
 /**
+ * Takes a deadline and returns a list of integers representing the durations of events of events
+ * that will get the fewest number of breaks, assuming there are valid ranges to accommodate them.
+ * @param {*} deadline An instance of the deadline class. 
+ *                          Interface Used:
+ *                              - get totalWorkTime
+ *                              - get minEventTime
+ *                              - get maxEventTime
+ */
+function getOptimalDurations(deadline) {
+    let remainingTime = deadline.totalWorkTime; 
+
+    const nMax = Math.floor(deadline.totalWorkTime / deadline.maxEventTime);
+    let remainder = deadline.totalWorkTime % deadline.maxEventTime;
+    const eventDurations = [];
+    for (i = 0; i < nMax; i += 0) {
+        eventDurations.push(deadline.maxEventTime);
+    }
+    let index = eventDurations.length - 1;
+    while (remainder < deadline.minEventTime && index >= 0) {
+        const remainderDiff = deadline.minEventTime - remainder; // The amount of time to be stolen from other event durations
+        // Find how much time the current event duration can spare. RemainderDiff vs. Max amount before duration = minEventTime
+        const spareTime = Math.min(remainderDiff, eventDurations[index] - minEventTime);
+        remainder += spareTime;
+        eventDurations[index] -= spareTime;
+    }
+    if (remainder < deadline.minEventTime) {
+        throw "Auto Scheduler unable to Schedule: Something went horribly wrong :("
+    }
+    eventDurations.push(remainder); // At this point, remainder == minEventTime
+
+    return eventDurations;
+}
+
+/**
+ * Reduces all elements in a list of integers to be less than or equal to the given maximum.
+ * Excess is distributed among other elements.
+ * If all elements are equal to the maximum, another element larger than the given minimum is added.
+ * @param {*} durations 
+ * @param {*} maximum 
+ */
+function trimDurations(durations, maximum) {
+    if (durations[0] > maximum) {
+        let totalExcess = 0;
+        let totalGap = 0;
+        durations = durations.map(function(duration) {
+            const excess = duration - maximum;
+            if (excess > 0) {
+                totalExcess += excess;
+                duration -= excess;
+            } else if (excess < 0) {
+                totalGap -= excess;
+            }
+            return duration;
+        });
+
+        if (totalExcess < totalGap) {
+            durations = durations.map(function(duration) {
+                if (duration < maximum) {
+                    const fill = Math.min(maximum - duration, totalExcess);
+                    totalExcess -= fill;
+                    duration += fill;
+                }
+                return duration;
+            });
+        } else if (totalGap < totalExcess) {
+            // TODO: do something similar here like the remainder thing from getOptimalDurations
+        }
+    }
+    return durations;
+}
+
+/**
  * Takes a new deadline and a list of valid times and places new events for the deadline within the
  * valid times into a copy of the old schedule. Returns the copy.
  * @param {*} oldSchedule Event[] representing the current schedule.
  * @param {*} deadline    An instance of the deadline class.
 *                            Interface Used:
  *                              - get deadline
- *                              - get totalDuration
+ *                              - get totalWorkTime
  *                              - get minEventTime
- *                              - get maxChildEventTime
+ *                              - get maxEventTime
  *                              - get minBreak
  *                              - get startWorkTime
  *                              - get location
  * @param {*} givenValidTimes An array of valid time ranges for events to be scheduled in.
  */
 function createEvents(oldSchedule, deadline, givenValidTimes) {
-    let remainingTime = deadline.totalWorkTime;
 
-    // Sanity checkign the parameters
-    if (remainingTime < deadline.minEventTime) {
-        throw "Auto Schedule unable to schedule: Initial Total Work time less than minimum event time."
+    // Sanity checking the parameters
+    if (deadline.totalWorkTime < deadline.minEventTime) {
+        throw "Auto Scheduler unable to schedule: Initial Total Work time less than minimum event time."
     }
 
     const newSchedule = oldSchedule.slice(); // creates a copy of the old schedule
+    const newEvents = [];
     const validTimes = new BinaryTimeRangeHeap(givenValidTimes); // Use Binary Heap data structure
-    let counter = 0; // For debugging purposes if the loop goes infinite
+    
+    /** Step 1: Get the optimal event durations to get the fewest number of breaks */
+    //          List is assumed to be ordered from longest to shortest
+    let eventDurations = getOptimalDurations(deadline);
 
-    while (validTimes.length > 0 && remainingTime > 0) {
-        // Just in case the loop goes infinite. For debuggint purposes
-        counter += 1;
-        if (counter > 100) {
-            console.log(`Exceeded 100 iterations.`);
-            console.log('Types of validTimes during infinite:');
-            console.log(validTimes);
-            console.log('Values of validTimes during infinite:')
-            printRanges(validTimes.array);
-            break;
+    /** Step 2: Put Events into valid ranges */
+    let totalValidTime = validTimes.totalTime;
+    let remainingTime = deadline.totalWorkTime;
+    while(validTimes.length > 0 && eventDurations.length > 0) {
+        eventDurations = trimDurations(eventDurations);
+        const range = validTimes.pop();
+        const duration = range.duration();
+        const leftoverValidTime = totalValidTime - duration;
+        let newEvent = undefined;
+        let index = 0;
+
+        // TODO: gotta work on this conditional right here
+        if (duration > eventDurations[0] && 
+            leftoverValidTime < remainingTime - eventDurations[0] &&
+            leftoverValidTime < deadline.minEventTime) { // Not a lot of time left, gotta cram
+                
         }
-        const range = validTimes.pop(); // Get the longest duration TimeRange
-        let duration = range.duration();
 
-        // Time range is not too short
-        if (duration >= deadline.minEventTime) {
-
-            // If remaining time can fit into this time range
-            if (remainingTime < duration && remainingTime < Number(deadline.maxEventTime)) {
-                duration = remainingTime;
-            } else if (duration > deadline.maxEventTime) { // Time range is larger than maximum child event duration.
-                // Use the maximum event time as duration
-                duration = deadline.maxEventTime;
-
-                // Re-add the remaining time in this range
-                const newStart = moment(range.start).add(Number(deadline.maxEventTime) + Number(deadline.minBreak), 'm');
-                const newDuration = (range.end.format('x') - newStart.format('x')) / 60 / 1000;
-                if (newDuration > deadline.minEventTime) {
-                    validTimes.push(new TimeRange(newStart, moment(range.end)));
-                }
-            }
-            // Else time range is less than maximum child event duration, take up entire range.
-
-
-            // Subtract duration of auto-scheduled event
-            remainingTime -= duration;
-
-            // If remaining time insufficient for another auto-scheduled event, reduce duration of
-            // event currently being scheduled by the difference, so that another event
-            // with the minimum child event time can be scheduled.
-            if (remainingTime !== 0 && remainingTime < deadline.minEventTime) {
-                duration -= deadline.minEventTime - remainingTime;
-                remainingTime = deadline.minEventTime;
-            }
-
-            // Create a new event with the specified duration
-            const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-                moment(range.start).add(duration, 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
-            // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
-            // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
-
-
-            // Add event to the scheudle and the deadline's list of child events
-            newSchedule.push(debugEvent);
-            deadline.createdEvents.push(debugEvent);
-        } else {
-            throw "Auto Scheduler unable to schedule: No more valid time ranges longer than min event time."
-        }
+        // add new event using eventDurations[index] within valid TimeRange.
+        // gotta use Jared's fix for child events in the deadline as well.
+        //newEvents.push() 
+        
     }
+
     return newSchedule;
 }
 
