@@ -47,7 +47,7 @@ function compareEventTimes(array1, array2) {
 }
 
 test('Valid Daily Work Times', () => {
-    const deadline = new Deadline('Work Times Test', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const deadline = new Deadline('Work Times Test', 'test1', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes([], deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const correctTimes = [
@@ -64,7 +64,7 @@ test('Valid Daily Work Times', () => {
 });
 
 test('Valid Range Split', () => {
-    const deadline = new Deadline('Work Times Test', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const deadline = new Deadline('Work Times Test', 'test2', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const correctTimes = [
@@ -83,7 +83,7 @@ test('Valid Range Split', () => {
 });
 
 test('Create Events Empty Schedule (Day)', () => {
-    const deadline = new Deadline('Work Times Test', moment('2019-03-24T16:00:00Z'), 140, 30, 100, 20, moment('2019-03-24T10:00:00Z'));
+    const deadline = new Deadline('Work Times Test', 'test3', moment('2019-03-24T16:00:00Z'), 140, 30, 100, 20, moment('2019-03-24T10:00:00Z'));
     const validTimes = getValidTimes([], deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const newSchedule = createEvents([], deadline, validTimes);
@@ -96,7 +96,7 @@ test('Create Events Empty Schedule (Day)', () => {
 
 test('Create Events Empty Schedule (Week)', () => {
     console.log('test4')
-    const deadline = new Deadline('Work Times Test', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-24T11:00:00Z'));
+    const deadline = new Deadline('Work Times Test', 'test4', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes([], deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const newSchedule = createEvents([], deadline, validTimes);
