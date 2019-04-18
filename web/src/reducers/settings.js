@@ -1,9 +1,11 @@
 import { UPDATE_SETTINGS } from '../actions/updateSettings';
 import { SYNC_FROM } from '../actions/sync';
-import { Settings, deserializeSettings } from '../events/Settings';
+import { deserializeSettings } from '../events/Settings';
+import { loadState } from './persistState';
+// import Settings from '../events/Settings';
 
 // the user starts out with the default settings
-const initialState = { settings: new Settings() };
+const initialState = loadState().settings;
 
 /**
  * reducer for the list of all events the user has

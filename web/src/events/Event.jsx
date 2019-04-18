@@ -13,6 +13,11 @@ const EVENT_TYPES = {
     RECURRING: 'recurring',
 };
 
+/**
+ * verifies that two times are compatible start and end times
+ * @param {*} start start time to be evaluated
+ * @param {*} end end time to be evaluated
+ */
 function verifyTimes(start, end) {
     if (!(start instanceof moment) && !(end instanceof moment)) {
         throw new Error('Invalid Start and End Time');
@@ -25,7 +30,7 @@ function verifyTimes(start, end) {
     }
 }
 
-// Class for events
+
 class Event {
     constructor(
         name,
@@ -54,34 +59,42 @@ class Event {
         this.color = (color === null || color === undefined) ? ColorEnum.BLUE_BLACK : color;
     }
 
+    // returns name
     get name() {
         return this._name;
     }
 
+    // returns description
     get description() {
         return this._description;
     }
 
+    // returns startTime
     get startTime() {
         return this._startTime;
     }
 
+    // returns endTime
     get endTime() {
         return this._endTime;
     }
 
+    // returns location
     get location() {
         return this._location;
     }
 
+    // returns locked
     get locked() {
         return this._locked;
     }
 
+    // returns notifications
     get notifications() {
         return this._notifications;
     }
 
+    // returns parent, null if no parent
     get parent() {
         return this._parent;
     }
@@ -100,10 +113,12 @@ class Event {
         return this._color;
     }
 
+    // sets the name to a string
     set name(value) {
         this._name = value;
     }
 
+    // sets description to a string
     set description(value) {
         this._description = value;
     }
@@ -120,18 +135,22 @@ class Event {
         this._endTime = value;
     }
 
+    // this sets location to a string
     set location(value) {
         this._location = value;
     }
 
+    // this sets locked to a boolean
     set locked(value) {
         this._locked = value;
     }
 
+    // this sets notifications to a notifications[]
     set notifications(value) {
         this._notifications = value;
     }
 
+    // this sets parent to a Deadline
     set parent(value) {
         this._parent = value;
     }
@@ -160,6 +179,11 @@ class Event {
         this._notifications.splice(toRemove);
     }
 
+    /**
+     * Returns a boolean value of true if the two events overlap, false otherwise
+     * @param {*} event1 first event to check
+     * @param {*} event2 second event to check
+     */
     static overlap(event1, event2) {
         if (event1.startTime.isAfter(event2.startTime)
         && event1.startTime.isBefore(event2.endTime)) {
@@ -175,6 +199,20 @@ class Event {
             return true;
         }
         return false;
+    }
+
+    clone() {
+        return new Event(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.parent,
+            this.color,
+        );
     }
 
     /**
@@ -211,6 +249,17 @@ class LocationEvent extends Event {
         super(name, description, startTime, endTime, name, true, notifications, null, color);
     }
 
+    clone() {
+        return new LocationEvent(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.notifications,
+            this.color,
+        );
+    }
+
     /**
      * Serialize this location event object so it can be stored
      * returns a JSON string with the location event object
@@ -232,10 +281,28 @@ class RecurringEvent extends Event {
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
     }
 
+    // creates a new event that is a copy of this one
+    clone() {
+        return new RecurringEvent(
+            this.name,
+            this.description,
+            this.startTime,
+            this.endTime,
+            this.location,
+            this.locked,
+            this.notifications,
+            this.color,
+            this.frequency,
+            this.optionalCustomFrequency,
+        );
+    }
+
+    // returns frequency
     get frequency() {
         return this._frequency;
     }
 
+    // sets frequency to a Frequency object
     set frequency(value) {
         this._frequency = value;
     }

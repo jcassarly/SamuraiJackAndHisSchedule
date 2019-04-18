@@ -5,7 +5,9 @@ import request from 'superagent';
 import { connect } from 'react-redux';
 import { syncFromAsync } from '../actions/sync';
 import { Settings } from '../events/Settings';
+import { serializeSyncPayload } from '../reducers/events';
 
+import { modes, types } from './MainCalendar';
 import '../styles/Toolbar.css';
 
 /**
@@ -44,33 +46,14 @@ class Toolbar extends React.Component {
     syncTo() {
         const { events, deadlines, settings } = this.props;
 
-        // serialize the events
-        const eventsClone = {};
-        Object.keys(events).forEach((key) => {
-            eventsClone[key] = JSON.stringify(events[key].serialize());
-        });
-
-        // serialize the deadlines
-        const deadlinesClone = {};
-        Object.keys(deadlines).forEach((key) => {
-            deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
-        });
-
-        // takes the serialized lists and settings and combine them into one object
-        const syncData = JSON.stringify({
-            events: JSON.stringify(eventsClone),
-            deadlines: JSON.stringify(deadlinesClone),
-            settings: JSON.stringify(settings.serialize()),
-        });
-
         // send the data to the server
         request
             .post('/proto/set')
             .set('X-CSRFToken', unescape(Cookie.get('csrftoken'))) // for security
             .set('Content-Type', 'application/json') // sending a JSON object
-            .send(syncData)
+            .send(serializeSyncPayload(events, deadlines, settings))
             .then((res) => {
-                // echo the response on the console
+            // echo the response on the console
                 console.log(res.text);
             });
     }
@@ -79,27 +62,51 @@ class Toolbar extends React.Component {
      * Render the Toolbar object
      */
     render() {
+        // see state definition
         const { logout } = this.state;
+        // see propTypes
+        const {
+            navNewEvent,
+            toggleMode,
+            currMode,
+            calType,
+            syncFromAsync,
+            navSettings,
+        } = this.props;
 
         // if the user clicked logout, go to the logout URL
         if (logout) {
             this.setState({
                 logout: false,
             });
+            localStorage.removeItem('state');
             window.location.pathname = '/accounts/logout/';
         }
 
-        // see propTypes
-        // eslint-disable-next-line no-shadow
-        const { navNewEvent, syncFromAsync, navSettings } = this.props;
+        // add buttons
+        const buttons = [
+            <button key="new-ev" type="button" onClick={navNewEvent}>New Event</button>,
+            <button key="logout" type="button" onClick={this.logout}>Logout</button>,
+            <button key="sync-from" type="button" onClick={this.syncTo}>Sync To Server</button>,
+            <button key="sync-to" type="button" onClick={syncFromAsync}>Sync From Server</button>,
+            <button key="general-settings" type="button" onClick={navSettings}>General Settings</button>,
+            <button key="cut" className={currMode === modes.CUT ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.CUT); }}>cut</button>,
+            <button key="copy" className={currMode === modes.COPY ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.COPY); }}>copy</button>,
+            <button key="paste" className={currMode === modes.PASTE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.PASTE); }}>paste</button>,
+        ];
+
+        // add buttons that don't appear when in month view
+        if (calType !== types.MONTH) {
+            buttons.push(
+                <button key="drag-drop" className={currMode === modes.DRAG_DROP ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.DRAG_DROP); }}>Drag&amp;Drop</button>,
+                <button key="resize" className={currMode === modes.RESIZE ? 'selected' : ''} type="button" onClick={() => { toggleMode(modes.RESIZE); }}>Resize</button>,
+            );
+        }
+
         // contains buttons corresponding to possible actions the user can take using the toolbar
         return (
             <div className="toolbar">
-                <button type="button" onClick={navNewEvent}>New Event</button>
-                <button type="button" onClick={this.logout}>Logout</button>
-                <button type="button" onClick={this.syncTo}>Sync To Server</button>
-                <button type="button" onClick={syncFromAsync}>Sync From Server</button>
-                <button type="button" onClick={navSettings}>General Settings</button>
+                {buttons}
             </div>
         );
     }
@@ -107,6 +114,9 @@ class Toolbar extends React.Component {
 
 /**
  * navNewEvent: navigates to the form for creating a new event
+ * toggleMode: toggles the mode of the calendar (eg. drag/drop mode, resize, etc.)
+ * currMode: the current mode that the calednar is in
+ * calType: the type of calendar being displayed
  * syncFromAsync: pulls the events from the server to the redux store
  * events: the list of events from the redux store
  * deadlines: the list of deadlines from the redux store
@@ -115,6 +125,9 @@ class Toolbar extends React.Component {
  */
 Toolbar.propTypes = {
     navNewEvent: PropTypes.func.isRequired,
+    toggleMode: PropTypes.func.isRequired,
+    currMode: PropTypes.number.isRequired,
+    calType: PropTypes.number.isRequired,
     syncFromAsync: PropTypes.func.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     events: PropTypes.object.isRequired,

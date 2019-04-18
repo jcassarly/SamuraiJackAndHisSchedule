@@ -41,4 +41,4 @@ class UserCreationTest(TestCase):
         data = self.client.get('/proto/get/')
 
         # check that the data is what was in the database by default
-        self.assertEquals(data.getvalue(), b'{"events": {}, "deadlines": {}, "settings": {}, "username": "tester1"}')
+        self.assertEquals(data.getvalue(), b'{"events": {}, "deadlines": {}, "settings": {}, "username": "tester2"}')

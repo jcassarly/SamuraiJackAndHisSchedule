@@ -159,7 +159,7 @@ test('changes location correctly', () => {
 
     // find the location field
     const input = getByPlaceholderText('Event Location');
-    expect(input.value).toEqual('');
+    expect(input.value).toEqual('anywhere');
 
     // change the value
     fireEvent.change(input, { target: { value: 'test' } });

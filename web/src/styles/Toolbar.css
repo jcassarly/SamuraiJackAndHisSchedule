@@ -1,16 +1,22 @@
 .toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     background: lightgray;
-    line-height: 2em;
+    line-height: 3em;
+    overflow-x: auto;
 }
 
 .toolbar > button {
+    flex-shrink: 0;
+    display: block;
     background: transparent;
-    border: 2px solid #008CBA;
-    border-radius: 0.5em;
-    margin-left: 1em;
+    height: 3em;
+    border-right: 1px solid #bdbdbd;
+    min-width: 3em;
 }
 
-.toolbar > button:hover {
+.toolbar > button:hover:not(:focus), .toolbar > .selected {
     background-color: #008CBA;
     color: white;
 }

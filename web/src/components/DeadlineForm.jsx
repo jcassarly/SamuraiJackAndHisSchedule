@@ -142,6 +142,7 @@ class DeadlineForm extends React.Component {
             returnHome();
         // if there was an error creating the deadline object, display it to the user.
         } catch (e) {
+            console.error(e);
             this.setState({
                 error: true,
                 errorMsg: e.message,
