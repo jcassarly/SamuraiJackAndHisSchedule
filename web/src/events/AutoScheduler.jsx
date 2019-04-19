@@ -140,8 +140,8 @@ class TimeRange {
         if (relation == BEFORE || relation == AFTER) {
             newRanges.push(this);
         }
-        
-        return newRanges();
+
+        return newRanges;
     }
 }
 
