@@ -335,31 +335,29 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 /**
  * Takes a deadline and returns a list of integers representing the durations of events of events
  * that will get the fewest number of breaks, assuming there are valid ranges to accommodate them.
- * @param {*} deadline An instance of the deadline class. 
- *                          Interface Used:
- *                              - get totalWorkTime
- *                              - get minEventTime
- *                              - get maxEventTime
+ * @param {*} totalWorkTime 
+ * @param {*} minEventTime
+ * @param {*} maxEventTime
  */
-function getOptimalDurations(deadline) {
-    let remainingTime = deadline.totalWorkTime; 
+function getOptimalDurations(totalWorkTime, minEventTime, maxEventTime) {
+    let remainingTime = totalWorkTime; 
 
-    const nMax = Math.floor(deadline.totalWorkTime / deadline.maxEventTime);
-    let remainder = deadline.totalWorkTime % deadline.maxEventTime;
+    const nMax = Math.floor(totalWorkTime / maxEventTime);
+    let remainder = totalWorkTime % maxEventTime;
     const eventDurations = [];
     for (let i = 0; i < nMax; i += 1) {
-        eventDurations.push(deadline.maxEventTime);
+        eventDurations.push(maxEventTime);
     }
     let index = eventDurations.length - 1;
-    while (remainder < deadline.minEventTime && index >= 0) {
-        const remainderDiff = deadline.minEventTime - remainder; // The amount of time to be stolen from other event durations
+    while (remainder < minEventTime && index >= 0) {
+        const remainderDiff = minEventTime - remainder; // The amount of time to be stolen from other event durations
         // Find how much time the current event duration can spare. RemainderDiff vs. Max amount before duration = minEventTime
-        const spareTime = Math.min(remainderDiff, eventDurations[index] - deadline.minEventTime);
+        const spareTime = Math.min(remainderDiff, eventDurations[index] - minEventTime);
         remainder += spareTime;
         eventDurations[index] -= spareTime;
         index -= 1;
     }
-    if (remainder < deadline.minEventTime) {
+    if (remainder < minEventTime) {
         throw "Auto Scheduler unable to Schedule: Something went horribly wrong :("
     }
     eventDurations.push(remainder); // At this point, remainder == minEventTime
@@ -433,18 +431,23 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     
     /** Step 1: Get the optimal event durations to get the fewest number of breaks */
     //          List is assumed to be ordered from longest to shortest
-    let eventDurations = getOptimalDurations(deadline);
+    let eventDurations = getOptimalDurations(deadline.totalWorkTime, deadline.minEventTime, deadline.maxEventTime);
 
     /** Step 2: Put Events into valid ranges */
     let totalValidTime = validTimes.totalTime;
     let remainingTime = deadline.totalWorkTime;
     while(validTimes.length > 0 && eventDurations.length > 0) {
-        eventDurations = trimDurations(eventDurations);
         const range = validTimes.pop();
         const duration = range.duration();
         const leftoverValidTime = totalValidTime - duration;
         let newEvent = undefined;
         let index = 0;
+
+        // If the largest optimal duration is longer than the largest valid duration, 
+        // Recreate the optimal list to accomodate the new maximum
+        if (eventDurations[0] > duration) {
+            eventDurations = getOptimalDurations(remainingTime, deadline.minEventTime, duration);
+        }
 
         // TODO: gotta work on this conditional right here
         if (duration > eventDurations[0] && 
