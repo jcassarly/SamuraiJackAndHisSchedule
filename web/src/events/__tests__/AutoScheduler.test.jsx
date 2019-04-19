@@ -92,41 +92,42 @@ test('TimeRange.split() test', () => {
     expect(compareRanges(ranges[0].split(ranges[4], breakTime), split_OVERLAP_AFTER)).toBe(true);
 });
 
-// test('Valid Daily Work Times', () => {
-//     const deadline = new Deadline('Work Times Test', 'test1', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
-//     const validTimes = getValidTimes([], deadline,
-//         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-//     const correctTimes = [
-//         new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T17:00:00Z')),
-//         new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T17:00:00Z')),
-//         new TimeRange(moment('2019-03-26T09:00:00Z'), moment('2019-03-26T17:00:00Z')),
-//         new TimeRange(moment('2019-03-27T09:00:00Z'), moment('2019-03-27T17:00:00Z')),
-//         new TimeRange(moment('2019-03-28T09:00:00Z'), moment('2019-03-28T17:00:00Z')),
-//         new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T17:00:00Z')),
-//         new TimeRange(moment('2019-03-30T09:00:00Z'), moment('2019-03-30T17:00:00Z')),
-//         new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T13:00:00Z')),
-//     ];
-//     expect(compareRanges(validTimes, correctTimes)).toBe(true);
-// });
+test('Valid Daily Work Times', () => {
+    const deadline = new Deadline('Work Times Test', 'test1', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const validTimes = getValidTimes([], deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    const correctTimes = [
+        new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T17:00:00Z')),
+        new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T17:00:00Z')),
+        new TimeRange(moment('2019-03-26T09:00:00Z'), moment('2019-03-26T17:00:00Z')),
+        new TimeRange(moment('2019-03-27T09:00:00Z'), moment('2019-03-27T17:00:00Z')),
+        new TimeRange(moment('2019-03-28T09:00:00Z'), moment('2019-03-28T17:00:00Z')),
+        new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T17:00:00Z')),
+        new TimeRange(moment('2019-03-30T09:00:00Z'), moment('2019-03-30T17:00:00Z')),
+        new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T13:00:00Z')),
+    ];
+    expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
 
-// test('Valid Range Split', () => {
-//     const deadline = new Deadline('Work Times Test', 'test2', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
-//     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
-//         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-//     const correctTimes = [
-//         new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T17:00:00Z')),
-//         new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T17:00:00Z')),
-//         new TimeRange(moment('2019-03-26T09:00:00Z'), moment('2019-03-26T17:00:00Z')),
-//         new TimeRange(moment('2019-03-27T09:00:00Z'), moment('2019-03-27T10:40:00Z')),
-//         new TimeRange(moment('2019-03-27T13:20:00Z'), moment('2019-03-27T17:00:00Z')),
-//         new TimeRange(moment('2019-03-28T12:20:00Z'), moment('2019-03-28T17:00:00Z')),
-//         new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T14:40:00Z')),
-//         new TimeRange(moment('2019-03-30T13:20:00Z'), moment('2019-03-30T13:30:00Z')),
-//         new TimeRange(moment('2019-03-30T16:20:00Z'), moment('2019-03-30T17:00:00Z')),
-//         new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T13:00:00Z')),
-//     ];
-//     expect(compareRanges(validTimes, correctTimes)).toBe(true);
-// });
+test('Valid Range Split', () => {
+    const deadline = new Deadline('Work Times Test', 'test2', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const validTimes = getValidTimes(Object.values(initialEvents), deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    const correctTimes = [
+        new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T17:00:00Z')),
+        new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T17:00:00Z')),
+        new TimeRange(moment('2019-03-26T09:00:00Z'), moment('2019-03-26T17:00:00Z')),
+        new TimeRange(moment('2019-03-27T09:00:00Z'), moment('2019-03-27T10:40:00Z')),
+        new TimeRange(moment('2019-03-27T13:20:00Z'), moment('2019-03-27T17:00:00Z')),
+        new TimeRange(moment('2019-03-28T12:20:00Z'), moment('2019-03-28T17:00:00Z')),
+        new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T14:40:00Z')),
+        new TimeRange(moment('2019-03-30T16:20:00Z'), moment('2019-03-30T17:00:00Z')),
+        new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T13:00:00Z')),
+    ];
+    console.log("ValidRanges:")
+    printRanges(validTimes)
+    expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
 
 // test('Create Events Empty Schedule (Day)', () => {
 //     const deadline = new Deadline('Work Times Test', 'test3', moment('2019-03-24T16:00:00Z'), 140, 30, 100, 20, moment('2019-03-24T10:00:00Z'));

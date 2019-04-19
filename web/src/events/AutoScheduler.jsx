@@ -128,7 +128,7 @@ class TimeRange {
     split(range, buffer) {
         let newRanges = [];
         const relation = this.inRelationTo(range);
-        
+
         if (relation == OVERLAP_BEFORE || relation == CONTAINS){
             newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
         }
@@ -319,11 +319,11 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
         if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
-            const newRanges = []
+            let newRanges = []
             validTimes.map(function(validTime) {
-                const splitRanges = validTime.split(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak); // Get a list of ranges split by event
-                splitRanges = splitRanges.filter(element => element.duration() < deadline.minEventTime); // remove all ranges shorter than minEventTime
-                newRanges.concat(splitRanges);
+                let splitRanges = validTime.split(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak); // Get a list of ranges split by event
+                splitRanges = splitRanges.filter(element => element.duration() > deadline.minEventTime); // remove all ranges shorter than minEventTime
+                newRanges = newRanges.concat(splitRanges);
             })
             validTimes = newRanges;
         }
