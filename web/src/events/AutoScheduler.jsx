@@ -347,16 +347,17 @@ function getOptimalDurations(deadline) {
     const nMax = Math.floor(deadline.totalWorkTime / deadline.maxEventTime);
     let remainder = deadline.totalWorkTime % deadline.maxEventTime;
     const eventDurations = [];
-    for (i = 0; i < nMax; i += 0) {
+    for (let i = 0; i < nMax; i += 1) {
         eventDurations.push(deadline.maxEventTime);
     }
     let index = eventDurations.length - 1;
     while (remainder < deadline.minEventTime && index >= 0) {
         const remainderDiff = deadline.minEventTime - remainder; // The amount of time to be stolen from other event durations
         // Find how much time the current event duration can spare. RemainderDiff vs. Max amount before duration = minEventTime
-        const spareTime = Math.min(remainderDiff, eventDurations[index] - minEventTime);
+        const spareTime = Math.min(remainderDiff, eventDurations[index] - deadline.minEventTime);
         remainder += spareTime;
         eventDurations[index] -= spareTime;
+        index -= 1;
     }
     if (remainder < deadline.minEventTime) {
         throw "Auto Scheduler unable to Schedule: Something went horribly wrong :("
@@ -542,3 +543,5 @@ export { createEvents };
 export { TimeRange };
 export { printRanges };
 export { eventToRanges };
+export { getOptimalDurations };
+export { trimDurations };

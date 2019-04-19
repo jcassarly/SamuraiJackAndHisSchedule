@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 
 import { Event } from '../Event';
 import { Deadline } from '../Deadline';
-import autoSchedule, { BinaryTimeRangeHeap, getValidTimes, createEvents, TimeRange, printRanges, eventToRanges } from '../AutoScheduler';
+import autoSchedule, { BinaryTimeRangeHeap, getValidTimes, createEvents, TimeRange, printRanges, eventToRanges, getOptimalDurations, trimDurations } from '../AutoScheduler';
 
 const initialEvents = [
     new Event('test0', null, moment('2019-03-27T11:00:00Z'), moment('2019-03-27T13:00:00Z')),
@@ -44,6 +44,14 @@ function compareEventTimes(array1, array2) {
         }
     }
     return returnValue;
+}
+
+function compareIntegers(array1, array2) {
+    let same = true;
+    array1.map(function(element) {
+        same = same && (element == array2.shift());
+    });
+    return same;
 }
 
 test('TimeRange.inRelationTo() test', () => {
@@ -124,9 +132,30 @@ test('Valid Range Split', () => {
         new TimeRange(moment('2019-03-30T16:20:00Z'), moment('2019-03-30T17:00:00Z')),
         new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T13:00:00Z')),
     ];
-    console.log("ValidRanges:")
-    printRanges(validTimes)
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
+
+test('getOptimalDurations() test', () => {
+    const deadline1 = new Deadline('Work Times Test', 'test3', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const optDur1 = getOptimalDurations(deadline1);
+    const corDur1 = [110, 30];
+    expect(compareIntegers(optDur1, corDur1)).toBe(true);
+    // const trimDur1 = trimDurations(optDur1, 60);
+    // const corTrim1 = [60, 50, 30];
+    // expect(compareIntegers(trimDur1, corTrim1));
+    
+    
+    const deadline2 = new Deadline('Work Times Test', 'test4', moment('2019-03-31T13:00:00Z'), 479, 15, 72, 20, moment('2019-03-24T11:00:00Z'));
+    const optDur2 = getOptimalDurations(deadline2);
+    const corDur2 = [72, 72, 72, 72, 72, 72, 47];
+    expect(compareIntegers(optDur2, corDur2)).toBe(true);
+
+    const deadline3 = new Deadline('Work Times Test', 'test5', moment('2019-03-31T13:00:00Z'), 69, 15, 20, 20, moment('2019-03-24T11:00:00Z'));
+    const optDur3 = getOptimalDurations(deadline3);
+    console.log(`optDur1: ${optDur3}`);
+    const corDur3 = [20, 19, 15, 15];
+    expect(compareIntegers(optDur3, corDur3)).toBe(true);
+
 });
 
 // test('Create Events Empty Schedule (Day)', () => {
