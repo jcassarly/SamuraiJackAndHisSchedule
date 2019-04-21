@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import '../styles/InputForm.css';
+
 /**
  * Create a react component that surrounds the input fields and handles submission and back buttons
  * @param {func}  props.onSubmit a function that handles the submission event
@@ -18,7 +20,7 @@ function InputForm(props) {
     } = props;
     // create a form with the submit and back buttons and all other input fields in children
     return (
-        <div overflow="scroll">
+        <div className="inputForm">
             <center>
                 <form onSubmit={onSubmit}>
                     <div>
