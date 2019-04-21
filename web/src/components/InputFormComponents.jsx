@@ -374,7 +374,10 @@ function SelectInput(props) {
 SelectInput.propTypes = {
     prompt: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
     onChange: PropTypes.func.isRequired,
     children: PropTypes.node,
 };
@@ -578,7 +581,7 @@ function ColorSelect(props) {
 // defines the object that checks the props passed into the NotificationSelect
 ColorSelect.propTypes = {
     name: PropTypes.string.isRequired,
-    value: PropTypes.string,
+    value: PropTypes.number,
     onChange: PropTypes.func.isRequired,
 };
 

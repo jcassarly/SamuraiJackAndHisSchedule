@@ -15,7 +15,7 @@ import '../styles/StandardEventForm.css';
 import { Deadline } from '../events/Deadline';
 import DateErrorMessage from './ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
-import Settings from '../events/Settings';
+import { Settings } from '../events/Settings';
 
 /**
  * Class to handle gathering input form the user to create a Deadline object
