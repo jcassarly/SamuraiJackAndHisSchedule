@@ -217,8 +217,8 @@ function deserializeSettings(jsonStr) {
     return Settings.createSettingsfromInfo(
         json.eventLength,
         json.defaultLocation,
-        json.defaultNotificationTimeBefore,
         json.defaultNotificationType,
+        json.defaultNotificationTimeBefore,
         json.locked,
         json.language,
         json.snapToGrid,
