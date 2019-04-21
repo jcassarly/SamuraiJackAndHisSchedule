@@ -1,70 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import DateTime from 'react-datetime';
 import ColorEnum from '../ColorEnum';
 import Frequency from '../events/Frequency';
 import Notifications from '../events/Notifications';
-
-import '../../styles/StandardEventForm.css';
-import '../../styles/InputFields.css';
-
-/**
- * Create a React Component that contains a text and input field
- * @param {string} props.description the description of the input to gather
- * @param {string} props.type        the type of input to gather
- * @param {string} props.name        the name of the input field
- * @param {any}    props.value       the value stored in the input field
- * @param {bool}   props.checked     whether or not the input field is checked
- * @param {func}   props.onChange    a function to handle changes to the input field
- * @param {node}   props.children    Extra text to show after the input field for
- *                                   further directions for the user
- */
-function BaseInput(props) {
-    const {
-        description,
-        type,
-        name,
-        value,
-        checked,
-        onChange,
-        children,
-    } = props;
-    return (
-        <div className="baseBorder">
-            {description}
-            {': '}
-            <input
-                type={type}
-                name={name}
-                value={value}
-                checked={checked}
-                placeholder={description}
-                onChange={onChange}
-            />
-            {children}
-        </div>
-    );
-}
-
-// defines the object that checks the props passed into the BaseInput
-BaseInput.propTypes = {
-    description: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    value: PropTypes.any,
-    checked: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    children: PropTypes.node,
-};
-
-// defines the object that specified the default values for non-required props
-BaseInput.defaultProps = {
-    value: undefined,
-    checked: false,
-    children: null,
-};
+import {
+    BaseInput,
+    StartEndInput,
+    SelectInput,
+} from '../../components/InputFormComponents';
 
 /**
  * Create a React Component that gets text input from the user
@@ -256,53 +200,6 @@ DescriptionInput.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-/**
- * Create a react component that gets a start and end time from a user
- * @param {string} props.startDescription The description of the start time
- * @param {moment} props.start            The object that stores the start time
- * @param {func}   props.onStartChange    The function that handles changes to the start input
- * @param {string} props.endDescription   The description of the end time
- * @param {moment} props.end              The object that stores the end time
- * @param {func}   props.onEndChange      The function that handles changes to the end input
- */
-function StartEndInput(props) {
-    const {
-        startDescription,
-        start,
-        onStartChange,
-
-        endDescription,
-        end,
-        onEndChange,
-    } = props;
-    return (
-        <div className="baseBorder">
-            <div className="center">
-                <div className="left">
-                    <div>
-                        {startDescription}
-                    </div>
-                    <DateTime
-                        inputProps={{ placeholder: startDescription }}
-                        value={start}
-                        onChange={onStartChange}
-                    />
-                </div>
-                <div className="left">
-                    <div>
-                        {endDescription}
-                    </div>
-                    <DateTime
-                        inputProps={{ placeholder: endDescription }}
-                        value={end}
-                        onChange={onEndChange}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-}
-
 // defines the object that checks the props passed into the StartEndInput
 StartEndInput.propTypes = {
     startDescription: PropTypes.string.isRequired,
@@ -344,50 +241,6 @@ LocationInput.propTypes = {
 };
 
 /**
- * Create a React Component that gets input from a select field with a prompt
- * @param {string} props.prompt   a description of the input the user is entering
- * @param {string} props.name     the name of the React Component
- * @param {string} props.value    the selection
- * @param {func}   props.onChange a function to handle changes to the input field
- * @param {node}   props.children the options the user has
- */
-function SelectInput(props) {
-    const {
-        prompt,
-        name,
-        value,
-        onChange,
-        children,
-    } = props;
-    return (
-        <div className="baseBorder">
-            {prompt}
-            {': '}
-            <select name={name} value={value} onChange={onChange}>
-                {children}
-            </select>
-        </div>
-    );
-}
-
-// defines the object that checks the props passed into the SelectionInput
-SelectInput.propTypes = {
-    prompt: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]).isRequired,
-    onChange: PropTypes.func.isRequired,
-    children: PropTypes.node,
-};
-
-// defines the object that specified the default values for non-required props
-SelectInput.defaultProps = {
-    children: null,
-};
-
-/**
  * Create a React Component that gets a selection from a list of notification types
  * @param {string} props.name     the name of the React Component
  * @param {string} props.value    the selection
@@ -399,14 +252,23 @@ function NotificationSelect(props) {
         value,
         onChange,
     } = props;
+    // a list of value content pairs to display the options to the user
+    const options = [
+        { value: '', contents: 'None' },
+        { value: Notifications.noteEnum.EMAIL, contents: 'Email' },
+        { value: Notifications.noteEnum.TEXT, contents: 'Text Message' },
+        { value: Notifications.noteEnum.BANNER, contents: 'Banner' },
+        { value: Notifications.noteEnum.PUSH, contents: 'Push' },
+    ];
+
     return (
-        <SelectInput prompt="Notification Type" name={name} value={value} onChange={onChange}>
-            <option value="">None</option>
-            <option value={Notifications.noteEnum.EMAIL}>Email</option>
-            <option value={Notifications.noteEnum.TEXT}>Text Message</option>
-            <option value={Notifications.noteEnum.BANNER}>Banner</option>
-            <option value={Notifications.noteEnum.PUSH}>Push</option>
-        </SelectInput>
+        <SelectInput
+            prompt="Notification Type"
+            name={name}
+            value={value}
+            onChange={onChange}
+            options={options}
+        />
     );
 }
 
@@ -434,15 +296,23 @@ function FrequencySelect(props) {
         value,
         onChange,
     } = props;
+    const options = [
+        { value: '', contents: 'One Time' },
+        { value: Frequency.freqEnum.DAILY, contents: 'Daily' },
+        { value: Frequency.freqEnum.WEEKLY, contents: 'Weekly' },
+        { value: Frequency.freqEnum.MONTHLY, contents: 'Monthly' },
+        { value: Frequency.freqEnum.YEARLY, contents: 'Yearly' },
+        { value: Frequency.freqEnum.CUSTOM, contents: 'Custom' },
+    ];
+
     return (
-        <SelectInput prompt="Event Frequency" name={name} value={value} onChange={onChange}>
-            <option value="">One Time</option>
-            <option value={Frequency.freqEnum.DAILY}>Daily</option>
-            <option value={Frequency.freqEnum.WEEKLY}>Weekly</option>
-            <option value={Frequency.freqEnum.MONTHLY}>Monthly</option>
-            <option value={Frequency.freqEnum.YEARLY}>Yearly</option>
-            <option value={Frequency.freqEnum.CUSTOM}>Custom</option>
-        </SelectInput>
+        <SelectInput
+            prompt="Event Frequency"
+            name={name}
+            value={value}
+            onChange={onChange}
+            options={options}
+        />
     );
 }
 
@@ -568,13 +438,21 @@ function ColorSelect(props) {
         value,
         onChange,
     } = props;
+    const options = [
+        { value: ColorEnum.BLUE_BLACK, contents: 'Blue + Black Text' },
+        { value: ColorEnum.WHITE_BLACK, contents: 'Gray + Black Text' },
+        { value: ColorEnum.GREEN_BLACK, contents: 'Green + Black Text' },
+        { value: ColorEnum.ORANGE_BLACK, contents: 'Orange + Black Text' },
+    ];
+
     return (
-        <SelectInput prompt="Color Scheme" name={name} value={value} onChange={onChange}>
-            <option value={ColorEnum.BLUE_BLACK}>Blue + Black Text</option>
-            <option value={ColorEnum.WHITE_BLACK}>Gray + Black Text</option>
-            <option value={ColorEnum.GREEN_BLACK}>Green + Black Text</option>
-            <option value={ColorEnum.ORANGE_BLACK}>Orange + Black Text</option>
-        </SelectInput>
+        <SelectInput
+            prompt="Color Scheme"
+            name={name}
+            value={value}
+            onChange={onChange}
+            options={options}
+        />
     );
 }
 

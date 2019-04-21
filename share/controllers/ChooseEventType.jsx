@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import StandardEventForm from './StandardEventForm';
 import LocationEventForm from './LocationEventForm';
 import DeadlineForm from './DeadlineForm';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
 
-import ChooseEventTypeForm from '../../components/ChooseEventType';
+import ChooseInputForm from '../../components/ChooseInputForm';
 
 /**
  * Event Enum class that represents the choices of event types available.
@@ -85,7 +85,7 @@ class ChooseEventTypeFormController extends React.Component {
         ];
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
-                <ChooseEventTypeForm handleInputChange={this.handleInputChange} values={vals} />
+                <ChooseInputForm handleInputChange={this.handleInputChange} values={vals} />
             </InputForm>
         );
     }
@@ -94,9 +94,9 @@ class ChooseEventTypeFormController extends React.Component {
      * Updates the choice of event type the user made in the state
      * @param {obj} event the event object that stores the selection the user made
      */
-    handleInputChange(event) {
+    handleInputChange(val) {
         this.setState({
-            choice: event.target.value,
+            choice: val,
         });
     }
 

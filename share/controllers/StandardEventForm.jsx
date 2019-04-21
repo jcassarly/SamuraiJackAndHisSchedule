@@ -13,12 +13,12 @@ import {
     LockEventInput,
     ColorSelect,
 } from './InputFormComponents';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
+import FormHelper from '../../components/FormHelper';
 import { createEvent } from '../actions/createEvent';
 import { Event, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
-import DateErrorMessage from './ErrorMessage';
-import '../../styles/StandardEventForm.css';
+import DateErrorMessage from '../../components/ErrorMessage';
 import { Settings } from '../events/Settings';
 import ColorEnum from '../ColorEnum';
 
@@ -86,10 +86,10 @@ class StandardEventForm extends React.Component {
      * Updates the state with the frequency selection the user made
      * @param {obj} event the event object that stores the selection the user made
      */
-    frequencySelectChange(event) {
-        this.setState({ frequency: event.target.value });
+    frequencySelectChange(...args) {
+        this.setState({ frequency: FormHelper.getValue(...args) });
 
-        if (event.target.value === Frequency.freqEnum.CUSTOM) {
+        if (FormHelper.getValue(...args) === Frequency.freqEnum.CUSTOM) {
             alert('TODO: open custom choice menu');
         }
     }
@@ -98,9 +98,9 @@ class StandardEventForm extends React.Component {
      * Updates the state with the change to the input form the user made
      * @param {obj} event the event object that stores the change the user made
      */
-    handleInputChange(event) {
-        const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        const inputName = event.target.name;
+    handleInputChange(...args) {
+        const newValue = FormHelper.checkedVal(...args);
+        const inputName = FormHelper.getValue(...args);
         this.setState({
             [inputName]: newValue,
         });
@@ -130,8 +130,8 @@ class StandardEventForm extends React.Component {
      * Creates the Event object, adds it to the redux store, and returns to the home screen
      * @param {obj} event the JS event object that stores the event that called this function
      */
-    handleSubmit(event) {
-        event.preventDefault();
+    handleSubmit(...args) {
+        FormHelper.prevDef(...args);
         const {
             name,
             description,
