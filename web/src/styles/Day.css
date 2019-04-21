@@ -24,6 +24,7 @@
 }
 
 .calDay .dayEvents > .resize {
+    z-index: 100;
     touch-action: none;
     height: 1em;
     opacity: 0;
