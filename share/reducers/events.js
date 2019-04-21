@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
 import {

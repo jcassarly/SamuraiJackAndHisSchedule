@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { render, fireEvent, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';

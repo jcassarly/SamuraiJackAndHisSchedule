@@ -67,7 +67,7 @@ test('changes start date to first of month correctly', () => {
     fireEvent.click(firstDayOfMonth);
 
     // check that the input field changed based on the date change
-    const startDate = moment().date(1);
+    const startDate = moment.tz.guess().date(1);
     expect(startDateInput.value).toEqual(startDate.format('L LT'));
 });
 
@@ -86,7 +86,7 @@ test('changes end date to third of month plus 1 hour from current time correctly
     fireEvent.click(thirdDayOfMonth);
 
     // check that the input field changed based on the date change
-    const endDate = moment().date(1).add(2, 'day').add(1, 'hour');
+    const endDate = moment.tz.guess().date(1).add(2, 'day').add(1, 'hour');
     expect(endDateInput.value).toEqual(endDate.format('L LT'));
 });
 
@@ -107,7 +107,7 @@ test('changing start date to after end date pulls up error message', () => {
     fireEvent.click(thirdDayOfMonth);
 
     // check that the input field updated correctly
-    const startDate = moment().date(1).add(2, 'day');
+    const startDate = moment.tz.guess().date(1).add(2, 'day');
     expect(startDateInput.value).toEqual(startDate.format('L LT'));
 
     // find the end date and set it to be the first date of
@@ -119,7 +119,7 @@ test('changing start date to after end date pulls up error message', () => {
     fireEvent.click(firstDayOfMonth);
 
     // check that the input field updated correctly
-    const endDate = moment().date(1).add(1, 'hour');
+    const endDate = moment.tz.guess().date(1).add(1, 'hour');
     expect(endDateInput.value).toEqual(endDate.format('L LT'));
 
     // submit the event

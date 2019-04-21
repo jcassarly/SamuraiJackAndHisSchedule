@@ -12,10 +12,9 @@ function getUpdatedTime(time, reference, frequency) {
     const newTime = time.clone();
     switch (frequency) {
     case Frequency.freqEnum.DAILY:
-        newTime.add(moment.duration({ days: reference.diff(time, 'days') }));
-        return newTime;
+        return newTime.add(reference.diff(time.clone().startOf('day'), 'days'), 'days');
     case Frequency.freqEnum.WEEKLY:
-        return null;
+        return newTime.add(reference.diff(time.clone().startOf('day'), 'days'), 'days');
     case Frequency.freqEnum.MONTHLY: {
         // note that this overlap has some odd behaviors when events start
         // and end in different months.  Not sure what the correct behavoir is
@@ -85,31 +84,29 @@ class DayEventsController extends Component {
                 {currEvents.map((event) => { // add each event to the calendar
                     // start and end of the event, but cut off if the event spans
                     //     into the next or previous day
-                    let virtualStart = moment.max(moment(event.startTime), dayStart);
-                    let virtualEnd = moment.min(moment(event.endTime), dayEnd);
+                    let virtualStart = moment.max(event.startTime, dayStart);
+                    let virtualEnd = moment.min(event.endTime, dayEnd);
 
                     if (event instanceof RecurringEvent) {
-                        virtualStart = moment.max(moment(getUpdatedTime(
+                        console.log('-----');
+                        console.log(getUpdatedTime(
                             event.startTime,
                             dayStart,
                             event.frequency.timing,
-                        )), dayStart);
+                        ));
+                        virtualStart = moment.max(getUpdatedTime(
+                            event.startTime,
+                            dayStart,
+                            event.frequency.timing,
+                        ), dayStart);
 
-                        console.log(moment(getUpdatedTime(
-                            event.startTime,
-                            dayStart,
-                            event.frequency.timing,
-                        )));
                         console.log(virtualStart);
-                        console.log(virtualStart.minutes());
 
-                        virtualEnd = moment.min(moment(getUpdatedTime(
+                        virtualEnd = moment.min(getUpdatedTime(
                             event.endTime,
                             dayEnd,
                             event.frequency.timing,
-                        )), dayEnd);
-
-                        console.log(virtualEnd);
+                        ), dayEnd);
                     }
 
                     // convert to hours, for positioning of the element
