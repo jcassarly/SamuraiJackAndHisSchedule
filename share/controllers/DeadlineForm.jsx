@@ -68,7 +68,7 @@ class DeadlineForm extends React.Component {
     handleInputChange(...args) {
         // if the event was triggered by a checkbox, get the checked value, otherwise use the value
         const newValue = FormHelper.checkedVal(...args);
-        const inputName = FormHelper.getValue(...args);
+        const inputName = FormHelper.getName(...args);
 
         // update the state
         this.setState({

@@ -63,7 +63,7 @@ class SettingsForm extends React.Component {
      */
     handleInputChange(...args) {
         const newValue = FormHelper.checkedVal(...args);
-        const inputName = FormHelper.getValue(...args);
+        const inputName = FormHelper.getName(...args);
 
         this.setState({
             [inputName]: newValue,
