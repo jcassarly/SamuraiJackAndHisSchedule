@@ -13,6 +13,8 @@ const EVENT_TYPES = {
     RECURRING: 'recurring',
 };
 
+const DAYS_IN_WEEK = 7;
+
 /**
  * verifies that two times are compatible start and end times
  * @param {*} start start time to be evaluated
@@ -30,6 +32,37 @@ function verifyTimes(start, end) {
     }
 }
 
+/**
+ * Checks if value is in the inclusive range of [start, end]
+ * @param {*} value the value to check if it is in range
+ * @param {*} start the start of the range
+ * @param {*} end the end of the range
+ */
+function inRange(value, start, end) {
+    return (value >= start && value <= end);
+}
+
+/**
+ * Checks if at least one of the values is in the inclusive range [start, end]
+ * @param {*} value1 the first value to check if it is in range
+ * @param {*} value2 the other value to check if it is in range
+ * @param {*} start the start of the range
+ * @param {*} end the end of the range
+ */
+function eitherInRange(value1, value2, start, end) {
+    return (inRange(value1, start, end) || inRange(value2, start, end));
+}
+
+/**
+ * Checks that neither of the values are in the inclusive range [start, end]
+ * @param {*} value1 the first value to check if it is not in range
+ * @param {*} value2 the other value to check if it is not in range
+ * @param {*} start the start of the range
+ * @param {*} end the end of the range
+ */
+function neitherInRange(value1, value2, start, end) {
+    return !eitherInRange(value1, value2, start + 1, end - 1); // extend range to be exclusive
+}
 
 class Event {
     constructor(
@@ -170,6 +203,13 @@ class Event {
         this._color = value;
     }
 
+    /**
+     * Checks if the start and end times of this event are in the same week
+     */
+    timesWithinAWeek() {
+        return this.endTime.diff(this.startTime, 'days') < DAYS_IN_WEEK;
+    }
+
     addNotification(timeBefore, type) {
         this._notifications.push(new Notifications(type, timeBefore, this._startTime));
     }
@@ -184,18 +224,19 @@ class Event {
      * @param {*} event1 first event to check
      * @param {*} event2 second event to check
      */
-    static overlap(event1, event2) {
-        if (event1.startTime.isAfter(event2.startTime)
-        && event1.startTime.isBefore(event2.endTime)) {
+    overlap(event2) {
+        console.log('noop');
+        if (this.startTime.isAfter(event2.startTime)
+        && this.startTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.startTime.isAfter(event1.startTime)
-        && event2.startTime.isBefore(event1.endTime)) {
+        } if (event2.startTime.isAfter(this.startTime)
+        && event2.startTime.isBefore(this.endTime)) {
             return true;
-        } if (event1.endTime.isAfter(event2.startTime)
-        && event1.endTime.isBefore(event2.endTime)) {
+        } if (this.endTime.isAfter(event2.startTime)
+        && this.endTime.isBefore(event2.endTime)) {
             return true;
-        } if (event2.endTime.isAfter(event1.startTime)
-        && event2.endTime.isBefore(event1.endTime)) {
+        } if (event2.endTime.isAfter(this.startTime)
+        && event2.endTime.isBefore(this.endTime)) {
             return true;
         }
         return false;
@@ -292,8 +333,8 @@ class RecurringEvent extends Event {
             this.locked,
             this.notifications,
             this.color,
-            this.frequency,
-            this.optionalCustomFrequency,
+            this.frequency.timing,
+            this.frequency.customSettings,
         );
     }
 
@@ -305,6 +346,48 @@ class RecurringEvent extends Event {
     // sets frequency to a Frequency object
     set frequency(value) {
         this._frequency = value;
+    }
+
+    rangeOverlap(other, precisionType) {
+        let retval = false;
+        if (this.startTime.get(precisionType) > this.endTime.get(precisionType)) {
+            retval = neitherInRange(
+                other.startTime.get(precisionType),
+                other.endTime.get(precisionType),
+                this.endTime.get(precisionType),
+                this.startTime.get(precisionType),
+            );
+        } else {
+            retval = eitherInRange(
+                other.startTime.get(precisionType),
+                other.endTime.get(precisionType),
+                this.startTime.get(precisionType),
+                this.endTime.get(precisionType),
+            );
+        }
+
+        return retval;
+    }
+
+    overlap(other) {
+        const minOverlapTime = (other.endTime.isSameOrAfter(this.startTime.startOf('day')));
+
+        switch (this.frequency.timing) {
+        case Frequency.freqEnum.DAILY:
+            return minOverlapTime;
+        case Frequency.freqEnum.WEEKLY:
+            return minOverlapTime && (this.rangeOverlap(other, 'day') || !this.timesWithinAWeek());
+        case Frequency.freqEnum.MONTHLY: {
+            // note that this overlap has some odd behaviors when events start
+            // and end in different months.  Not sure what the correct behavoir is
+            // so this issue is being overlooked right now
+            return minOverlapTime && (this.rangeOverlap(other, 'date'));
+        }
+        case Frequency.freqEnum.YEARLY:
+            return minOverlapTime && (this.rangeOverlap(other, 'dayOfYear'));
+        default:
+            throw new Error('not a valid frequency');
+        }
     }
 
     /**
@@ -320,8 +403,8 @@ class RecurringEvent extends Event {
         // add the frequency fields
         retval.obj = {
             ...retval.obj,
-            frequency: this._frequency.timing,
-            optionalCustomFrequency: this._frequency.customSettings,
+            frequency: this.frequency.timing,
+            optionalCustomFrequency: this.frequency.customSettings,
         };
         return retval;
     }
@@ -337,7 +420,13 @@ class RecurringEvent extends Event {
  */
 function deserialize(jsonStr) {
     const json = JSON.parse(jsonStr);
+    console.log(jsonStr);
+    console.log(json);
+
     const { type, obj } = json;
+
+    console.log(obj);
+    console.log(obj.frequency);
 
     let newEvent = null;
 
@@ -365,6 +454,7 @@ function deserialize(jsonStr) {
             moment(obj.startTime),
             moment(obj.endTime),
             obj.notifications,
+            obj.color,
         );
 
         // location events never have parents and needs to be set to -1 when deserializing
@@ -380,6 +470,7 @@ function deserialize(jsonStr) {
             obj.location,
             obj.locked,
             obj.notifications,
+            obj.color,
             obj.frequency,
             obj.optionalCustomFrequency,
         );

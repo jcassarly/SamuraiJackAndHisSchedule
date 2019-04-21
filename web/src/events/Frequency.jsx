@@ -44,6 +44,7 @@ class Frequency {
             this._timing = Frequency.freqEnum.CUSTOM;
             break;
         default:
+            console.log(value);
             throw new Error('not a valid frequency');
         }
 

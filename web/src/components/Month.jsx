@@ -20,10 +20,11 @@ function createDayList(date, events) {
 
     // array for holding the month cell elements
     const dates = [];
+    console.log(events);
     for (let i = 0; i < 3 * 6 * 7; i += 1) {
         // filters our events not ocurring on the current date
         const day = new Event(null, null, currDate, currDate.clone().endOf('day'));
-        const currEvents = events.filter(event => Event.overlap(day, event));
+        const currEvents = events.filter(event => event.overlap(day));
 
         // adds a MonthCell component corresponding to the current date with relevent events
         // current is set to true if the date corresponds to the current month

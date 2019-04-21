@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
-import { Event } from '../events/Event';
+import { Event, RecurringEvent } from '../events/Event';
 import { modes } from './MainCalendar';
 import { SET_MIN } from '../actions/clipboard';
 import em from '../em2px';
@@ -222,7 +222,7 @@ class Day extends Component {
 
         // filters out all events that aren't in that day
         const dayEv = new Event(null, null, dayStart, dayEnd);
-        const currEvents = events.filter(event => Event.overlap(dayEv, event));
+        const currEvents = events.filter(event => event.overlap(dayEv));
 
         return (
             <div
@@ -237,8 +237,31 @@ class Day extends Component {
                     {currEvents.map((event) => { // add each event to the calendar
                         // start and end of the event, but cut off if the event spans
                         //     into the next or previous day
-                        const virtualStart = moment.max(moment(event.startTime), dayStart);
-                        const virtualEnd = moment.min(moment(event.endTime), dayEnd);
+                        let virtualStart = moment.max(moment(event.startTime), dayStart);
+                        let virtualEnd = moment.min(moment(event.endTime), dayEnd);
+
+                        if (event instanceof RecurringEvent) {
+                            const newStart = dayStart.clone();
+                            const newEnd = dayEnd.clone();
+
+                            newStart
+                                .hour(event.startTime.hour())
+                                .minute(event.startTime.minute())
+                                .seconds(event.startTime.second())
+                                .milliseconds(event.startTime.milliseconds());
+
+                            newEnd
+                                .year(event.endTime.diff(event.startTime, 'year') + newStart.year())
+                                .month(event.endTime.diff(event.startTime, 'month') + newStart.month())
+                                .date(event.endTime.diff(event.starTime, 'date') + newStart.date())
+                                .hour(event.endTime.hour())
+                                .minute(event.endTime.minute())
+                                .seconds(event.endTime.second())
+                                .milliseconds(event.endTime.milliseconds());
+
+                            virtualStart = moment.max(newStart, dayStart);
+                            virtualEnd = moment.min(newEnd, dayEnd);
+                        }
 
                         // convert to hours, then ems for positioning of the element
                         let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
