@@ -1,7 +1,8 @@
 /* eslint-disable */
 /* eslint max-len: 0 */
 import moment from 'moment-timezone'; // eslint-disable-line
-import { Event } from './Event';
+import { Event, LocationEvent, RecurringEvent } from './Event';
+import Frequency from './Frequency';
 import ColorEnum from '../components/ColorEnum';
 
 /*  Constants for TimeRange relations: 
@@ -274,7 +275,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     if (deadline.useLocation == true)
     {
         oldSchedule = oldSchedule.map(function(event) {
-            if (event.location == deadline.location) {
+            if (event instanceof LocationEvent) {
                 const newRange = new TimeRange(moment(event.startTime), moment(event.endTime));
                 const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
                                                      moment(newRange.end).hour(workHoursFin.hour()).minute(workHoursFin.minute()));
@@ -296,7 +297,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                 }
             }
             return event;
-        }).filter(event => event.location != deadline.location);
+        }).filter(event => (event instanceof LocationEvent) != true);
     }
     else {
         // Used as the start of the added time ranges
@@ -332,7 +333,9 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
     oldSchedule.map(function(event) {
-        if (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
+        let occurrence = true;
+        
+        while (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
             let newRanges = []
@@ -342,6 +345,31 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                 newRanges = newRanges.concat(splitRanges);
             })
             validTimes = newRanges;
+
+            if (event instanceof RecurringEvent) {
+                switch(event.frequency.timing) {
+                    case Frequency.freqEnum.DAILY:
+                        event.startTime.add(1, 'days');
+                        event.endTime.add(1, 'days');
+                        break;
+                    case Frequency.freqEnum.WEEKLY:
+                        event.startTime.add(7, 'days');
+                        event.endTime.add(7, 'days');
+                        break;
+                    case Frequency.freqEnum.MONTHLY:
+                        event.startTime.add(1, 'months');
+                        event.endTime.add(1, 'months');
+                        break;
+                    case Frequency.freqEnum.YEARLY:
+                        event.startTime.add(1, 'years');
+                        event.endTime.add(1, 'years');
+                        break;
+                    default:
+                        throw 'Auto Scheduler unable to schedule: Invalid Frequency.'
+                }
+            } else {
+                break; // It's just a normal event, just gotta execute code above once.
+            }
         }
     });
 
