@@ -158,11 +158,10 @@ test('getOptimalDurations() test', () => {
 });
 
 test('Create Events Empty Schedule (Day)', () => {
-    const deadline = new Deadline('Work Times Test', 'test3', moment('2019-03-24T16:00:00Z'), 140, 30, 100, 20, moment('2019-03-24T10:00:00Z'));
+    const deadline = new Deadline('Work Times Test', 'test6', moment('2019-03-24T16:00:00Z'), 140, 30, 100, 20, moment('2019-03-24T10:00:00Z'));
     const validTimes = getValidTimes([], deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const newSchedule = createEvents([], deadline, validTimes);
-    printRanges(eventToRanges(newSchedule));
     const correctEvents = [
         new Event('Work Times Test', null, moment('2019-03-24T10:00:00Z'), moment('2019-03-24T11:40:00Z')),
         new Event('Work Times Test', null, moment('2019-03-24T12:00:00Z'), moment('2019-03-24T12:40:00Z')),
@@ -170,32 +169,34 @@ test('Create Events Empty Schedule (Day)', () => {
     expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
 });
 
-// test('Create Events Empty Schedule (Week)', () => {
-//     console.log('test4')
-//     const deadline = new Deadline('Work Times Test', 'test4', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-24T11:00:00Z'));
-//     const validTimes = getValidTimes([], deadline,
-//         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-//     const newSchedule = createEvents([], deadline, validTimes);
-//     const correctEvents = [
-//         new Event('Work Times Test', null, moment('2019-03-26T09:00:00Z'), moment('2019-03-26T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-25T09:00:00Z'), moment('2019-03-25T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-27T09:00:00Z'), moment('2019-03-27T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-28T09:00:00Z'), moment('2019-03-28T09:40:00Z')),
-//     ];
-//     expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
-// });
+test('Create Events Empty Schedule (Week)', () => {
+    console.log('test4')
+    const deadline = new Deadline('Work Times Test', 'test7', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-24T11:00:00Z'));
+    const validTimes = getValidTimes([], deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    const newSchedule = createEvents([], deadline, validTimes);
+    const correctEvents = [
+        new Event('Work Times Test', null, moment('2019-03-26T09:00:00Z'), moment('2019-03-26T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-25T09:00:00Z'), moment('2019-03-25T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-27T09:00:00Z'), moment('2019-03-27T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-28T09:00:00Z'), moment('2019-03-28T09:40:00Z')),
+    ];
+    expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
+});
 
-// test('Create Events Non-Empty Schedule (Week)', () => {
-//     const deadline = new Deadline('Work Times Test', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-27T11:00:00Z'));
-//     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
-//         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-//     const newSchedule = createEvents(Object.values(initialEvents), deadline, validTimes);
-//     const correctEvents = initialEvents.slice();
-//     correctEvents.push(
-//         new Event('Work Times Test', null, moment('2019-03-29T09:00:00Z'), moment('2019-03-29T11:00:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-28T12:25:00Z'), moment('2019-03-28T14:25:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-27T13:25:00Z'), moment('2019-03-27T15:25:00Z')),
-//         new Event('Work Times Test', null, moment('2019-03-29T11:25:00Z'), moment('2019-03-29T12:05:00Z')),
-//     );
-//     expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
-// });
+test('Create Events Non-Empty Schedule (Week)', () => {
+    const deadline = new Deadline('Work Times Test', 'test8', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-27T11:00:00Z'));
+    const validTimes = getValidTimes(Object.values(initialEvents), deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    const newSchedule = createEvents(Object.values(initialEvents), deadline, validTimes);
+    console.log('New Schedule: ')
+    printRanges(eventToRanges(newSchedule))
+    const correctEvents = initialEvents.slice();
+    correctEvents.push(
+        new Event('Work Times Test', null, moment('2019-03-29T09:00:00Z'), moment('2019-03-29T11:00:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-28T12:25:00Z'), moment('2019-03-28T14:25:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-27T13:25:00Z'), moment('2019-03-27T15:25:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-29T11:25:00Z'), moment('2019-03-29T12:05:00Z')),
+    );
+    expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
+});

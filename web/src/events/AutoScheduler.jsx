@@ -128,9 +128,9 @@ class TimeRange {
     split(range, buffer) {
         let newRanges = [];
         const relation = this.inRelationTo(range);
-        console.log(`split Range Start: ${range.start.format('LLL')}\n            End: ${range.end.format('LLL')}`)
-        console.log(`relation: ${relation}`)
-        console.log(`buffer: ${buffer}`)
+        // console.log(`split Range Start: ${range.start.format('LLL')}\n            End: ${range.end.format('LLL')}`)
+        // console.log(`relation: ${relation}`)
+        // console.log(`buffer: ${buffer}`)
 
         if (relation == OVERLAP_BEFORE || relation == CONTAINS){
             newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
@@ -474,20 +474,20 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             }
             
             let splitRanges = range.split(new TimeRange(moment(range.start), moment(range.start).add(optimalDurations[index], 'minutes')), deadline.minBreak);
-            console.log('Initial list after split')
-            printRanges(splitRanges);
+            // console.log('Initial list after split')
+            // printRanges(splitRanges);
             splitRanges = splitRanges.filter(element => element.duration() > deadline.minEventTime)
-            console.log('Initial list after filter')
-            printRanges(splitRanges);
+            // console.log('Initial list after filter')
+            // printRanges(splitRanges);
             splitRanges.map(element => validTimes.push(element));
         }
 
-        console.log('E')
         // Create a new event with the specified duration
         const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
             moment(range.start).add(optimalDurations[index], 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
         // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
         // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
+        console.log(`E: Adding new event: Start - ${debugEvent.startTime.format('LLL')}\n                    End - ${debugEvent.endTime.format('LLL')}`)
 
 
         // Add event to the scheudle and the deadline's list of child events
