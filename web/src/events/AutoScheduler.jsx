@@ -128,6 +128,9 @@ class TimeRange {
     split(range, buffer) {
         let newRanges = [];
         const relation = this.inRelationTo(range);
+        console.log(`split Range Start: ${range.start.format('LLL')}\n            End: ${range.end.format('LLL')}`)
+        console.log(`relation: ${relation}`)
+        console.log(`buffer: ${buffer}`)
 
         if (relation == OVERLAP_BEFORE || relation == CONTAINS){
             newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
@@ -441,16 +444,19 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     while(validTimes.length > 0 && optimalDurations.length > 0) {
         const range = validTimes.pop();
         const rangeDuration = range.duration();
+        console.log(`A: range start: ${range.start.format('LLL')}\n         end: ${range.end.format('LLL')}`)
 
         // If the largest optimal duration is longer than the largest valid duration, 
         // Recreate the optimal list to accomodate the new maximum
         if (optimalDurations[0] > rangeDuration) {
             optimalDurations = getOptimalDurations(remainingTime, deadline.minEventTime, rangeDuration);
+            console.log('B')
         }
 
         let index = 0;
         // TODO: gotta work on this conditional right here
         if (rangeDuration > optimalDurations[index]) {
+            console.log('C')
 
             /* If the following are satisfied, then try a smaller optimal duration:
              * 1) The current optimal duration will not leave enough time for another event in this time range
@@ -460,17 +466,23 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
                    totalValidTime - rangeDuration < remainingTime - optimalDurations[index] && 
                    index < optimalDurations.length) {
                 index += 1;
+                console.log('D')
             }
 
             if (index == optimalDurations.length) {
                 throw "Auto Scheduler unable to schedule: Given min and max event times will not fit within valid times."
             }
-             
-            let splitRanges = range.split(optimalDurations[index], deadline.minEventTime);
+            
+            let splitRanges = range.split(new TimeRange(moment(range.start), moment(range.start).add(optimalDurations[index], 'minutes')), deadline.minBreak);
+            console.log('Initial list after split')
+            printRanges(splitRanges);
             splitRanges = splitRanges.filter(element => element.duration() > deadline.minEventTime)
+            console.log('Initial list after filter')
+            printRanges(splitRanges);
             splitRanges.map(element => validTimes.push(element));
         }
 
+        console.log('E')
         // Create a new event with the specified duration
         const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
             moment(range.start).add(optimalDurations[index], 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
@@ -491,6 +503,8 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     if (optimalDurations.length > 0) {
         throw "Auto Scheduler unable to schedule: Could not find a valid schedule with given parameters";
     }
+
+    // console.log(`NewSchedule: ${newSchedule}`)
 
     return newSchedule;
 }
