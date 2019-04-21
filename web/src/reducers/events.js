@@ -77,7 +77,7 @@ function deserializeSyncPayload(events, deadlines) {
 
     return {
         events: newEvents,
-        maxEventId: largestKey,
+        maxEventId: largestKey + 1,
         deadlines: newDeadlines,
         maxDeadlineId: Object.values(newDeadlines).length,
         clipboard: null,
