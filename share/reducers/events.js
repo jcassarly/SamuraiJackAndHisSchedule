@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
 import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
 import {
@@ -266,7 +266,7 @@ const reducer = (state = initialState, action) => {
                 newEvent.endTime = time.clone().add(length, 'ms');
                 newEvent.startTime = time;
             }
-            newEvent.id = [state.maxEventId];
+            newEvent.id = state.maxEventId;
             newState.events[state.maxEventId] = newEvent;
             newState.maxEventId += 1;
             break;

@@ -3,35 +3,32 @@ import { connect } from 'react-redux';
 import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import {
-    NameInput,
     DescriptionInput,
     StartEndInput,
     LocationInput,
     NotificationSelect,
     NotificationTime,
     FrequencySelect,
-    LockEventInput,
-    ColorSelect,
 } from './InputFormComponents';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
+import FormHelper from '../../components/FormHelper';
 import { createEvent } from '../actions/createEvent';
-import { Event, RecurringEvent } from '../events/Event';
+import { LocationEvent, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
-import DateErrorMessage from './ErrorMessage';
-import '../styles/StandardEventForm.css';
-import Settings from '../events/Settings';
-import ColorEnum from './ColorEnum';
+import DateErrorMessage from '../../components/ErrorMessage';
+import { Settings } from '../events/Settings';
 
 /**
- * React Component that handles standard event input gathering
+ * Create a react component that handles location event input
  */
-class StandardEventForm extends React.Component {
+class LocationEventFormController extends React.Component {
     /**
      * Create a form to get input for a standard event
      * @param {func}   props.returnHome  a function to send the user back to home screen
      * @param {func}   props.createEvent a function to create an event in the redux store
      *                                   with the gathered input from the form
      * @param {string} props.title       the name of the event form
+     * @param {bool}   props.hideLock    true if the lock form field should be hidden,
      *                                   false if it should appear
      */
     constructor(props) {
@@ -39,16 +36,13 @@ class StandardEventForm extends React.Component {
         const { title } = this.props;
         this.state = {
             title,
-            name: '',
+            location: '',
             description: '',
             eventStart: moment(),
             eventEnd: moment().add(props.settings.eventLength, 'minutes'),
-            location: props.settings.location,
             frequency: '',
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
-            color: ColorEnum.BLUE_BLACK,
-            locked: true,
             error: false,
             errorMsg: 'No Error',
         };
@@ -78,7 +72,7 @@ class StandardEventForm extends React.Component {
      */
     static get defaultProps() {
         return {
-            title: 'Standard Event Form',
+            title: 'Location Event Form',
         };
     }
 
@@ -86,10 +80,10 @@ class StandardEventForm extends React.Component {
      * Updates the state with the frequency selection the user made
      * @param {obj} event the event object that stores the selection the user made
      */
-    frequencySelectChange(event) {
-        this.setState({ frequency: event.target.value });
+    frequencySelectChange(...args) {
+        this.setState({ frequency: FormHelper.getValue(...args) });
 
-        if (event.target.value === Frequency.freqEnum.CUSTOM) {
+        if (FormHelper.getValue(...args) === Frequency.freqEnum.CUSTOM) {
             alert('TODO: open custom choice menu');
         }
     }
@@ -98,9 +92,10 @@ class StandardEventForm extends React.Component {
      * Updates the state with the change to the input form the user made
      * @param {obj} event the event object that stores the change the user made
      */
-    handleInputChange(event) {
-        const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        const inputName = event.target.name;
+    handleInputChange(...args) {
+        const newValue = FormHelper.checkedVal(...args);
+        const inputName = FormHelper.getName(...args);
+
         this.setState({
             [inputName]: newValue,
         });
@@ -127,25 +122,24 @@ class StandardEventForm extends React.Component {
     }
 
     /**
-     * Creates the Event object, adds it to the redux store, and returns to the home screen
+     * Creates the LocationEvent object, adds it to the redux store, and returns to the home screen
      * @param {obj} event the JS event object that stores the event that called this function
      */
-    handleSubmit(event) {
-        event.preventDefault();
+    handleSubmit(...args) {
+        FormHelper.prevDef(...args);
         const {
-            name,
             description,
             eventStart,
             eventEnd,
             location,
-            locked,
             notifications,
-            color,
             frequency,
         } = this.state;
 
         const {
             returnHome,
+            // eslint-disable-next-line no-shadow
+            createEvent,
         } = this.props;
 
         // attempt to create the new event and add it to the redux store
@@ -153,28 +147,23 @@ class StandardEventForm extends React.Component {
         try {
             // create a single event if frequency is just once
             if (frequency === '') {
-                evt = new Event(
-                    name,
+                evt = new LocationEvent(
+                    location,
                     description,
                     eventStart,
                     eventEnd,
-                    location,
-                    locked,
                     notifications, // TODO: use notification object here instead
-                    null,
-                    color,
                 );
             // create a recurring event otherwise with the chosen frequency
             } else {
                 evt = new RecurringEvent(
-                    name,
+                    location,
                     description,
                     eventStart,
                     eventEnd,
                     location,
-                    locked,
+                    true,
                     notifications,
-                    color,
                     frequency,
                     null,
                 ); // TODO: handle custom frequency
@@ -182,7 +171,7 @@ class StandardEventForm extends React.Component {
 
             // add the Event to the redux store
             // eslint-disable-next-line react/destructuring-assignment
-            this.props.createEvent(evt);
+            createEvent(evt);
 
             // send the user back to home screen
             returnHome();
@@ -206,7 +195,6 @@ class StandardEventForm extends React.Component {
 
         const {
             title,
-            name,
             description,
             eventStart,
             eventEnd,
@@ -214,8 +202,6 @@ class StandardEventForm extends React.Component {
             frequency,
             notifications,
             notificationTime,
-            color,
-            locked,
             error,
             errorMsg,
         } = this.state;
@@ -224,9 +210,9 @@ class StandardEventForm extends React.Component {
         // input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
-                <NameInput
-                    name="name"
-                    value={name}
+                <LocationInput
+                    name="location"
+                    value={location}
                     onChange={this.handleInputChange}
                 />
                 <DescriptionInput
@@ -246,11 +232,6 @@ class StandardEventForm extends React.Component {
                     onStartChange={this.handleStartDateChange}
                     onEndChange={this.handleEndDateChange}
                 />
-                <LocationInput
-                    name="location"
-                    value={location}
-                    onChange={this.handleInputChange}
-                />
                 <FrequencySelect
                     name="frequency"
                     value={frequency}
@@ -267,20 +248,6 @@ class StandardEventForm extends React.Component {
                     value={notificationTime}
                     onChange={this.handleInputChange}
                 />
-
-                <LockEventInput
-                    name="locked"
-                    checked={locked}
-                    onChange={this.handleInputChange}
-                    hide={false}
-                />
-
-                <ColorSelect
-                    name="color"
-                    value={color}
-                    onChange={this.handleInputChange}
-                />
-
             </InputForm>
         );
     }
@@ -293,4 +260,4 @@ const mapStateToProps = state => (
     }
 );
 
-export default connect(mapStateToProps, { createEvent })(StandardEventForm);
+export default connect(mapStateToProps, { createEvent })(LocationEventFormController);

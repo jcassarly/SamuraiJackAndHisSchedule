@@ -5,100 +5,60 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment-timezone';
 
-import { Event, RecurringEvent } from '../events/Event';
-import Frequency from '../events/Frequency';
-import { modes } from './MainCalendar';
-import { SET_MIN } from '../actions/clipboard';
+import { Event } from '../share/events/Event';
 import em from '../em2px';
 import '../styles/Day.css';
-
-function getUpdatedTime(time, reference, frequency) {
-    const newTime = time.clone();
-    switch (frequency) {
-    case Frequency.freqEnum.DAILY:
-        newTime.add(moment.duration({ days: reference.diff(time, 'days') }));
-        return newTime;
-    case Frequency.freqEnum.WEEKLY:
-        return null;
-    case Frequency.freqEnum.MONTHLY: {
-        // note that this overlap has some odd behaviors when events start
-        // and end in different months.  Not sure what the correct behavoir is
-        // so this issue is being overlooked right now
-        return null;
-    }
-    case Frequency.freqEnum.YEARLY:
-        return null;
-    default:
-        throw new Error('not a valid frequency');
-    }
-}
 
 /**
  * The component for displaying the schedule for a single day in the day view
  */
 class Day extends Component {
     /**
+     * tool: whether the user is currently using a tool that interracts with days
+     * pasting: whether the user is trying to paste
+     * resizing: whether the user is currently trying to resize
+     * startSelected: whether the user has selected the start of the event when resizing
+     * selectedEvent: the event currently being edited by the user
+     * mouseMove: how far the mouse has moved
      * day: the day to be displayed
-     * events: a list of events to display, can be empty
-     * mode: the toolbar mode it is currently in
-     * moveEvent: handler for when drag drops happen
-     * changeStart: handler to change the start of the event for resize
-     * changeEnd: handler to change the end of the event for resize
-     * cut: handler to cut an event
-     * copy: handler to copy an event
-     * paste: handler to paste an event
+     * events: a list of all events, can be empty
+     * mouseUpClose: returns a handler for mouse up events
+     * mouseMoveClose: returns a handler for mouse move events
+     * dragClose: returns a handler for dragging an event
+     * resizeClose: returns a handler for resizing an event
+     * clipClose: returns a handler for clipboard events
+     * pasteClose: returns a handler for paste events
+     * DayEvents: the component to render the events
+     * hours: an array of hours with the hour and unix timestamp
      */
     static propTypes = {
+        tool: PropTypes.bool.isRequired,
+        pasting: PropTypes.bool.isRequired,
+        resizing: PropTypes.bool.isRequired,
+        startSelected: PropTypes.bool.isRequired,
+        selectedEvent: PropTypes.instanceOf(Event),
+        mouseMove: PropTypes.number.isRequired,
         day: PropTypes.instanceOf(moment).isRequired,
         events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
-        mode: PropTypes.number.isRequired,
-        moveEvent: PropTypes.func.isRequired,
-        changeStart: PropTypes.func.isRequired,
-        changeEnd: PropTypes.func.isRequired,
-        cut: PropTypes.func.isRequired,
-        copy: PropTypes.func.isRequired,
-        paste: PropTypes.func.isRequired,
+        mouseUpClose: PropTypes.func.isRequired,
+        mouseMoveClose: PropTypes.func.isRequired,
+        dragClose: PropTypes.func.isRequired,
+        resizeClose: PropTypes.func.isRequired,
+        clipClose: PropTypes.func.isRequired,
+        pasteClose: PropTypes.func.isRequired,
+        DayEvents: PropTypes.func.isRequired,
+        hours: PropTypes.arrayOf(PropTypes.shape({
+            hour: PropTypes.number,
+            unix: PropTypes.number,
+        })).isRequired,
     }
 
-
-    /**
-     * Helper function to generate all the div elements corresponding to each hour
-     * @param {day} the day to be displayed
-     * Returns an array of div elements for each hour
-     */
-    static generateHours(day) {
-        const hours = [];
-        const current = day.clone().startOf('day');
-        const end = day.clone().add(1, 'day').startOf('day');
-
-        while (end.diff(current, 'hours') > 0) {
-            // div for displaying the actual hour number
-            hours.push((
-                <div key={`l-${current.unix()}`} className="hour">
-                    {current.hour()}
-                </div>
-            ));
-            // div for displaying the hour blocks
-            hours.push(<div key={current.unix()} className="evHour" />);
-
-            current.add(1, 'hour');
-        }
-        return hours;
-    }
-
-    /**
-     * selectedEvent: the event being modified drag/drop or resize
-     * initialPos: the initial position that the user started dragging
-     * mouseMove: the amount the user has moved from initialPos
-     * startSelected: during resize, whether the user clicked the start
-     *     (false if they clicked the end)
-     */
-    state = {
+    static defaultProps = {
         selectedEvent: null,
-        initialPos: 0,
-        mouseMove: 0,
-        startSelected: false,
     }
+
+    // converts from px to ems, then to hours since each hour is 3 ems tall
+    static pxToHours = px => px / em / 3;
 
     /**
      * helper method
@@ -114,259 +74,84 @@ class Day extends Component {
         return yPos;
     }
 
-    /**
-     * Returns a handler for clicking on an event in cop/cut mode
-     * @param {event} the event the handler is for
-     */
-    clipboardClosure = event => () => {
-        const { cut, copy, mode } = this.props;
-        if (mode === modes.CUT) {
-            cut(event.id);
-        } else if (mode === modes.COPY) {
-            copy(event.id);
-        }
-    };
-
-    /**
-     * handler for when the user pastes an event in paste mode
-     */
-    onPaste = (e) => {
-        const { paste, mode, day } = this.props;
-        if (mode !== modes.PASTE) {
-            return;
-        }
-        // gets the y position relative to the calHours element
-        const pos = Day.getYPos(e) - e.currentTarget.getBoundingClientRect().top;
-        // gets the current day
-        const time = day.clone();
-        // sets hours, pos/em converts it to em, each hour takes up 3 em
-        // so dividing by 3 gives the offset in hours
-        time.hour(Math.floor(pos / em / 3), 'hours');
-        // sets minutes, converts to hours, then multiply by 60 to get total minutes
-        // then mod 60 to get the minutes within the hour.
-        time.minute(Math.floor((pos / em / 3 * 60) % 60));
-
-        // paste an event at the new time (using minute granularity with SET_MIN)
-        paste(time, SET_MIN);
-    }
-
-    /**
-     * returns a handler for resize events
-     * selectedEvent is the event being resized
-     * sets startSelected to whatever is passed in
-     */
-    mouseDownClosureResize = (event, startSelected) => (e) => {
-        this.setState({ selectedEvent: event, initialPos: Day.getYPos(e), startSelected });
-    };
-
-    /**
-     * returns a handler for drag events
-     * selectedEvent is the event being dragged
-     */
-    mouseDownClosureDrag = event => (e) => {
-        const { mode } = this.props;
-        if (mode !== modes.DRAG_DROP) {
-            return;
-        }
-        this.setState({ selectedEvent: event, initialPos: Day.getYPos(e) });
-        e.preventDefault();
-    };
-
-    /**
-     * mouse move event handler
-     * sets the mouseMove state to the correct value
-     */
-    mouseMove = (e) => {
-        const { selectedEvent, initialPos } = this.state;
-        if (selectedEvent == null) {
-            return;
-        }
-        this.setState({ mouseMove: Day.getYPos(e) - initialPos });
-        e.preventDefault();
-    }
-
-    /**
-     * mouse Up event handler
-     * calls the correct handler for resizing or drag/dropping an event
-     */
-    mouseUp = (e) => {
-        const { selectedEvent, mouseMove, startSelected } = this.state;
-        const {
-            moveEvent,
-            changeStart,
-            changeEnd,
-            mode,
-        } = this.props;
-        // the user isn't dragging or resizing an event
-        if (selectedEvent == null) {
-            return;
-        }
-        // reset state to normal
-        this.setState({
-            selectedEvent: null,
-            initialPos: 0,
-            mouseMove: 0,
-            startSelected: false,
-        });
-        // figure out the time difference based on how far the user moved their mouse
-        // divides by em to get in ems, then by 3 to get hours, then multiplies by 60 to get minutes
-        const timeDiff = Math.round(mouseMove / em / 3 * 60);
-        if (mode === modes.DRAG_DROP) {
-            // move the event some number of minutes based on mouse move
-            moveEvent(selectedEvent.id, timeDiff, 'minutes');
-        } else if (mode === modes.RESIZE) {
-            if (startSelected) {
-                // change the start time based on how the user resized the event
-                const startTime = selectedEvent.startTime.clone().add(timeDiff, 'minutes');
-                changeStart(selectedEvent.id, startTime);
-            } else {
-                // change the end time based on how the user resized the event
-                const endTime = selectedEvent.endTime.clone().add(timeDiff, 'minutes');
-                changeEnd(selectedEvent.id, endTime);
-            }
-        }
-        e.preventDefault();
-    }
-
     render() {
-        // see state definition
-        const { selectedEvent, mouseMove, startSelected } = this.state;
         // see propTypes
         const {
+            // current user interaction
+            tool,
+            pasting,
+            resizing,
+            startSelected,
+            selectedEvent,
+            mouseMove,
+            // calendar info
             day,
             events,
-            mode,
+            // event handler closures
+            mouseUpClose,
+            mouseMoveClose,
+            dragClose,
+            resizeClose,
+            clipClose,
+            pasteClose,
+            // components to render
+            DayEvents,
+            hours,
         } = this.props;
 
-        // start and end of the day
-        const dayStart = day.clone().startOf('day');
-        const dayEnd = day.clone().endOf('day');
-
-        // filters out all events that aren't in that day
-        const dayEv = new Event(null, null, dayStart, dayEnd);
-        const currEvents = events.filter(event => event.overlap(dayEv));
+        // pass in web specific functions to help with handlers
+        const onMouseUp = mouseUpClose(
+            Day.pxToHours,
+            (e) => { e.preventDefault(); },
+        );
+        const onMouseMove = mouseMoveClose(
+            Day.getYPos,
+            (e) => { e.preventDefault(); },
+        );
+        const dragClosure = dragClose(
+            Day.getYPos,
+            (e) => { e.preventDefault(); },
+        );
+        const resizeClosure = resizeClose(
+            Day.getYPos,
+            (e) => { e.preventDefault(); },
+        );
+        const onPaste = pasteClose(
+            Day.pxToHours,
+            // gets the y position relative to the calHours element
+            e => Day.getYPos(e) - e.currentTarget.getBoundingClientRect().top,
+        );
 
         return (
             <div
-                className={`calDay ${mode === modes.DRAG_DROP || mode === modes.CUT || mode === modes.COPY ? 'tool' : ''} ${mode === modes.PASTE ? 'paste' : ''}`}
-                onMouseMove={this.mouseMove}
-                onMouseUp={this.mouseUp}
-                onTouchMove={this.mouseMove}
-                onTouchEnd={this.mouseUp}
-                onTouchCancel={this.mouseUp}
+                className={`calDay ${tool ? 'tool' : ''} ${pasting ? 'paste' : ''}`}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
+                onTouchMove={onMouseMove}
+                onTouchEnd={onMouseUp}
+                onTouchCancel={onMouseUp}
             >
-                <div className="dayEvents">
-                    {currEvents.map((event) => { // add each event to the calendar
-                        console.log(event);
-                        console.log(event.startTime);
-                        console.log(event.endTime);
-                        // console.log(`virt: ${event.startTime}`);
-                        // start and end of the event, but cut off if the event spans
-                        //     into the next or previous day
-                        let virtualStart = moment.max(moment(event.startTime), dayStart);
-                        let virtualEnd = moment.min(moment(event.endTime), dayEnd);
-
-                        if (event instanceof RecurringEvent) {
-                            virtualStart = moment.max(moment(getUpdatedTime(
-                                event.startTime,
-                                dayStart,
-                                event.frequency.timing,
-                            )), dayStart);
-
-                            console.log(moment(getUpdatedTime(
-                                event.startTime,
-                                dayStart,
-                                event.frequency.timing,
-                            )));
-                            console.log(virtualStart);
-                            console.log(virtualStart.minutes());
-
-                            virtualEnd = moment.min(moment(getUpdatedTime(
-                                event.endTime,
-                                dayEnd,
-                                event.frequency.timing,
-                            )), dayEnd);
-
-                            console.log(virtualEnd);
-                        }
-
-                        // convert to hours, then ems for positioning of the element
-                        let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
-                        let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
-
-                        console.log(startPos);
-                        console.log(length);
-
-                        // if the event is being modified by the user with drag/drop or resize
-                        if (selectedEvent && selectedEvent.id === event.id) {
-                            if (mode !== modes.RESIZE || startSelected) {
-                                // move the start to the correct position
-                                startPos += mouseMove / em;
-                            }
-                            // If the event is being resized
-                            if (mode === modes.RESIZE) {
-                                // move the end to the correct position
-                                if (startSelected) {
-                                    length -= mouseMove / em;
-                                } else {
-                                    length += mouseMove / em;
-                                }
-                            }
-                        }
-
-                        // create an event handler for drag start events for this event
-                        const mouseDown = this.mouseDownClosureDrag(event);
-
-                        // the html to add for the event
-                        const eventHTML = [
-                            <div
-                                key={event.id}
-                                style={{ top: `${startPos}em`, height: `${length}em` }}
-                                onMouseDown={mouseDown}
-                                onTouchStart={mouseDown}
-                                onClick={this.clipboardClosure(event)}
-                            >
-                                {event.name}
-                            </div>,
-                        ];
-
-                        // add extra divs to catch attempts to resize
-                        if (mode === modes.RESIZE) {
-                            // create a handler for when the user starts dragging
-                            // the start of the event
-                            const mouseDownStart = this.mouseDownClosureResize(event, true);
-                            // create a handler for when the user starts dragging
-                            // the end of the event
-                            const mouseDownEnd = this.mouseDownClosureResize(event, false);
-                            // add an element positioned right at the start of the event
-                            // the element is 1em, so it positions the start of the event
-                            // directly in the center of the element
-                            eventHTML.unshift(<div
-                                className="resize"
-                                key={`${event.id}_start`}
-                                style={{ top: `${startPos - 0.5}em` }}
-                                onMouseDown={mouseDownStart}
-                                onTouchStart={mouseDownStart}
-                            />);
-                            // add an element positioned right at the end of the event
-                            // the element is 1em, so it positions the end of the event
-                            // directly in the center of the element
-                            eventHTML.push(<div
-                                className="resize"
-                                key={`${event.id}_end`}
-                                style={{ top: `${startPos + length - 0.5}em` }}
-                                onMouseDown={mouseDownEnd}
-                                onTouchStart={mouseDownEnd}
-                            />);
-                        }
-
-                        // returns a correctly positioned div representing an event
-                        // The events get positioned overtop of calHours
-                        return eventHTML;
-                    })}
-                </div>
-                <div className="calHours" onClick={this.onPaste}>
-                    { Day.generateHours(day) }
+                <DayEvents
+                    day={day}
+                    events={events}
+                    resizing={resizing}
+                    selectedEvent={selectedEvent}
+                    startSelected={startSelected}
+                    mouseMove={mouseMove}
+                    mouseDownClosureDrag={dragClosure}
+                    mouseDownClosureResize={resizeClosure}
+                    clipboardClosure={clipClose}
+                    pxToHours={Day.pxToHours}
+                />
+                <div className="calHours" onClick={onPaste}>
+                    { hours.map(hour => [
+                        // div for displaying the actual hour number
+                        <div key={`l-${hour.unix}`} className="hour">
+                            {hour.hour}
+                        </div>,
+                        // div for displaying the hour blocks
+                        <div key={hour.unix} className="evHour" />,
+                    ]).flat() }
                 </div>
             </div>
         );

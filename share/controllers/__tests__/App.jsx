@@ -8,6 +8,8 @@ import App from '../App';
 import rootReducer from '../../reducers/index';
 import { EventEnum } from '../ChooseEventType';
 
+jest.mock('../../em2px');
+
 const store = createStore(rootReducer);
 
 afterEach(cleanup);

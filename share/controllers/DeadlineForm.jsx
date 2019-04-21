@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
+import FormHelper from '../../components/FormHelper';
 import {
     NameInput,
     DescriptionInput,
@@ -11,11 +12,10 @@ import {
     UseLocationInput,
     NumberInput,
 } from './InputFormComponents';
-import '../styles/StandardEventForm.css';
 import { Deadline } from '../events/Deadline';
-import DateErrorMessage from './ErrorMessage';
+import DateErrorMessage from '../../components/ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
-import Settings from '../events/Settings';
+import { Settings } from '../events/Settings';
 
 /**
  * Class to handle gathering input form the user to create a Deadline object
@@ -65,10 +65,10 @@ class DeadlineForm extends React.Component {
      * Updates the state with the change to the input form the user made
      * @param {obj} event the event object that stores the change the user made
      */
-    handleInputChange(event) {
+    handleInputChange(...args) {
         // if the event was triggered by a checkbox, get the checked value, otherwise use the value
-        const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        const inputName = event.target.name;
+        const newValue = FormHelper.checkedVal(...args);
+        const inputName = FormHelper.getName(...args);
 
         // update the state
         this.setState({
@@ -100,9 +100,8 @@ class DeadlineForm extends React.Component {
      * Creates the Deadline object, adds it to the redux store, and returns to the home screen
      * @param {obj} event the event object that stores the event that called this function
      */
-    handleSubmit(event) {
-        event.preventDefault();
-
+    handleSubmit(...args) {
+        FormHelper.prevDef(...args);
         const {
             name,
             description,
