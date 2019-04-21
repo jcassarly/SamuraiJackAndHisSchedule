@@ -6,10 +6,32 @@ import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 
 import { Event, RecurringEvent } from '../events/Event';
+import Frequency from '../events/Frequency';
 import { modes } from './MainCalendar';
 import { SET_MIN } from '../actions/clipboard';
 import em from '../em2px';
 import '../styles/Day.css';
+
+function getUpdatedTime(time, reference, frequency) {
+    const newTime = time.clone();
+    switch (frequency) {
+    case Frequency.freqEnum.DAILY:
+        newTime.add(moment.duration({ days: reference.diff(time, 'days') }));
+        return newTime;
+    case Frequency.freqEnum.WEEKLY:
+        return null;
+    case Frequency.freqEnum.MONTHLY: {
+        // note that this overlap has some odd behaviors when events start
+        // and end in different months.  Not sure what the correct behavoir is
+        // so this issue is being overlooked right now
+        return null;
+    }
+    case Frequency.freqEnum.YEARLY:
+        return null;
+    default:
+        throw new Error('not a valid frequency');
+    }
+}
 
 /**
  * The component for displaying the schedule for a single day in the day view
@@ -235,37 +257,45 @@ class Day extends Component {
             >
                 <div className="dayEvents">
                     {currEvents.map((event) => { // add each event to the calendar
+                        console.log(event);
+                        console.log(event.startTime);
+                        console.log(event.endTime);
+                        // console.log(`virt: ${event.startTime}`);
                         // start and end of the event, but cut off if the event spans
                         //     into the next or previous day
                         let virtualStart = moment.max(moment(event.startTime), dayStart);
                         let virtualEnd = moment.min(moment(event.endTime), dayEnd);
 
                         if (event instanceof RecurringEvent) {
-                            const newStart = dayStart.clone();
-                            const newEnd = dayEnd.clone();
+                            virtualStart = moment.max(moment(getUpdatedTime(
+                                event.startTime,
+                                dayStart,
+                                event.frequency.timing,
+                            )), dayStart);
 
-                            newStart
-                                .hour(event.startTime.hour())
-                                .minute(event.startTime.minute())
-                                .seconds(event.startTime.second())
-                                .milliseconds(event.startTime.milliseconds());
+                            console.log(moment(getUpdatedTime(
+                                event.startTime,
+                                dayStart,
+                                event.frequency.timing,
+                            )));
+                            console.log(virtualStart);
+                            console.log(virtualStart.minutes());
 
-                            newEnd
-                                .year(event.endTime.diff(event.startTime, 'year') + newStart.year())
-                                .month(event.endTime.diff(event.startTime, 'month') + newStart.month())
-                                .date(event.endTime.diff(event.starTime, 'date') + newStart.date())
-                                .hour(event.endTime.hour())
-                                .minute(event.endTime.minute())
-                                .seconds(event.endTime.second())
-                                .milliseconds(event.endTime.milliseconds());
+                            virtualEnd = moment.min(moment(getUpdatedTime(
+                                event.endTime,
+                                dayEnd,
+                                event.frequency.timing,
+                            )), dayEnd);
 
-                            virtualStart = moment.max(newStart, dayStart);
-                            virtualEnd = moment.min(newEnd, dayEnd);
+                            console.log(virtualEnd);
                         }
 
                         // convert to hours, then ems for positioning of the element
                         let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
                         let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
+
+                        console.log(startPos);
+                        console.log(length);
 
                         // if the event is being modified by the user with drag/drop or resize
                         if (selectedEvent && selectedEvent.id === event.id) {

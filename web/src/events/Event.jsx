@@ -320,6 +320,7 @@ class RecurringEvent extends Event {
         notifications, color, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null, color);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
+        console.log(`starttime: ${this.startTime.minutes()}`);
     }
 
     // creates a new event that is a copy of this one
@@ -370,7 +371,9 @@ class RecurringEvent extends Event {
     }
 
     overlap(other) {
-        const minOverlapTime = (other.endTime.isSameOrAfter(this.startTime.startOf('day')));
+        const minOverlapTime = (other.endTime.isSameOrAfter(
+            this.startTime.clone().startOf('day'),
+        ));
 
         switch (this.frequency.timing) {
         case Frequency.freqEnum.DAILY:
