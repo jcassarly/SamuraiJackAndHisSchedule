@@ -48,6 +48,7 @@ class Settings {
         newSettings.maxWorkTime = maxWork;
         newSettings.minBreakTime = minBreak;
         newSettings.timeToComplete = timeToComplete;
+
         return newSettings;
     }
 
@@ -217,8 +218,8 @@ function deserializeSettings(jsonStr) {
     return Settings.createSettingsfromInfo(
         json.eventLength,
         json.defaultLocation,
-        json.defaultNotificationTimeBefore,
         json.defaultNotificationType,
+        json.defaultNotificationTimeBefore,
         json.locked,
         json.language,
         json.snapToGrid,

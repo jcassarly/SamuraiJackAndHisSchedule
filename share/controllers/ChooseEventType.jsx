@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import StandardEventForm from './StandardEventForm';
 import LocationEventForm from './LocationEventForm';
 import DeadlineForm from './DeadlineForm';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
 
-import '../styles/StandardEventForm.css';
+import ChooseInputForm from '../../components/ChooseInputForm';
 
 /**
  * Event Enum class that represents the choices of event types available.
@@ -20,7 +20,7 @@ const EventEnum = {
  * Component class that asks the user to choose an event type
  * and then renders the relevant form
  */
-class ChooseEventTypeForm extends React.Component {
+class ChooseEventTypeFormController extends React.Component {
     /**
      * Creates the form to choose the event
      * @param {func} props.returnHome a function that sends the user back to the home screen
@@ -76,17 +76,16 @@ class ChooseEventTypeForm extends React.Component {
     loadChooseInputForm = () => {
         const { returnHome } = this.props;
         const { title } = this.state;
+
+        const vals = [
+            'Choose',
+            EventEnum.STANDARD,
+            EventEnum.LOCATION,
+            EventEnum.DEADLINE,
+        ];
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
-                <div>
-                    {'Choose Event Type: '}
-                    <select onChange={this.handleInputChange}>
-                        <option value="Choose">Choose</option>
-                        <option value={EventEnum.STANDARD}>{EventEnum.STANDARD}</option>
-                        <option value={EventEnum.LOCATION}>{EventEnum.LOCATION}</option>
-                        <option value={EventEnum.DEADLINE}>{EventEnum.DEADLINE}</option>
-                    </select>
-                </div>
+                <ChooseInputForm handleInputChange={this.handleInputChange} values={vals} />
             </InputForm>
         );
     }
@@ -95,9 +94,9 @@ class ChooseEventTypeForm extends React.Component {
      * Updates the choice of event type the user made in the state
      * @param {obj} event the event object that stores the selection the user made
      */
-    handleInputChange(event) {
+    handleInputChange(val) {
         this.setState({
-            choice: event.target.value,
+            choice: val,
         });
     }
 
@@ -147,5 +146,5 @@ class ChooseEventTypeForm extends React.Component {
     }
 }
 
-export default ChooseEventTypeForm;
+export default ChooseEventTypeFormController;
 export { EventEnum };

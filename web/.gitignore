@@ -8,6 +8,7 @@
 src/share
 # testing
 /coverage
+/src/share
 
 # production
 /build

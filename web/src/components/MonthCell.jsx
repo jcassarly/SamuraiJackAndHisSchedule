@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ColorEnum from './ColorEnum';
-import { Event } from '../events/Event';
+import ColorEnum from '../share/ColorEnum';
+import { Event } from '../share/events/Event';
 
 import '../styles/MonthCell.css';
 

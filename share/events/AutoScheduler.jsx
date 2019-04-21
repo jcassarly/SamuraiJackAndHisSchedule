@@ -2,7 +2,7 @@
 /* eslint max-len: 0 */
 import moment from 'moment-timezone'; // eslint-disable-line
 import { Event } from './Event';
-import ColorEnum from '../components/ColorEnum';
+import ColorEnum from '../ColorEnum';
 
 const TimeRangeRelation = {
     BEFORE: -1,

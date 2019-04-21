@@ -1,6 +1,5 @@
 .sidemenu {
     height: 100%;
-    width: 0; /* starting width, changed by script */
     position: fixed;
     z-index: 1;
     top: 0;
@@ -16,7 +15,7 @@
     overflow-x: auto;
 }
 
-.sidemenu > button {
+.sidemenubutton {
     flex-shrink: 0;
     display: block;
     background: transparent;
@@ -26,7 +25,7 @@
     min-width: 3em;
 }
 
-.sidemenu > div {
+.sidemenubaseelem {
     flex-shrink: 0;
     display: block;
     background-color:rgb(155, 190, 223);
@@ -38,7 +37,7 @@
     font-weight: bold;
 }
 
-.sidemenu > button:hover:not(:focus), .toolbar > .selected {
+.sidemenubutton:hover:not(:focus), .toolbar > .selected {
     background-color: #008CBA;
     color: white;
 }

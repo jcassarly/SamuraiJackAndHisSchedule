@@ -7,9 +7,9 @@ import thunk from 'redux-thunk';
 import 'normalize.css';
 
 import './styles/index.css';
-import App from './components/App';
-import rootReducer from './reducers/index';
-import { saveState } from './reducers/persistState';
+import AppController from './share/controllers/App';
+import rootReducer from './share/reducers/index';
+import { saveState } from './share/reducers/persistState';
 
 // create the store
 const store = createStore(
@@ -25,4 +25,4 @@ store.subscribe(() => {
     saveState(store.getState());
 });
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><AppController /></Provider>, document.getElementById('root'));

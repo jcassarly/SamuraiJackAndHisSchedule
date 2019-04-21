@@ -8,40 +8,12 @@ import {
     NumberInput,
     SelectInput,
 } from './InputFormComponents';
-import InputForm from './InputForm';
+import InputForm from '../../components/InputForm';
+import BaseElem from '../../components/BaseElem';
+import SettingsSection from '../../components/SettingsSection';
+import FormHelper from '../../components/FormHelper';
 import { Settings } from '../events/Settings';
-import '../styles/SettingsForm.css';
 import { updateSettings } from '../actions/updateSettings';
-
-/**
- * Creates a section of settings for organization of related settings
- * @param {string} props.title    the title of the section
- * @param {node}   props.children the input fields for the settings in the section
- */
-function SettingsSection(props) {
-    const {
-        title,
-        children,
-    } = props;
-
-    // create a JSX object with the title above the children and appropriate CSS
-    return (
-        <div className="sectionBorder">
-            <div className="titleLine">
-                <i>{title}</i>
-            </div>
-            <div>
-                {children}
-            </div>
-        </div>
-    );
-}
-
-// defines the object that checks the props passed into the SettingsSection
-SettingsSection.propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-};
 
 /**
  * React Component that handles input gathering for the general settings of the app
@@ -60,15 +32,17 @@ class SettingsForm extends React.Component {
             location: props.settings.defaultLocation,
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
-            snapToGrid: props.settings.defaultSnapToGrid,
+            snapToGrid: props.settings.snapToGrid,
             minBreak: props.settings.minBreakTime,
             minTime: props.settings.minWorkTime,
             maxTime: props.settings.maxWorkTime,
-            language: props.settings.defaultLanguage,
+            language: props.settings.language,
             duration: props.settings.eventLength,
             timeBeforeDue: props.settings.timeBeforeDue,
             timeToComplete: props.settings.timeToComplete,
         };
+
+        console.log(props.settings);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -89,9 +63,9 @@ class SettingsForm extends React.Component {
      * Updates the state with the change to the input form the user made
      * @param {obj} event the event object that stores the change the user made
      */
-    handleInputChange(event) {
-        const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        const inputName = event.target.name;
+    handleInputChange(...args) {
+        const newValue = FormHelper.checkedVal(...args);
+        const inputName = FormHelper.getName(...args);
 
         this.setState({
             [inputName]: newValue,
@@ -102,8 +76,8 @@ class SettingsForm extends React.Component {
      * Updates the Settings object, changes to the redux store, and returns to the home screen
      * @param {obj} event the event object that stores the event that called this function
      */
-    handleSubmit(event) {
-        event.preventDefault();
+    handleSubmit(...args) {
+        FormHelper.prevDef(...args);
         const {
             location,
             notifications,
@@ -171,6 +145,10 @@ class SettingsForm extends React.Component {
             timeToComplete,
         } = this.state;
 
+        const langOptions = [
+            { value: 'English', contents: 'English' },
+        ];
+
         // generate the input form based on the Settings input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
@@ -182,9 +160,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>
+                        <BaseElem>
                             Length of time to be used when moving events on the Calendar
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                 </SettingsSection>
 
@@ -196,9 +174,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>
+                        <BaseElem>
                             Minimum period of time between events created by the Auto-Scheduler.
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                     <NumberInput
                         name="minTime"
@@ -207,9 +185,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>
+                        <BaseElem>
                             Minimum time of an event created by the Auto-Scheduler.
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                     <NumberInput
                         name="maxTime"
@@ -218,9 +196,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>
+                        <BaseElem>
                             Maximum time of an event created by the Auto-Scheduler.
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                     <NumberInput
                         name="timeBeforeDue"
@@ -229,9 +207,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Hours
-                        <div>
+                        <BaseElem>
                             Default amount of time before a task is due when using Auto-Scheduler
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                     <NumberInput
                         name="timeToComplete"
@@ -240,9 +218,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Hours
-                        <div>
+                        <BaseElem>
                             Default total work time to complete a task used by the Auto-Scheduler
-                        </div>
+                        </BaseElem>
                     </NumberInput>
                 </SettingsSection>
 
@@ -252,9 +230,8 @@ class SettingsForm extends React.Component {
                         name="language"
                         value={language}
                         onChange={this.handleInputChange}
-                    >
-                        <option value="English">English</option>
-                    </SelectInput>
+                        options={langOptions}
+                    />
                 </SettingsSection>
 
                 <SettingsSection title="Events">
@@ -275,7 +252,9 @@ class SettingsForm extends React.Component {
                         onChange={this.handleInputChange}
                     >
                         in Minutes
-                        <div>Default duration when creating a single event.</div>
+                        <BaseElem>
+                            Default duration when creating a single event.
+                        </BaseElem>
                     </NumberInput>
                     <LocationInput
                         name="location"
