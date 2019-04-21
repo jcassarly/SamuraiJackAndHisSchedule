@@ -128,9 +128,6 @@ class TimeRange {
     split(range, buffer) {
         let newRanges = [];
         const relation = this.inRelationTo(range);
-        // console.log(`split Range Start: ${range.start.format('LLL')}\n            End: ${range.end.format('LLL')}`)
-        // console.log(`relation: ${relation}`)
-        // console.log(`buffer: ${buffer}`)
 
         if (relation == OVERLAP_BEFORE || relation == CONTAINS){
             newRanges.push(new TimeRange(moment(this.start), moment(range.start).subtract(Number(buffer), 'minutes')));
@@ -271,50 +268,66 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // The valid timerange events can be within
     const workRange = new TimeRange(deadline.startWorkTime, deadline.deadline);
 
-    // Debugging console outputs
-    console.log('Deadline Parameters' +
-                `\n    MinEventTime: ${deadline.minEventTime}` +
-                `\n    MaxEventTime: ${deadline.maxEventTime}` +
-                `\n    MinBreakTime: ${deadline.minBreak}` +
-                `\n    TotalWorkTime: ${deadline.totalWorkTime}` +
-                `\n    Start Work: ${deadline.startWorkTime.utc()}` +
-                `\n    end Work: ${deadline.deadline.utc()}` +
-                `\n    workHoursStart: ${workHoursStart.utc()}` +
-                `\n    workHoursEnd: ${workHoursFin.utc()}`)
-    // printRanges(eventToRanges(oldSchedule));
-
     // eslint-disable-next-line prefer-const
     let validTimes = [];
 
-    // Used for setting the start of a valid time range of a day
-    const dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
-    // Used as the start of the added time ranges
-    let start = moment(moment.max(deadline.startWorkTime, dailyStart));
-    // The end of a valid time range during a day
-    const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
-    // The deadline
-    const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
+    if (deadline.useLocation == true)
+    {
+        oldSchedule = oldSchedule.map(function(event) {
+            if (event.location == deadline.location) {
+                const newRange = new TimeRange(moment(event.startTime), moment(event.endTime));
+                const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
+                                                     moment(newRange.end).hour(workHoursFin.hour()).minute(workHoursFin.minute()));
+                const relation = newRange.inRelationTo(workHoursRange);
 
-    // Debugging console outputs
-    console.log(`Initial Values` +
-                `\n    dailyStart: ${dailyStart.utc()}` +
-                `\n    start: ${start.utc()}` +
-                `\n    dailyEnd: ${dailyEnd.utc()}` +
-                `\n    finalEnd: ${finalEnd.utc()}`)
+                // This location event starts before work hours
+                if (relation == TimeRange.OVERLAP_BEFORE || relation == TimeRange.CONTAINS) {
+                    newRange.start = moment(workHoursRange.start);
+                }
+                
+                // This location event ends after work hours
+                if (relation == TimeRange.OVERLAP_AFTER || relation == TimeRanges.CONTAINS) {
+                    newRange.end = moment(workHoursRange.end);
+                }
 
-    // Accounting for if the given start time is after specified working hours
-    if (start.isAfter(dailyEnd)) {
-        start = moment(dailyStart.add(1, 'days'));
-        dailyEnd.add(1, 'days');
+                // This location event overlaps at some point with work hours, can be added
+                if (relation != TimeRange.BEFORE && relation != TimeRange.AFTER) {
+                    validTimes.push(newRange);
+                }
+            }
+            return event;
+        }).filter(event => event.location != deadline.location);
     }
+    else {
+        // Used as the start of the added time ranges
+        let start = moment(moment.max(deadline.startWorkTime, dailyStart));
+        // Used for setting the start of a valid time range of a day
+        const dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+        // The end of a valid time range during a day
+        const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
+        // The deadline or end of working hours before deadline.
+        const finalEnd = moment(moment.min(deadline.deadline, moment(deadline.deadline).hour(workHoursFin.hour()).minute(workHoursFin.minute())));
 
-    // Add Valid time ranges during the day
-    while (start.isBefore(finalEnd)) {
-        validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
-        start = dailyStart.add(1, 'days');
-        dailyEnd.add(1, 'days'), finalEnd;
+        // Debugging console outputs
+        console.log(`Initial Values` +
+                    `\n    dailyStart: ${dailyStart.utc()}` +
+                    `\n    start: ${start.utc()}` +
+                    `\n    dailyEnd: ${dailyEnd.utc()}` +
+                    `\n    finalEnd: ${finalEnd.utc()}`)
+
+        // Accounting for if the given start time is after specified working hours
+        if (start.isAfter(dailyEnd)) {
+            start = moment(dailyStart.add(1, 'days'));
+            dailyEnd.add(1, 'days');
+        }
+
+        // Add Valid time ranges during the day
+        while (start.isBefore(finalEnd)) {
+            validTimes.push(new TimeRange(moment(start), moment(moment.min(dailyEnd, finalEnd))));
+            start = dailyStart.add(1, 'days');
+            dailyEnd.add(1, 'days'), finalEnd;
+        }
     }
-
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
@@ -343,8 +356,6 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
  * @param {*} maxEventTime
  */
 function getOptimalDurations(totalWorkTime, minEventTime, maxEventTime) {
-    let remainingTime = totalWorkTime; 
-
     const nMax = Math.floor(totalWorkTime / maxEventTime);
     let remainder = totalWorkTime % maxEventTime;
     const eventDurations = [];
@@ -366,44 +377,6 @@ function getOptimalDurations(totalWorkTime, minEventTime, maxEventTime) {
     eventDurations.push(remainder); // At this point, remainder == minEventTime
 
     return eventDurations;
-}
-
-/**
- * Reduces all elements in a list of integers to be less than or equal to the given maximum.
- * Excess is distributed among other elements.
- * If all elements are equal to the maximum, another element larger than the given minimum is added.
- * @param {*} durations 
- * @param {*} maximum 
- */
-function trimDurations(durations, maximum) {
-    if (durations[0] > maximum) {
-        let totalExcess = 0;
-        let totalGap = 0;
-        durations = durations.map(function(duration) {
-            const excess = duration - maximum;
-            if (excess > 0) {
-                totalExcess += excess;
-                duration -= excess;
-            } else if (excess < 0) {
-                totalGap -= excess;
-            }
-            return duration;
-        });
-
-        if (totalExcess < totalGap) {
-            durations = durations.map(function(duration) {
-                if (duration < maximum) {
-                    const fill = Math.min(maximum - duration, totalExcess);
-                    totalExcess -= fill;
-                    duration += fill;
-                }
-                return duration;
-            });
-        } else if (totalGap < totalExcess) {
-            // TODO: do something similar here like the remainder thing from getOptimalDurations
-        }
-    }
-    return durations;
 }
 
 /**
@@ -444,19 +417,16 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     while(validTimes.length > 0 && optimalDurations.length > 0) {
         const range = validTimes.pop();
         const rangeDuration = range.duration();
-        console.log(`A: range start: ${range.start.format('LLL')}\n         end: ${range.end.format('LLL')}`)
 
         // If the largest optimal duration is longer than the largest valid duration, 
         // Recreate the optimal list to accomodate the new maximum
         if (optimalDurations[0] > rangeDuration) {
             optimalDurations = getOptimalDurations(remainingTime, deadline.minEventTime, rangeDuration);
-            console.log('B')
         }
 
         let index = 0;
         // TODO: gotta work on this conditional right here
         if (rangeDuration > optimalDurations[index]) {
-            console.log('C')
 
             /* If the following are satisfied, then try a smaller optimal duration:
              * 1) The current optimal duration will not leave enough time for another event in this time range
@@ -466,7 +436,6 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
                    totalValidTime - rangeDuration < remainingTime - optimalDurations[index] && 
                    index < optimalDurations.length) {
                 index += 1;
-                console.log('D')
             }
 
             if (index == optimalDurations.length) {
@@ -474,21 +443,13 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
             }
             
             let splitRanges = range.split(new TimeRange(moment(range.start), moment(range.start).add(optimalDurations[index], 'minutes')), deadline.minBreak);
-            // console.log('Initial list after split')
-            // printRanges(splitRanges);
             splitRanges = splitRanges.filter(element => element.duration() > deadline.minEventTime)
-            // console.log('Initial list after filter')
-            // printRanges(splitRanges);
             splitRanges.map(element => validTimes.push(element));
         }
 
         // Create a new event with the specified duration
         const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
             moment(range.start).add(optimalDurations[index], 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
-        // console.log(`Added Event's start: ${debugEvent.startTime.format('LLL')}`);
-        // console.log(`Added Event's end: ${debugEvent.endTime.format('LLL')}`);
-        console.log(`E: Adding new event: Start - ${debugEvent.startTime.format('LLL')}\n                    End - ${debugEvent.endTime.format('LLL')}`)
-
 
         // Add event to the scheudle and the deadline's list of child events
         newSchedule.push(debugEvent);
@@ -503,8 +464,6 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
     if (optimalDurations.length > 0) {
         throw "Auto Scheduler unable to schedule: Could not find a valid schedule with given parameters";
     }
-
-    // console.log(`NewSchedule: ${newSchedule}`)
 
     return newSchedule;
 }
@@ -525,12 +484,15 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
  * @param {*} workHoursFin    Moment object for time of day user cannot work after.
  */
 function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
-    // Debugging console
-    console.log('Deadline Parameters')
-    console.log(`    MinEventTime: ${deadline.minEventTime}`)
-    console.log(`    MaxEventTime: ${deadline.maxEventTime}`)
-    console.log(`    MinBreakTime: ${deadline.minBreak}`)
-    console.log(`    TotalWorkTime: ${deadline.totalWorkTime}`)
+    console.log('Deadline Parameters' +
+        `\n    MinEventTime: ${deadline.minEventTime}` +
+        `\n    MaxEventTime: ${deadline.maxEventTime}` +
+        `\n    MinBreakTime: ${deadline.minBreak}` +
+        `\n    TotalWorkTime: ${deadline.totalWorkTime}` +
+        `\n    Start Work: ${deadline.startWorkTime.utc()}` +
+        `\n    end Work: ${deadline.deadline.utc()}` +
+        `\n    workHoursStart: ${workHoursStart.utc()}` +
+        `\n    workHoursEnd: ${workHoursFin.utc()}`)
 
     // Create a list of just the events from the old schdule
     const oldVals = Object.values(oldSchedule);
@@ -542,17 +504,11 @@ function autoSchedule(oldSchedule, deadline, workHoursStart, workHoursFin) {
     // Get valid time ranges the function can place events within
     const validTimes = getValidTimes(oldVals, deadline, workHoursStart, workHoursFin);
 
-    // Debugging console outputs
-    console.log('Values of ValidTimes after getValidTimes():')
-    printRanges(validTimes);
-    console.log('Types of validTimes after getValidTimes():');
-    console.log(validTimes);
-
     // Create a new schedule with events for this deadline
     let returnvalue =  createEvents(oldVals, deadline, validTimes);
 
     // debugging console outputs
-    console.log('Events:')
+    console.log('New Schedule:')
     printRanges(eventToRanges(returnvalue));
 
     // Return teh new schedule (will be merged with createEvents line w/o debugging)
@@ -591,4 +547,3 @@ export { TimeRange };
 export { printRanges };
 export { eventToRanges };
 export { getOptimalDurations };
-export { trimDurations };
