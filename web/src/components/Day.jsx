@@ -30,6 +30,9 @@ class Day extends Component {
      * pasteClose: returns a handler for paste events
      * DayEvents: the component to render the events
      * hours: an array of hours with the hour and unix timestamp
+     * onlyHours: whether to only display the hours, used for week view.
+     * draggingEvent: info about whether there is an event being dragged
+     *     and whether this day controls it, see Day class
      */
     static propTypes = {
         tool: PropTypes.bool.isRequired,
@@ -51,10 +54,18 @@ class Day extends Component {
             hour: PropTypes.number,
             unix: PropTypes.number,
         })).isRequired,
+        onlyHours: PropTypes.bool,
+        draggingEvent: PropTypes.shape({
+            initialPos: PropTypes.number,
+            event: PropTypes.instanceOf(Event),
+            selected: PropTypes.bool,
+            diff: PropTypes.number,
+        }).isRequired,
     }
 
     static defaultProps = {
         selectedEvent: null,
+        onlyHours: false,
     }
 
     // converts from px to ems, then to hours since each hour is 3 ems tall
@@ -97,6 +108,8 @@ class Day extends Component {
             // components to render
             DayEvents,
             hours,
+            onlyHours,
+            draggingEvent,
         } = this.props;
 
         // pass in web specific functions to help with handlers
@@ -124,7 +137,7 @@ class Day extends Component {
 
         return (
             <div
-                className={`calDay ${tool ? 'tool' : ''} ${pasting ? 'paste' : ''}`}
+                className={`calDay ${tool ? 'tool' : ''} ${pasting ? 'paste' : ''} ${onlyHours ? 'onlyHours' : ''}`}
                 onMouseMove={onMouseMove}
                 onMouseUp={onMouseUp}
                 onTouchMove={onMouseMove}
@@ -142,6 +155,7 @@ class Day extends Component {
                     mouseDownClosureResize={resizeClosure}
                     clipboardClosure={clipClose}
                     pxToHours={Day.pxToHours}
+                    draggingEvent={draggingEvent}
                 />
                 <div className="calHours" onClick={onPaste}>
                     { hours.map(hour => [

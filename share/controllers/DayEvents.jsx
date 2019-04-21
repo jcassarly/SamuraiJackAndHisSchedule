@@ -18,6 +18,8 @@ class DayEventsController extends Component {
      * onMouseDown: a handler for mouse up events
      * clipboardClosure: a method for generating clipboard event handlers
      * pxToHours: a method which converts from pixels to hours
+     * draggingEvent: info about whether there is an event being dragged
+     *     and whether this day controls it, see Day class
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -30,6 +32,12 @@ class DayEventsController extends Component {
         mouseDownClosureResize: PropTypes.func.isRequired,
         clipboardClosure: PropTypes.func.isRequired,
         pxToHours: PropTypes.func.isRequired,
+        draggingEvent: PropTypes.shape({
+            initialPos: PropTypes.number,
+            event: PropTypes.instanceOf(Event),
+            selected: PropTypes.bool,
+            diff: PropTypes.number,
+        }).isRequired,
     }
 
     static defaultProps = {
@@ -48,6 +56,7 @@ class DayEventsController extends Component {
             mouseDownClosureResize,
             clipboardClosure,
             pxToHours,
+            draggingEvent,
         } = this.props;
 
         // start and end of the day
@@ -56,15 +65,37 @@ class DayEventsController extends Component {
 
         // filters out all events that aren't in that day
         const dayEv = new Event(null, null, dayStart, dayEnd);
-        const currEvents = events.filter(event => Event.overlap(dayEv, event));
+        const currEvents = events.filter((event) => {
+            // the current day has focus, so we display all events for the day
+            // plus any events currently being dragged
+            if (draggingEvent.selected) {
+                if (draggingEvent.event && draggingEvent.event.id === event.id) {
+                    return true;
+                }
+            }
+            // otherwise, if the event is during the day and not the one being moved
+            if (Event.overlap(dayEv, event)
+                && (!draggingEvent.event || draggingEvent.event.id !== event.id)) {
+                return true;
+            }
+            // if none of those statements are true, return false
+            return false;
+        });
 
         return (
             <DayEvents>
                 {currEvents.map((event) => { // add each event to the calendar
                     // start and end of the event, but cut off if the event spans
                     //     into the next or previous day
-                    const virtualStart = moment.max(moment(event.startTime), dayStart);
-                    const virtualEnd = moment.min(moment(event.endTime), dayEnd);
+                    let virtualStart = event.startTime;
+                    let virtualEnd = event.endTime;
+                    if (selectedEvent && event.id === selectedEvent.id) {
+                        virtualStart = virtualStart.clone().add(draggingEvent.diff, 'days');
+                        virtualEnd = virtualEnd.clone().add(draggingEvent.diff, 'days');
+                    }
+
+                    virtualStart = moment.max(moment(virtualStart), dayStart);
+                    virtualEnd = moment.min(moment(virtualEnd), dayEnd);
 
                     // convert to hours, for positioning of the element
                     let startPos = virtualStart.diff(dayStart, 'minutes') / 60;

@@ -1,0 +1,39 @@
+.calWeek {
+    display: grid;
+    grid-template-columns: 2em repeat(7, 1fr);
+    overflow: auto;
+}
+
+.calWeek .calDay {
+    overflow: visible;
+    border-right: solid 1px #bdbdbd;
+}
+
+.calWeek .calDay .dayEvents > * {
+    margin-left: 0;
+    width: 100%;
+}
+
+.calWeek .calHours {
+    grid-template-columns: 1fr;
+}
+
+.calWeek .calHours > .hour {
+    display: none;
+}
+
+.calWeek .onlyHours {
+    border: 0;
+}
+
+.calWeek .onlyHours .dayEvents {
+    display: none;
+}
+
+.calWeek .onlyHours .calHours > .hour {
+    display: block;
+}
+
+.calWeek .onlyHours .calHours > .evHour {
+    display: none;
+}

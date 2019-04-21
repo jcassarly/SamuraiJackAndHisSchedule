@@ -23,6 +23,12 @@ class DayController extends Component {
      * cut: handler to cut an event
      * copy: handler to copy an event
      * paste: handler to paste an event
+     * onlyHours: display only the hours and nothing else, used for week view
+     * notifyDrag: handler to notify the week view when an event is being dragged
+     * draggingEvent: an object which tells the day about what event is being dragged,
+     *     used in week view
+     *   event: the event being dragged
+     *   selected: whether this day it the one dragging it
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -34,8 +40,39 @@ class DayController extends Component {
         cut: PropTypes.func.isRequired,
         copy: PropTypes.func.isRequired,
         paste: PropTypes.func.isRequired,
+        onlyHours: PropTypes.bool,
+        notifyDrag: PropTypes.func,
+        draggingEvent: PropTypes.shape({
+            initialPos: PropTypes.number,
+            event: PropTypes.instanceOf(Event),
+            selected: PropTypes.bool,
+            diff: PropTypes.number,
+        }),
     }
 
+    static defaultProps = {
+        onlyHours: false,
+        notifyDrag: () => {},
+        draggingEvent: {
+            initialPos: 0,
+            event: null,
+            selected: true,
+            diff: 0,
+        },
+    }
+
+    // in the case that the user is no longer dragging within the day
+    static getDerivedStateFromProps(props, state) {
+        const newState = { ...state };
+        const { mode, draggingEvent } = props;
+        if (mode === modes.DRAG_DROP && draggingEvent.selected === false) {
+            newState.selectedEvent = null;
+            newState.initialPos = 0;
+            newState.mouseMove = 0;
+            newState.startSelected = false;
+        }
+        return newState;
+    }
 
     /**
      * Helper function to generate all the hours in the day
@@ -122,10 +159,11 @@ class DayController extends Component {
      * selectedEvent is the event being dragged
      */
     mouseDownClosureDrag = (getYPos, finish) => event => (...args) => {
-        const { mode } = this.props;
+        const { mode, notifyDrag } = this.props;
         if (mode !== modes.DRAG_DROP) {
             return;
         }
+        notifyDrag(event, getYPos(...args));
         this.setState({ selectedEvent: event, initialPos: getYPos(...args) });
         finish(...args);
     };
@@ -135,10 +173,26 @@ class DayController extends Component {
      * sets the mouseMove state to the correct value
      */
     mouseMoveClose = (getYPos, finish) => (...args) => {
+        const { notifyDrag, mode } = this.props;
         const { selectedEvent, initialPos } = this.state;
+
+        // no event is currently being manipulated
         if (selectedEvent == null) {
+            // if we are in drag and drop mode, notify our parent in case
+            // an event is being dragged from another day
+            if (mode === modes.DRAG_DROP) {
+                notifyDrag((selectedEvent, initialPos) => {
+                    // update our state with the dragged in event
+                    this.setState({
+                        selectedEvent,
+                        initialPos,
+                        mouseMove: getYPos(...args) - initialPos,
+                    });
+                });
+            }
             return;
         }
+
         this.setState({ mouseMove: getYPos(...args) - initialPos });
         finish(...args);
     }
@@ -154,11 +208,15 @@ class DayController extends Component {
             changeStart,
             changeEnd,
             mode,
+            notifyDrag,
+            draggingEvent,
         } = this.props;
         // the user isn't dragging or resizing an event
         if (selectedEvent == null) {
             return;
         }
+        // notify the parent that the event has been dropped
+        notifyDrag(false);
         // reset state to normal
         this.setState({
             selectedEvent: null,
@@ -171,6 +229,7 @@ class DayController extends Component {
         const timeDiff = Math.round(pxToHours(mouseMove) * 60);
         if (mode === modes.DRAG_DROP) {
             // move the event some number of minutes based on mouse move
+            moveEvent(selectedEvent.id, draggingEvent.diff, 'days');
             moveEvent(selectedEvent.id, timeDiff, 'minutes');
         } else if (mode === modes.RESIZE) {
             if (startSelected) {
@@ -194,6 +253,8 @@ class DayController extends Component {
             day,
             events,
             mode,
+            onlyHours,
+            draggingEvent,
         } = this.props;
 
         return (
@@ -214,100 +275,9 @@ class DayController extends Component {
                 pasteClose={this.onPasteClosure}
                 DayEvents={DayEvents}
                 hours={DayController.generateHours(day)}
+                onlyHours={onlyHours}
+                draggingEvent={draggingEvent}
             />
-            /*
-            <div
-                className={`calDay $ ${mode === modes.PASTE ? 'paste' : ''}`}
-                onMouseMove={this.mouseMove}
-                onMouseUp={this.mouseUp}
-                onTouchMove={this.mouseMove}
-                onTouchEnd={this.mouseUp}
-                onTouchCancel={this.mouseUp}
-            >
-                <div className="dayEvents">
-                    {currEvents.map((event) => { // add each event to the calendar
-                        // start and end of the event, but cut off if the event spans
-                        //     into the next or previous day
-                        const virtualStart = moment.max(moment(event.startTime), dayStart);
-                        const virtualEnd = moment.min(moment(event.endTime), dayEnd);
-
-                        // convert to hours, then ems for positioning of the element
-                        let startPos = virtualStart.diff(dayStart, 'minutes') / 60 * 3;
-                        let length = virtualEnd.diff(virtualStart, 'minutes') / 60 * 3;
-
-                        // if the event is being modified by the user with drag/drop or resize
-                        if (selectedEvent && selectedEvent.id === event.id) {
-                            if (mode !== modes.RESIZE || startSelected) {
-                                // move the start to the correct position
-                                startPos += mouseMove / em;
-                            }
-                            // If the event is being resized
-                            if (mode === modes.RESIZE) {
-                                // move the end to the correct position
-                                if (startSelected) {
-                                    length -= mouseMove / em;
-                                } else {
-                                    length += mouseMove / em;
-                                }
-                            }
-                        }
-
-                        // create an event handler for drag start events for this event
-                        const mouseDown = this.mouseDownClosureDrag(event);
-
-                        // the html to add for the event
-                        const eventHTML = [
-                            <div
-                                key={event.id}
-                                style={{ top: `${startPos}em`, height: `${length}em` }}
-                                onMouseDown={mouseDown}
-                                onTouchStart={mouseDown}
-                                onClick={this.clipboardClosure(event)}
-                            >
-                                {event.name}
-                            </div>,
-                        ];
-
-                        // add extra divs to catch attempts to resize
-                        if (mode === modes.RESIZE) {
-                            // create a handler for when the user starts dragging
-                            // the start of the event
-                            const mouseDownStart = this.mouseDownClosureResize(event, true);
-                            // create a handler for when the user starts dragging
-                            // the end of the event
-                            const mouseDownEnd = this.mouseDownClosureResize(event, false);
-                            // add an element positioned right at the start of the event
-                            // the element is 1em, so it positions the start of the event
-                            // directly in the center of the element
-                            eventHTML.unshift(<div
-                                className="resize"
-                                key={`${event.id}_start`}
-                                style={{ top: `${startPos - 0.5}em` }}
-                                onMouseDown={mouseDownStart}
-                                onTouchStart={mouseDownStart}
-                            />);
-                            // add an element positioned right at the end of the event
-                            // the element is 1em, so it positions the end of the event
-                            // directly in the center of the element
-                            eventHTML.push(<div
-                                className="resize"
-                                key={`${event.id}_end`}
-                                style={{ top: `${startPos + length - 0.5}em` }}
-                                onMouseDown={mouseDownEnd}
-                                onTouchStart={mouseDownEnd}
-                            />);
-                        }
-
-                        // returns a correctly positioned div representing an event
-                        // The events get positioned overtop of calHours
-                        return eventHTML;
-                    })}
-                </div>
-                <div className="calHours" onClick={this.onPaste}>
-                    { Day.generateHours(day) }
-                </div>
-            </div>
-            */
         );
     }
 }
