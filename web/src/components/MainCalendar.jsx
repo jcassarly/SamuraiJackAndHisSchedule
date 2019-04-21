@@ -59,6 +59,7 @@ class MainCalendar extends Component {
      * events: An array of events passed in by redux: state.events.events
      * navNewEvent: A handler for navigating to the new event form, gets passed in by the
      *     App component
+     * toggleSideMenu: function to open or close the side menu
      * moveEvent: A handler for moving an event (used for drag-drop)
      * changeStart: A handler for changing the start of an event (used for resize)
      * changeEnd: A handler for changing the end of an event (used for resize)
@@ -70,6 +71,7 @@ class MainCalendar extends Component {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
         navSettings: PropTypes.func.isRequired,
+        toggleSideMenu: PropTypes.func.isRequired,
         moveEvent: PropTypes.func.isRequired,
         changeStart: PropTypes.func.isRequired,
         changeEnd: PropTypes.func.isRequired,
@@ -169,6 +171,7 @@ class MainCalendar extends Component {
         const {
             navNewEvent,
             navSettings,
+            toggleSideMenu,
             moveEvent,
             changeStart,
             changeEnd,
@@ -260,6 +263,7 @@ class MainCalendar extends Component {
                     toggleMode={this.toggleMode}
                     navNewEvent={navNewEvent}
                     navSettings={navSettings}
+                    toggleSideMenu={toggleSideMenu}
                 />
                 {calElem}
             </div>

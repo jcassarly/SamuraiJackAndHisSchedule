@@ -100,7 +100,8 @@ function deserializeSyncPayload(events, deadlines) {
  * }
  */
 function serializeSyncPayload(events, deadlines, settings) {
-    // serialize the events
+    // serialize the events\
+    console.log(events);
     const eventsClone = {};
     Object.keys(events).forEach((key) => {
         eventsClone[key] = JSON.stringify(events[key].serialize());

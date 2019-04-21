@@ -1,0 +1,44 @@
+.sidemenu {
+    height: 100%;
+    width: 0; /* starting width, changed by script */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: lightgray; /* Black*/
+    padding-top: 30px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    line-height: 3em;
+    overflow-x: auto;
+}
+
+.sidemenu > button {
+    flex-shrink: 0;
+    display: block;
+    background: transparent;
+    height: 3em;
+    border-bottom: 1px solid #bdbdbd;
+    border-top: 1px solid #bdbdbd;
+    min-width: 3em;
+}
+
+.sidemenu > div {
+    flex-shrink: 0;
+    display: block;
+    background-color:rgb(155, 190, 223);
+    height: 3em;
+    border-bottom: 1px solid #bdbdbd;
+    border-top: 1px solid #bdbdbd;
+    min-width: 3em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.sidemenu > button:hover:not(:focus), .toolbar > .selected {
+    background-color: #008CBA;
+    color: white;
+}
