@@ -312,12 +312,10 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 
     if (deadline.useLocation == true)
     {
-        console.log('LocationEvents Ranges: ');
-        printRanges(eventToRanges(oldSchedule))
-        oldSchedule = oldSchedule.map(function(event) {
+        oldSchedule.map(function(event) {
             let tempEvent = new Event('placeholder', 'none', moment(event.startTime), moment(event.endTime), event.location);
             // Check
-            if (isALocation(event)) {
+            if (isALocation(event) && event.name == deadline.location) {
                     while (workRange.inRange(tempEvent.startTime) || workRange.inRange(tempEvent.endTime)) {
                     const newRange = new TimeRange(moment(tempEvent.startTime), moment(tempEvent.endTime));
                     const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
@@ -358,7 +356,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
                 }
             }
             return event;
-        }).filter(event => isALocation(event) == false);
+        });
     }
     else {
         // Used for setting the start of a valid time range of a day
@@ -393,7 +391,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
-    oldSchedule.map(function(event) {    
+    oldSchedule.filter(event => isALocation(event) == false).map(function(event) {    
         let tempEvent = new Event('placeholder', 'none', moment(event.startTime), moment(event.endTime), event.location);
         while (workRange.inRange(tempEvent.startTime) || workRange.inRange(tempEvent.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
