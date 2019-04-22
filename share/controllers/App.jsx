@@ -56,8 +56,6 @@ class AppController extends Component {
     closeSideMenuOnClick = (event) => {
         const { sideMenu } = this.state;
 
-        console.log('hello');
-
         if (sideMenu && event.clientX < document.body.clientWidth - SIDE_MENU_SIZE) {
             this.toggleSideMenu();
         }
@@ -77,8 +75,6 @@ class AppController extends Component {
         const { sideMenu } = this.state;
 
         let newWidth = '0px';
-
-        console.log('heey');
 
         if (!sideMenu) {
             newWidth = `${SIDE_MENU_SIZE}px`;
