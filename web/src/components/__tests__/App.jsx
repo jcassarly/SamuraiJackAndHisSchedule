@@ -68,7 +68,7 @@ test('changes name', () => {
 
     fireEvent.click(firstDayOfMonth);
 
-    const startDate = moment.tz.guess().date(1);
+    const startDate = moment().date(1);
 
     expect(startDateInput.value).toEqual(startDate.format('L LT'));
 

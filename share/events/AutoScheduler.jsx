@@ -3,7 +3,7 @@
 import moment from 'moment-timezone'; // eslint-disable-line
 import { Event, LocationEvent, RecurringEvent } from './Event';
 import Frequency from './Frequency';
-import ColorEnum from '../components/ColorEnum';
+import ColorEnum from '../ColorEnum';
 
 /*  Constants for TimeRange relations:
     Details on what they mean in the header comments of inRelationTo function */
