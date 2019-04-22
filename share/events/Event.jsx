@@ -60,6 +60,7 @@ function eitherInRange(value1, value2, start, end) {
  * @param {*} start the start of the range
  * @param {*} end the end of the range
  */
+// eslint-disable-next-line no-unused-vars
 function neitherInRange(value1, value2, start, end) {
     return !eitherInRange(value1, value2, start + 1, end - 1); // extend range to be exclusive
 }
@@ -210,6 +211,23 @@ class Event {
         return this.endTime.diff(this.startTime, 'days') < DAYS_IN_WEEK;
     }
 
+    /**
+     * Checks if the event spans more than 1 day
+     */
+    isMultiDay() {
+        return this.startTime.day() !== this.endTime.day()
+            || this.endTime.diff(this.startTime, 'days') !== 0;
+    }
+
+    /**
+     * Gets the number of days that the event spans
+     */
+    getDaySpan() {
+        return this.endTime.clone().startOf('day').diff(
+            this.startTime.clone().startOf('day'),
+        );
+    }
+
     addNotification(timeBefore, type) {
         this._notifications.push(new Notifications(type, timeBefore, this._startTime));
     }
@@ -222,21 +240,25 @@ class Event {
     /**
      * Returns a boolean value of true if the two events overlap, false otherwise
      * @param {*} event1 first event to check
-     * @param {*} event2 second event to check
+     * @param {*} other second event to check
      */
-    overlap(event2) {
-        console.log('noop');
-        if (this.startTime.isAfter(event2.startTime)
-        && this.startTime.isBefore(event2.endTime)) {
+    overlap(other) {
+        // check if recurring event
+        if (other.frequency != null) {
+            return other.overlap(this);
+        }
+
+        if (this.startTime.isAfter(other.startTime)
+        && this.startTime.isBefore(other.endTime)) {
             return true;
-        } if (event2.startTime.isAfter(this.startTime)
-        && event2.startTime.isBefore(this.endTime)) {
+        } if (other.startTime.isAfter(this.startTime)
+        && other.startTime.isBefore(this.endTime)) {
             return true;
-        } if (this.endTime.isAfter(event2.startTime)
-        && this.endTime.isBefore(event2.endTime)) {
+        } if (this.endTime.isAfter(other.startTime)
+        && this.endTime.isBefore(other.endTime)) {
             return true;
-        } if (event2.endTime.isAfter(this.startTime)
-        && event2.endTime.isBefore(this.endTime)) {
+        } if (other.endTime.isAfter(this.startTime)
+        && other.endTime.isBefore(this.endTime)) {
             return true;
         }
         return false;
@@ -320,7 +342,6 @@ class RecurringEvent extends Event {
         notifications, color, frequency, optionalCustomFrequency) {
         super(name, description, startTime, endTime, location, locked, notifications, null, color);
         this._frequency = new Frequency(this, frequency, optionalCustomFrequency);
-        console.log(`starttime: ${this.startTime.minutes()}`);
     }
 
     // creates a new event that is a copy of this one
@@ -339,6 +360,26 @@ class RecurringEvent extends Event {
         );
     }
 
+    inRangeOfEvent(time) {
+        const timeEvent = new Event(null, null, time.clone(), time.clone());
+
+        return this.overlap(timeEvent);
+    }
+
+    inRangeOfNonEndDays(time) {
+        let retval = false;
+        if (this.getDaySpan() > 2 && this.frequency.timing !== Frequency.freqEnum.DAILY) {
+            const newRangeEvent = this.clone();
+
+            newRangeEvent.startTime.endOf('day');
+            newRangeEvent.endTime.startOf('day');
+
+            retval = newRangeEvent.inRangeOfEvent(time);
+        }
+
+        return retval;
+    }
+
     // returns frequency
     get frequency() {
         return this._frequency;
@@ -350,7 +391,7 @@ class RecurringEvent extends Event {
     }
 
     rangeOverlap(other, precisionType) {
-        let retval = false;
+        /* let retval = false;
         if (this.startTime.get(precisionType) > this.endTime.get(precisionType)) {
             retval = neitherInRange(
                 other.startTime.get(precisionType),
@@ -367,27 +408,45 @@ class RecurringEvent extends Event {
             );
         }
 
-        return retval;
+        return retval; */
+        if (other.endTime.isSameOrAfter(this.startTime)) {
+            const newStart = this.startTime.clone();
+            const newEnd = this.endTime.clone();
+
+            const regEvent = new Event(null, null, newStart, newEnd);
+
+            // loop until other.startTime >= newEnd
+            while (!regEvent.overlap(other)) {
+                if (other.endTime.isBefore(regEvent.startTime)) {
+                    return false;
+                }
+
+                regEvent.startTime.add(1, precisionType);
+                regEvent.endTime.add(1, precisionType);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     overlap(other) {
-        const minOverlapTime = (other.endTime.isSameOrAfter(
-            this.startTime.clone().startOf('day'),
-        ));
+        const minOverlapTime = (other.endTime.isSameOrAfter(this.startTime));
 
         switch (this.frequency.timing) {
         case Frequency.freqEnum.DAILY:
             return minOverlapTime;
         case Frequency.freqEnum.WEEKLY:
-            return minOverlapTime && (this.rangeOverlap(other, 'day') || !this.timesWithinAWeek());
+            return minOverlapTime && this.rangeOverlap(other, 'week');
         case Frequency.freqEnum.MONTHLY: {
             // note that this overlap has some odd behaviors when events start
             // and end in different months.  Not sure what the correct behavoir is
             // so this issue is being overlooked right now
-            return minOverlapTime && (this.rangeOverlap(other, 'date'));
+            return minOverlapTime && (this.rangeOverlap(other, 'month'));
         }
         case Frequency.freqEnum.YEARLY:
-            return minOverlapTime && (this.rangeOverlap(other, 'dayOfYear'));
+            return minOverlapTime && (this.rangeOverlap(other, 'year'));
         default:
             throw new Error('not a valid frequency');
         }

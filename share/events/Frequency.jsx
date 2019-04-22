@@ -1,3 +1,8 @@
+const MILLIS_IN_DAY = 86400000;
+const MILLIS_IN_WEEK = MILLIS_IN_DAY * 7;
+const MILLIS_IN_MONTH = MILLIS_IN_WEEK * 4;
+const MILLIS_IN_YEAR = MILLIS_IN_DAY * 365;
+
 // Class for Frequency
 class Frequency {
     static freqEnum = {
@@ -30,15 +35,43 @@ class Frequency {
         switch (value) {
         case Frequency.freqEnum.DAILY:
             this._timing = Frequency.freqEnum.DAILY;
+
+            if (this.eventPattern.endTime.diff(
+                this.eventPattern.startTime, 'milliseconds',
+            ) > MILLIS_IN_DAY) {
+                throw new Error('Duration for a recurring daily event must be less than 1 day');
+            }
             break;
         case Frequency.freqEnum.WEEKLY:
             this._timing = Frequency.freqEnum.WEEKLY;
+
+            if (this.eventPattern.endTime.diff(
+                this.eventPattern.startTime, 'milliseconds',
+            ) > MILLIS_IN_WEEK) {
+                throw new Error('Duration for a recurring weekly event must be less than 1 weeks');
+            }
             break;
-        case Frequency.freqEnum.MONTHLY:
+        case Frequency.freqEnum.MONTHLY: {
             this._timing = Frequency.freqEnum.MONTHLY;
+
+            // the behavior for events greater than 28 days do not have a clear way to handle them
+            // due to the number of days varying between months
+
+            if (this.eventPattern.endTime.diff(
+                this.eventPattern.startTime, 'milliseconds',
+            ) > MILLIS_IN_MONTH) {
+                throw new Error('Duration for a recurring monthly event must be less than 1 month');
+            }
             break;
+        }
         case Frequency.freqEnum.YEARLY:
             this._timing = Frequency.freqEnum.YEARLY;
+
+            if (this.eventPattern.endTime.diff(
+                this.eventPattern.startTime, 'milliseconds',
+            ) > MILLIS_IN_YEAR) {
+                throw new Error('Duration for a recurring yearly event must be less than 1 year');
+            }
             break;
         case Frequency.freqEnum.CUSTOM:
             this._timing = Frequency.freqEnum.CUSTOM;

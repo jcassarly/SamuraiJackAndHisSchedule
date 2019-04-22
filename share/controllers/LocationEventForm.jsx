@@ -63,6 +63,8 @@ class LocationEventFormController extends React.Component {
             createEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
             settings: PropTypes.instanceOf(Settings).isRequired,
+            // eslint-disable-next-line react/forbid-prop-types
+            events: PropTypes.object.isRequired,
         };
     }
 
@@ -140,6 +142,7 @@ class LocationEventFormController extends React.Component {
             returnHome,
             // eslint-disable-next-line no-shadow
             createEvent,
+            events,
         } = this.props;
 
         // attempt to create the new event and add it to the redux store
@@ -168,6 +171,12 @@ class LocationEventFormController extends React.Component {
                     null,
                 ); // TODO: handle custom frequency
             }
+
+            Object.keys(events).forEach((key) => {
+                if (events[key] instanceof LocationEvent && evt.overlap(events[key])) {
+                    throw new Error('Location events cannot overlap with other location events');
+                }
+            });
 
             // add the Event to the redux store
             // eslint-disable-next-line react/destructuring-assignment
@@ -257,6 +266,7 @@ class LocationEventFormController extends React.Component {
 const mapStateToProps = state => (
     {
         settings: state.settings.settings,
+        events: state.events.events,
     }
 );
 
