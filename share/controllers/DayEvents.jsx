@@ -27,6 +27,8 @@ class DayEventsController extends Component {
      * onMouseDown: a handler for mouse up events
      * clipboardClosure: a method for generating clipboard event handlers
      * pxToHours: a method which converts from pixels to hours
+     * draggingEvent: info about whether there is an event being dragged
+     *     and whether this day controls it, see Day class
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -39,6 +41,12 @@ class DayEventsController extends Component {
         mouseDownClosureResize: PropTypes.func.isRequired,
         clipboardClosure: PropTypes.func.isRequired,
         pxToHours: PropTypes.func.isRequired,
+        draggingEvent: PropTypes.shape({
+            initialPos: PropTypes.number,
+            event: PropTypes.instanceOf(Event),
+            selected: PropTypes.bool,
+            diff: PropTypes.number,
+        }).isRequired,
     }
 
     static defaultProps = {
@@ -55,6 +63,7 @@ class DayEventsController extends Component {
             mouseDownClosureResize,
             clipboardClosure,
             pxToHours,
+            draggingEvent,
         } = this.props;
 
         // convert to hours, for positioning of the element

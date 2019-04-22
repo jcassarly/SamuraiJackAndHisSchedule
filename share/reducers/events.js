@@ -115,10 +115,6 @@ function serializeSyncPayload(events, deadlines, settings) {
         deadlinesClone[key] = JSON.stringify(deadlines[key].serialize());
     });
 
-    console.log(eventsClone);
-    console.log(deadlinesClone);
-    console.log(settings);
-
     // takes the serialized lists and settings and combine them into one object
     return JSON.stringify({
         events: JSON.stringify(eventsClone),
