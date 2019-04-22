@@ -9,6 +9,7 @@ import {
     NotificationSelect,
     NotificationTime,
     FrequencySelect,
+    ColorSelect,
 } from './InputFormComponents';
 import InputForm from '../../components/InputForm';
 import FormHelper from '../../components/FormHelper';
@@ -17,6 +18,7 @@ import { LocationEvent, RecurringEvent } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from '../../components/ErrorMessage';
 import { Settings } from '../events/Settings';
+import ColorEnum from '../ColorEnum';
 
 /**
  * Create a react component that handles location event input
@@ -43,6 +45,7 @@ class LocationEventFormController extends React.Component {
             frequency: '',
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
+            color: ColorEnum.BLUE_BLACK,
             error: false,
             errorMsg: 'No Error',
         };
@@ -133,6 +136,7 @@ class LocationEventFormController extends React.Component {
             eventEnd,
             location,
             notifications,
+            color,
             frequency,
         } = this.state;
 
@@ -153,6 +157,7 @@ class LocationEventFormController extends React.Component {
                     eventStart,
                     eventEnd,
                     notifications, // TODO: use notification object here instead
+                    color,
                 );
             // create a recurring event otherwise with the chosen frequency
             } else {
@@ -164,6 +169,7 @@ class LocationEventFormController extends React.Component {
                     location,
                     true,
                     notifications,
+                    color,
                     frequency,
                     null,
                 ); // TODO: handle custom frequency
@@ -202,6 +208,7 @@ class LocationEventFormController extends React.Component {
             frequency,
             notifications,
             notificationTime,
+            color,
             error,
             errorMsg,
         } = this.state;
@@ -246,6 +253,11 @@ class LocationEventFormController extends React.Component {
                 <NotificationTime
                     name="notificationTime"
                     value={notificationTime}
+                    onChange={this.handleInputChange}
+                />
+                <ColorSelect
+                    name="color"
+                    value={color}
                     onChange={this.handleInputChange}
                 />
             </InputForm>

@@ -22,7 +22,7 @@ const DayEvent = (props) => {
                 top: `${startHours * 3}em`,
                 height: `${length * 3}em`,
                 backgroundColor: ColorEnum.backColor[event.color],
-                color: ColorEnum.textColor[event.color]
+                color: ColorEnum.textColor[event.color],
             }}
             onMouseDown={onMouseDown}
             onTouchStart={onMouseDown}
