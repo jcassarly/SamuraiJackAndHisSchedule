@@ -110,7 +110,7 @@ class DayController extends Component {
     }
 
     /**
-     * Returns a handler for clicking on an event in cop/cut mode
+     * Returns a handler for clicking on an event in copy/cut mode
      * @param {event} the event the handler is for
      */
     clipboardClosure = event => () => {
@@ -136,7 +136,7 @@ class DayController extends Component {
         const time = day.clone();
         // sets hours, pos/em converts it to em, each hour takes up 3 em
         // so dividing by 3 gives the offset in hours
-        time.hour(Math.floor(pxToHours(pos), 'hours'));
+        time.hour(Math.floor(pxToHours(pos)));
         // sets minutes, converts to hours, then multiply by 60 to get total minutes
         // then mod 60 to get the minutes within the hour.
         time.minute(Math.floor((pxToHours(pos) * 60) % 60));

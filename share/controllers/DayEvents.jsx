@@ -37,11 +37,17 @@ class DayEventsController extends Component {
             event: PropTypes.instanceOf(Event),
             selected: PropTypes.bool,
             diff: PropTypes.number,
-        }).isRequired,
+        }),
     }
 
     static defaultProps = {
         selectedEvent: null,
+        draggingEvent: {
+            initialPos: 0,
+            event: null,
+            selected: true,
+            diff: 0,
+        },
     }
 
     render() {
@@ -109,7 +115,6 @@ class DayEventsController extends Component {
                         }
                         // If the event is being resized
                         if (resizing) {
-                            // move the end to the correct position
                             if (startSelected) {
                                 length -= pxToHours(mouseMove);
                             } else {
