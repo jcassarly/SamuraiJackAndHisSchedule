@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Event } from '../share/events/Event';
+import ColorEnum from '../share/ColorEnum';
 
 const DayEvent = (props) => {
     // see propTypes
@@ -17,7 +18,12 @@ const DayEvent = (props) => {
 
     return (
         <div
-            style={{ top: `${startHours * 3}em`, height: `${length * 3}em` }}
+            style={{
+                top: `${startHours * 3}em`,
+                height: `${length * 3}em`,
+                backgroundColor: ColorEnum.backColor[event.color],
+                color: ColorEnum.textColor[event.color]
+            }}
             onMouseDown={onMouseDown}
             onTouchStart={onMouseDown}
             onClick={onClip}
