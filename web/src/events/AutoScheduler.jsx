@@ -253,6 +253,44 @@ class BinaryTimeRangeHeap {
     }
 }
 
+
+/**
+ * Returns true if given Event represents a location
+ * @param {*} event 
+ */
+function isALocation(event) {
+    return (event instanceof LocationEvent) || (event instanceof RecurringEvent && event.location == event.name);
+}
+
+/**
+ * Inccrements a recurring event's 
+ * @param {*} event 
+ */
+function incRecurEventPlaceholder(recurringEvent, placeholder) {
+    if (recurringEvent instanceof RecurringEvent) {
+        switch(recurringEvent.frequency.timing) {
+            case Frequency.freqEnum.DAILY:
+                placeholder.startTime.add(1, 'days');
+                placeholder.endTime.add(1, 'days');
+                break;
+            case Frequency.freqEnum.WEEKLY:
+                placeholder.startTime.add(7, 'days');
+                placeholder.endTime.add(7, 'days');
+                break;
+            case Frequency.freqEnum.MONTHLY:
+                placeholder.startTime.add(1, 'months');
+                placeholder.endTime.add(1, 'months');
+                break;
+            case Frequency.freqEnum.YEARLY:
+                placeholder.startTime.add(1, 'years');
+                placeholder.endTime.add(1, 'years');
+                break;
+            default:
+                throw 'Auto Scheduler unable to schedule: Invalid Frequency.'
+        }
+    }
+}
+
 /**
  * Returns an array of TimeRange objects for valid times when new events can be scheduled.
  * Helper Function for autoSchedule.
@@ -277,40 +315,50 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
         console.log('LocationEvents Ranges: ');
         printRanges(eventToRanges(oldSchedule))
         oldSchedule = oldSchedule.map(function(event) {
-            if (event instanceof LocationEvent) {
-                const newRange = new TimeRange(moment(event.startTime), moment(event.endTime));
-                const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
-                                                     moment(newRange.end).hour(workHoursFin.hour()).minute(workHoursFin.minute()));
-                const workHoursRelation = newRange.inRelationTo(workHoursRange);
+            let tempEvent = new Event('placeholder', 'none', moment(event.startTime), moment(event.endTime), event.location);
+            // Check
+            if (isALocation(event)) {
+                    while (workRange.inRange(tempEvent.startTime) || workRange.inRange(tempEvent.endTime)) {
+                    const newRange = new TimeRange(moment(tempEvent.startTime), moment(tempEvent.endTime));
+                    const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
+                                                        moment(newRange.end).hour(workHoursFin.hour()).minute(workHoursFin.minute()));
+                    const workHoursRelation = newRange.inRelationTo(workHoursRange);
 
-                // This location event starts before work hours
-                if (workHoursRelation == TimeRange.OVERLAP_BEFORE || workHoursRelation == TimeRange.CONTAINS) {
-                    newRange.start = moment(workHoursRange.start);
-                }
-                
-                // This location event ends after work hours
-                if (workHoursRelation == TimeRange.OVERLAP_AFTER || workHoursRelation == TimeRange.CONTAINS) {
-                    newRange.end = moment(workHoursRange.end);
-                }
+                    // This location event starts before work hours
+                    if (workHoursRelation == TimeRange.OVERLAP_BEFORE || workHoursRelation == TimeRange.CONTAINS) {
+                        newRange.start = moment(workHoursRange.start);
+                    }
+                    
+                    // This location event ends after work hours
+                    if (workHoursRelation == TimeRange.OVERLAP_AFTER || workHoursRelation == TimeRange.CONTAINS) {
+                        newRange.end = moment(workHoursRange.end);
+                    }
 
-                const workPeriod = new TimeRange(moment(deadline.startWorkTime), moment(deadline.deadline));
-                const deadlineRelation = newRange.inRelationTo(workPeriod);
-                if (deadlineRelation == TimeRange.OVERLAP_BEFORE || deadlineRelation == TimeRange.CONTAINS) {
-                    newRange.start = moment(deadline.startWorkTime);
-                }
+                    const workPeriod = new TimeRange(moment(deadline.startWorkTime), moment(deadline.deadline));
+                    const deadlineRelation = newRange.inRelationTo(workPeriod);
+                    if (deadlineRelation == TimeRange.OVERLAP_BEFORE || deadlineRelation == TimeRange.CONTAINS) {
+                        newRange.start = moment(deadline.startWorkTime);
+                    }
 
-                if (deadlineRelation == TimeRange.OVERLAP_AFTER || deadlineRelation == TimeRange.CONTAINS) {
-                    newRange.end = moment(deadline.deadline);
-                }
+                    if (deadlineRelation == TimeRange.OVERLAP_AFTER || deadlineRelation == TimeRange.CONTAINS) {
+                        newRange.end = moment(deadline.deadline);
+                    }
 
-                // This location event overlaps at some point with work hours, can be added
-                if (workHoursRelation != TimeRange.BEFORE && workHoursRelation != TimeRange.AFTER &&
-                    deadlineRelation != TimeRange.BEFORE && deadlineRelation != TimeRange.AFTER) {
-                    validTimes.push(newRange);
+                    // This location event overlaps at some point with work hours, can be added
+                    if (workHoursRelation != TimeRange.BEFORE && workHoursRelation != TimeRange.AFTER &&
+                        deadlineRelation != TimeRange.BEFORE && deadlineRelation != TimeRange.AFTER) {
+                        validTimes.push(newRange);
+                    }
+
+                    if (event instanceof RecurringEvent) {
+                        incRecurEventPlaceholder(event, tempEvent);
+                    } else {
+                        break;
+                    }
                 }
             }
             return event;
-        }).filter(event => (event instanceof LocationEvent) != true);
+        }).filter(event => isALocation(event) == false);
     }
     else {
         // Used for setting the start of a valid time range of a day
@@ -345,39 +393,21 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
-    oldSchedule.map(function(event) {        
-        while (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
+    oldSchedule.map(function(event) {    
+        let tempEvent = new Event('placeholder', 'none', moment(event.startTime), moment(event.endTime), event.location);
+        while (workRange.inRange(tempEvent.startTime) || workRange.inRange(tempEvent.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
             let newRanges = []
             validTimes.map(function(validTime) {
-                let splitRanges = validTime.split(new TimeRange(moment(event.startTime), moment(event.endTime)), deadline.minBreak); // Get a list of ranges split by event
+                let splitRanges = validTime.split(new TimeRange(moment(tempEvent.startTime), moment(tempEvent.endTime)), deadline.minBreak); // Get a list of ranges split by event
                 splitRanges = splitRanges.filter(element => element.duration() > deadline.minEventTime); // remove all ranges shorter than minEventTime
                 newRanges = newRanges.concat(splitRanges);
             })
             validTimes = newRanges;
 
             if (event instanceof RecurringEvent) {
-                switch(event.frequency.timing) {
-                    case Frequency.freqEnum.DAILY:
-                        event.startTime.add(1, 'days');
-                        event.endTime.add(1, 'days');
-                        break;
-                    case Frequency.freqEnum.WEEKLY:
-                        event.startTime.add(7, 'days');
-                        event.endTime.add(7, 'days');
-                        break;
-                    case Frequency.freqEnum.MONTHLY:
-                        event.startTime.add(1, 'months');
-                        event.endTime.add(1, 'months');
-                        break;
-                    case Frequency.freqEnum.YEARLY:
-                        event.startTime.add(1, 'years');
-                        event.endTime.add(1, 'years');
-                        break;
-                    default:
-                        throw 'Auto Scheduler unable to schedule: Invalid Frequency.'
-                }
+                incRecurEventPlaceholder(event, tempEvent);
             } else {
                 break; // It's just a normal event, just gotta execute code above once.
             }
