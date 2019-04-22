@@ -26,13 +26,6 @@ function ToolbarController(props) {
         <ToolbarButton key="cut" selected={currMode === modes.CUT} click={() => { toggleMode(modes.CUT); }}>cut</ToolbarButton>,
         <ToolbarButton key="copy" selected={currMode === modes.COPY} click={() => { toggleMode(modes.COPY); }}>copy</ToolbarButton>,
         <ToolbarButton key="paste" selected={currMode === modes.PASTE} click={() => { toggleMode(modes.PASTE); }}>paste</ToolbarButton>,
-        <ToolbarSideMenu key="side-menu" type="button" onClick={toggleSideMenu}>
-            <BaseElem>
-                <BaseElem className="hamburger" />
-                <BaseElem className="hamburger" />
-                <BaseElem className="hamburger" />
-            </BaseElem>
-        </ToolbarSideMenu>,
     ];
 
     // add buttons that don't appear when in month view
@@ -42,6 +35,16 @@ function ToolbarController(props) {
             <ToolbarButton key="resize" selected={currMode === modes.RESIZE} click={() => { toggleMode(modes.RESIZE); }}>Resize</ToolbarButton>,
         );
     }
+
+    buttons.push(
+        <ToolbarSideMenu key="side-menu" type="button" onClick={toggleSideMenu}>
+            <BaseElem>
+                <BaseElem className="hamburger" />
+                <BaseElem className="hamburger" />
+                <BaseElem className="hamburger" />
+            </BaseElem>
+        </ToolbarSideMenu>,
+    );
 
     // contains buttons corresponding to possible actions the user can take using the toolbar
     return (
