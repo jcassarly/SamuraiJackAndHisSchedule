@@ -3,31 +3,34 @@
  */
 
 const ColorEnum = {
-    WHITE_BLACK: 1,
-    BLUE_BLACK: 2,
+    BLACK_WHITE: 1,
+    BLUE_WHITE: 2,
     GREEN_BLACK: 3,
     ORANGE_BLACK: 4,
     INDIGO_WHITE: 5,
     YELLOW_BLACK: 6,
     RED_WHITE: 7,
+    MAGENTA_WHITE: 8,
     backColor: {
         1: '#000000',
         2: '#1496BB',
         3: '#229954',
-        4: '#FFA600',
+        4: '#F26D21',
         5: '#0D3D56',
         6: '#D3B53D',
         7: '#9A2617',
+        8: '#8B008B',
     },
 
     textColor: {
-        1: '#DDDDDD',
-        2: '#000000',
+        1: '#FFFFFF',
+        2: '#FFFFFF',
         3: '#000000',
         4: '#000000',
-        5: '#DDDDDD',
+        5: '#FFFFFF',
         6: '#000000',
-        7: '#000000',
+        7: '#FFFFFF',
+        8: '#FFFFFF',
     },
 };
 

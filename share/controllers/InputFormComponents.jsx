@@ -439,13 +439,14 @@ function ColorSelect(props) {
         onChange,
     } = props;
     const options = [
-        { value: ColorEnum.BLUE_BLACK, contents: 'Blue + Black Text' },
+        { value: ColorEnum.BLUE_WHITE, contents: 'Blue + White Text' },
         { value: ColorEnum.BLACK_WHITE, contents: 'Black + White Text' },
         { value: ColorEnum.GREEN_BLACK, contents: 'Green + Black Text' },
         { value: ColorEnum.ORANGE_BLACK, contents: 'Orange + Black Text' },
         { value: ColorEnum.INDIGO_WHITE, contents: 'Indigo + White Text' },
         { value: ColorEnum.YELLOW_BLACK, contents: 'Yellow + Black Text' },
         { value: ColorEnum.RED_WHITE, contents: 'Red + White Text' },
+        { value: ColorEnum.MAGENTA_WHITE, contents: 'Magenta + White Text' },
     ];
 
     return (
