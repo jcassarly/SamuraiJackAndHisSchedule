@@ -300,10 +300,10 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
         }).filter(event => (event instanceof LocationEvent) != true);
     }
     else {
-        // Used as the start of the added time ranges
-        let start = moment(moment.max(deadline.startWorkTime, dailyStart));
         // Used for setting the start of a valid time range of a day
         const dailyStart = moment(deadline.startWorkTime).hour(workHoursStart.hour()).minute(workHoursStart.minute());
+        // Used as the start of the added time ranges
+        let start = moment(moment.max(deadline.startWorkTime, dailyStart));
         // The end of a valid time range during a day
         const dailyEnd = moment(deadline.startWorkTime).hour(workHoursFin.hour()).minute(workHoursFin.minute());
         // The deadline or end of working hours before deadline.
