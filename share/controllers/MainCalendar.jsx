@@ -71,6 +71,7 @@ class MainCalendarController extends Component {
         events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         navNewEvent: PropTypes.func.isRequired,
         navSettings: PropTypes.func.isRequired,
+        toggleSideMenu: PropTypes.func.isRequired,
         moveEvent: PropTypes.func.isRequired,
         changeStart: PropTypes.func.isRequired,
         changeEnd: PropTypes.func.isRequired,
@@ -170,6 +171,7 @@ class MainCalendarController extends Component {
         const {
             navNewEvent,
             navSettings,
+            toggleSideMenu,
             moveEvent,
             changeStart,
             changeEnd,
@@ -257,6 +259,7 @@ class MainCalendarController extends Component {
                     toggleMode={this.toggleMode}
                     navNewEvent={navNewEvent}
                     navSettings={navSettings}
+                    toggleSideMenu={toggleSideMenu}
                 />
             </MainCalendar>
         );

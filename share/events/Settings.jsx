@@ -48,6 +48,7 @@ class Settings {
         newSettings.maxWorkTime = maxWork;
         newSettings.minBreakTime = minBreak;
         newSettings.timeToComplete = timeToComplete;
+
         return newSettings;
     }
 

@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.views import generic
 from calendar.views import Events
@@ -47,3 +48,15 @@ class SignUp(generic.CreateView):
     form_class = GBUSUserCreationForm
     success_url = reverse_lazy('login')  # lookup the login url by name when urls available
     template_name = 'signup.html'
+
+def save_username(request):
+    # get the database object
+    events_obj = Events.objects.get(id=request.user.id)
+
+    # create the response
+    response = redirect('/')
+
+    # set the username in a cookie so it is more easily accessible
+    response.set_cookie('username', events_obj.username)
+
+    return response

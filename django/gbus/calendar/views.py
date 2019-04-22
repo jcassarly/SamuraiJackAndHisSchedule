@@ -55,7 +55,13 @@ def get_data(request):
         events_obj.username
     )
 
-    return HttpResponse(resp)
+    # create the response
+    response = HttpResponse(resp)
+
+    # set the username in a cookie so it is more easily accessible
+    response.set_cookie('username', events_obj.username)
+
+    return response
 
 @ensure_csrf_cookie
 def set_data(request):

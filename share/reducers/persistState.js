@@ -1,6 +1,7 @@
 import { Settings, deserializeSettings } from '../events/Settings';
 import { deserializeSyncPayload, serializeSyncPayload } from './events';
 
+
 const initialState = {
     events: {
         maxEventId: 0,

@@ -20,3 +20,15 @@
     background-color: #008CBA;
     color: white;
 }
+
+.sideMenuButton {
+    margin-left: auto;
+}
+
+.hamburger {
+    width: 20px;
+    height: 2px;
+    display: table;
+    background-color: black;
+    margin: 3px auto;
+}

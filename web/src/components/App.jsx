@@ -8,9 +8,20 @@ import '../styles/App.css';
  * renders different toplevel components based on the nav state.
  */
 const App = (props) => {
-    const { children } = props;
+    const {
+        children,
+        onClick,
+        onKeyPress,
+    } = props;
     return (
-        <div className="app">
+        <div
+            id="main"
+            className="app"
+            onClick={onClick}
+            onKeyPress={onKeyPress}
+            role="button"
+            tabIndex={0}
+        >
             {children}
         </div>
     );
@@ -18,6 +29,8 @@ const App = (props) => {
 
 App.propTypes = {
     children: PropTypes.node.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onKeyPress: PropTypes.func.isRequired,
 };
 
 export default App;
