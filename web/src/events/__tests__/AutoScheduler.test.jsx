@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import { Event } from '../Event';
+import { Event, LocationEvent } from '../Event';
 import { Deadline } from '../Deadline';
 import autoSchedule, { BinaryTimeRangeHeap, getValidTimes, createEvents, TimeRange, printRanges, eventToRanges, getOptimalDurations, trimDurations } from '../AutoScheduler';
 
@@ -117,6 +117,30 @@ test('Valid Daily Work Times', () => {
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 });
 
+test('Valid Daily Work Times Location', () => {
+    const deadline = new Deadline('Work Times Test', 'test1', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'), 'testLoc', true);
+    const testLoc = [
+        new LocationEvent('testLoc', 'yee', moment('2019-03-24T09:00:00Z'), moment('2019-03-24T12:00:00Z')), // location starting before startWorkTime
+        new LocationEvent('testLoc', 'ye2', moment('2019-03-25T08:12:00Z'), moment('2019-03-25T13:46:00Z')), // location starting before daily work time
+        new LocationEvent('testLoc', 'ye2', moment('2019-03-26T14:12:00Z'), moment('2019-03-26T18:27:00Z')), // location starting before daily work time
+        new LocationEvent('testLoc', 'ye3', moment('2019-03-27T09:00:00Z'), moment('2019-03-27T17:00:00Z')), // location matching daily work times
+        new LocationEvent('testLoc', 'ye4', moment('2019-03-29T07:30:00Z'), moment('2019-03-29T19:15:00Z')), // location contains daily work times
+        new LocationEvent('testLoc', 'ye5', moment('2019-03-31T10:00:00Z'), moment('2019-03-31T14:00:00Z')), // location continues past deadline
+    ];
+    const validTimes = getValidTimes(testLoc, deadline, moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    console.log(`Location Test Ranges:`)
+    printRanges(validTimes)
+    const correctTimes = [
+        new TimeRange(moment('2019-03-24T11:00:00Z'), moment('2019-03-24T12:00:00Z')),
+        new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T13:46:00Z')),
+        new TimeRange(moment('2019-03-26T14:12:00Z'), moment('2019-03-26T17:00:00Z')),
+        new TimeRange(moment('2019-03-27T09:00:00Z'), moment('2019-03-27T17:00:00Z')),
+        new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T17:00:00Z')),
+        new TimeRange(moment('2019-03-31T10:00:00Z'), moment('2019-03-31T13:00:00Z')),
+    ];
+    expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
+
 test('Valid Range Split', () => {
     const deadline = new Deadline('Work Times Test', 'test2', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
@@ -170,7 +194,6 @@ test('Create Events Empty Schedule (Day)', () => {
 });
 
 test('Create Events Empty Schedule (Week)', () => {
-    console.log('test4')
     const deadline = new Deadline('Work Times Test', 'test7', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-24T11:00:00Z'));
     const validTimes = getValidTimes([], deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
@@ -189,8 +212,6 @@ test('Create Events Non-Empty Schedule (Week)', () => {
     const validTimes = getValidTimes(Object.values(initialEvents), deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
     const newSchedule = createEvents(Object.values(initialEvents), deadline, validTimes);
-    console.log('New Schedule: ')
-    printRanges(eventToRanges(newSchedule))
     const correctEvents = initialEvents.slice();
     correctEvents.push(
         new Event('Work Times Test', null, moment('2019-03-29T09:00:00Z'), moment('2019-03-29T11:00:00Z')),

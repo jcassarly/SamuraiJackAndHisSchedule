@@ -274,25 +274,38 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
 
     if (deadline.useLocation == true)
     {
+        console.log('LocationEvents Ranges: ');
+        printRanges(eventToRanges(oldSchedule))
         oldSchedule = oldSchedule.map(function(event) {
             if (event instanceof LocationEvent) {
                 const newRange = new TimeRange(moment(event.startTime), moment(event.endTime));
                 const workHoursRange = new TimeRange(moment(newRange.start).hour(workHoursStart.hour()).minute(workHoursStart.minute()),
                                                      moment(newRange.end).hour(workHoursFin.hour()).minute(workHoursFin.minute()));
-                const relation = newRange.inRelationTo(workHoursRange);
+                const workHoursRelation = newRange.inRelationTo(workHoursRange);
 
                 // This location event starts before work hours
-                if (relation == TimeRange.OVERLAP_BEFORE || relation == TimeRange.CONTAINS) {
+                if (workHoursRelation == TimeRange.OVERLAP_BEFORE || workHoursRelation == TimeRange.CONTAINS) {
                     newRange.start = moment(workHoursRange.start);
                 }
                 
                 // This location event ends after work hours
-                if (relation == TimeRange.OVERLAP_AFTER || relation == TimeRanges.CONTAINS) {
+                if (workHoursRelation == TimeRange.OVERLAP_AFTER || workHoursRelation == TimeRange.CONTAINS) {
                     newRange.end = moment(workHoursRange.end);
                 }
 
+                const workPeriod = new TimeRange(moment(deadline.startWorkTime), moment(deadline.deadline));
+                const deadlineRelation = newRange.inRelationTo(workPeriod);
+                if (deadlineRelation == TimeRange.OVERLAP_BEFORE || deadlineRelation == TimeRange.CONTAINS) {
+                    newRange.start = moment(deadline.startWorkTime);
+                }
+
+                if (deadlineRelation == TimeRange.OVERLAP_AFTER || deadlineRelation == TimeRange.CONTAINS) {
+                    newRange.end = moment(deadline.deadline);
+                }
+
                 // This location event overlaps at some point with work hours, can be added
-                if (relation != TimeRange.BEFORE && relation != TimeRange.AFTER) {
+                if (workHoursRelation != TimeRange.BEFORE && workHoursRelation != TimeRange.AFTER &&
+                    deadlineRelation != TimeRange.BEFORE && deadlineRelation != TimeRange.AFTER) {
                     validTimes.push(newRange);
                 }
             }
@@ -332,9 +345,7 @@ function getValidTimes(oldSchedule, deadline, workHoursStart, workHoursFin) { //
     // Iterates through the schedule and gets valid times to schedule new events
     // Currently assuming the events are sorted chronologically and do not overlap
     //                                                                                                    TODO: Account for non-chronological and overlapping events
-    oldSchedule.map(function(event) {
-        let occurrence = true;
-        
+    oldSchedule.map(function(event) {        
         while (workRange.inRange(event.startTime) || workRange.inRange(event.endTime)) {
             /* Check if the event overlaps with a currently valid time range */
             //                                                                                            TODO: Find a more efficient method to do this.
