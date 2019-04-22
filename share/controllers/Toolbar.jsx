@@ -95,6 +95,7 @@ class ToolbarController extends React.Component {
             <ToolbarButton key="cut" selected={currMode === modes.CUT} click={() => { toggleMode(modes.CUT); }}>cut</ToolbarButton>,
             <ToolbarButton key="copy" selected={currMode === modes.COPY} click={() => { toggleMode(modes.COPY); }}>copy</ToolbarButton>,
             <ToolbarButton key="paste" selected={currMode === modes.PASTE} click={() => { toggleMode(modes.PASTE); }}>paste</ToolbarButton>,
+            <ToolbarButton key="edit-event" selected={currMode === modes.EDIT} click={() => { toggleMode(mode.EDIT); }}></ToolbarButton>,
         ];
 
         // add buttons that don't appear when in month view
@@ -130,7 +131,7 @@ ToolbarController.propTypes = {
     toggleMode: PropTypes.func.isRequired,
     currMode: PropTypes.number.isRequired,
     calType: PropTypes.number.isRequired,
-    syncFromAsync: PropTypes.func.isRequired,
+    syncFromAsync: PropTypes.func.isRequired,   
     // eslint-disable-next-line react/forbid-prop-types
     events: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
