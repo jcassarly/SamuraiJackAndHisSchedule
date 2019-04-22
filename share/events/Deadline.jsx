@@ -16,7 +16,7 @@ import { verifyTimes } from './Event';
  */
 class Deadline {
     constructor(name, description, deadline, totalWorkTime, minEventTime, maxEventTime,
-        minBreak, startWorkTime, location, useLocation) {
+        minBreak, startWorkTime, location, useLocation, color) {
         this.name = name;
         this._createdEvents = [];
 
@@ -31,6 +31,7 @@ class Deadline {
         this.minBreak = minBreak;
         this.location = location;
         this.useLocation = useLocation;
+        this.color = color;
 
         this.id = -1; // default is no id - it gets set later
     }
@@ -85,6 +86,11 @@ class Deadline {
         return this._useLocation;
     }
 
+    // return color
+    get color() {
+        return this._color;
+    }
+
     /**
      * Returns the id of the deadline in the redux store. -1 if it has not been set yet
      */
@@ -137,6 +143,11 @@ class Deadline {
     // sets the value of uselocation to a boolean
     set useLocation(value) {
         this._useLocation = value;
+    }
+
+    // sets the value of color to an integer
+    set color(value) {
+        this._color = value;
     }
 
     /**
@@ -197,6 +208,7 @@ class Deadline {
             minBreak: this.minBreak,
             location: this.location,
             useLocation: this.useLocation,
+            color: this.color,
         };
     }
 }
@@ -220,6 +232,7 @@ function deserializeDeadline(jsonStr) {
         moment(json.startWorkTime),
         json.location,
         json.useLocation,
+        json.color
     );
 
     // add the child events to the json object

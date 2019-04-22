@@ -365,6 +365,7 @@ function deserialize(jsonStr) {
             moment(obj.startTime),
             moment(obj.endTime),
             obj.notifications,
+            obj.color
         );
 
         // location events never have parents and needs to be set to -1 when deserializing
@@ -380,6 +381,7 @@ function deserialize(jsonStr) {
             obj.location,
             obj.locked,
             obj.notifications,
+            obj.color,
             obj.frequency,
             obj.optionalCustomFrequency,
         );

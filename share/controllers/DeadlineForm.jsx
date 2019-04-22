@@ -11,11 +11,13 @@ import {
     LocationInput,
     UseLocationInput,
     NumberInput,
+    ColorSelect,
 } from './InputFormComponents';
 import { Deadline } from '../events/Deadline';
 import DateErrorMessage from '../../components/ErrorMessage';
 import { createDeadlineEvent } from '../actions/createEvent';
 import { Settings } from '../events/Settings';
+import ColorEnum from '../ColorEnum';
 
 /**
  * Class to handle gathering input form the user to create a Deadline object
@@ -40,6 +42,7 @@ class DeadlineForm extends React.Component {
             maxTime: props.settings.maxWorkTime,
             minBreak: props.settings.minBreakTime,
             totalTime: props.settings.timeToComplete,
+            color: ColorEnum.BLUE_BLACK,
             error: false,
             errorMsg: 'No Error',
         };
@@ -113,6 +116,7 @@ class DeadlineForm extends React.Component {
             maxTime,
             minBreak,
             totalTime,
+            color,
         } = this.state;
 
         const {
@@ -132,6 +136,7 @@ class DeadlineForm extends React.Component {
                 taskStart,
                 location,
                 useLocation,
+                color,
             );
 
             // add the deadline event to the calendar
@@ -166,6 +171,7 @@ class DeadlineForm extends React.Component {
             maxTime,
             minBreak,
             totalTime,
+            color,
             error,
             errorMsg,
         } = this.state;
@@ -241,6 +247,11 @@ class DeadlineForm extends React.Component {
                 >
                     in Minutes
                 </NumberInput>
+                <ColorSelect
+                    name="color"
+                    value={color}
+                    onChange={this.handleInputChange}
+                />
             </InputForm>
         );
     }
