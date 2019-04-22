@@ -183,6 +183,33 @@ test('Valid Range Split', () => {
     expect(compareRanges(validTimes, correctTimes)).toBe(true);
 });
 
+test('Valid Range Split Recurring', () => {
+    const deadline = new Deadline('Work Times Test', 'test2', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
+    const recurEvents = [
+        new Event('Standard Event', null, moment('2019-03-27T08:00:00Z'), moment('2019-03-27T11:32:00Z')),
+        new RecurringEvent('Recur Test', 'ye', moment('2019-03-24T11:00:00Z'), moment('2019-03-24T12:30:00Z'), 'testLoc', null, null, null, Frequency.freqEnum.DAILY),
+        new RecurringEvent('Recur Test2', 'ye', moment('2019-03-25T15:00:00Z'), moment('2019-03-25T17:30:00Z'), 'testLoc', null, null, null, Frequency.freqEnum.DAILY),
+    ];
+    const validTimes = getValidTimes(Object.values(recurEvents), deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    const correctTimes = [
+        new TimeRange(moment('2019-03-24T12:50:00Z'), moment('2019-03-24T17:00:00Z')),
+        new TimeRange(moment('2019-03-25T09:00:00Z'), moment('2019-03-25T10:40:00Z')),
+        new TimeRange(moment('2019-03-25T12:50:00Z'), moment('2019-03-25T14:40:00Z')),
+        new TimeRange(moment('2019-03-26T09:00:00Z'), moment('2019-03-26T10:40:00Z')),
+        new TimeRange(moment('2019-03-26T12:50:00Z'), moment('2019-03-26T14:40:00Z')),
+        new TimeRange(moment('2019-03-27T12:50:00Z'), moment('2019-03-27T14:40:00Z')),
+        new TimeRange(moment('2019-03-28T09:00:00Z'), moment('2019-03-28T10:40:00Z')),
+        new TimeRange(moment('2019-03-28T12:50:00Z'), moment('2019-03-28T14:40:00Z')),
+        new TimeRange(moment('2019-03-29T09:00:00Z'), moment('2019-03-29T10:40:00Z')),
+        new TimeRange(moment('2019-03-29T12:50:00Z'), moment('2019-03-29T14:40:00Z')),
+        new TimeRange(moment('2019-03-30T09:00:00Z'), moment('2019-03-30T10:40:00Z')),
+        new TimeRange(moment('2019-03-30T12:50:00Z'), moment('2019-03-30T14:40:00Z')),
+        new TimeRange(moment('2019-03-31T09:00:00Z'), moment('2019-03-31T10:40:00Z')),
+    ];
+    expect(compareRanges(validTimes, correctTimes)).toBe(true);
+});
+
 test('getOptimalDurations() test', () => {
     const deadline1 = new Deadline('Work Times Test', 'test3', moment('2019-03-31T13:00:00Z'), 140, 30, 120, 20, moment('2019-03-24T11:00:00Z'));
     const optDur1 = getOptimalDurations(deadline1.totalWorkTime, deadline1.minEventTime, deadline1.maxEventTime);
@@ -247,7 +274,6 @@ test('Create Events Non-Empty Schedule (Week)', () => {
 });
 
 test('Create Events Non-Empty Schedule (Location)', () => {
-    console.log('test9')
     const deadline = new Deadline('Work Times Test', 'test9', moment('2019-03-30T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-27T11:00:00Z'), 'testLoc', true);
     const locSchedule = initialEvents.concat([
         new LocationEvent('testLoc', 'yee', moment('2019-03-24T09:00:00Z'), moment('2019-03-24T12:00:00Z')), // location starting before startWorkTime
@@ -261,17 +287,40 @@ test('Create Events Non-Empty Schedule (Location)', () => {
     ]);
     const validTimes = getValidTimes(Object.values(locSchedule), deadline,
         moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
-    console.log('Valid Times create Schedule:');
-    printRanges(validTimes);
     const newSchedule = createEvents(Object.values(locSchedule), deadline, validTimes);
-    console.log('New Schedule:');
-    printRanges(eventToRanges(newSchedule))
     const correctEvents = locSchedule.slice();
     correctEvents.push(
         new Event('Work Times Test', null, moment('2019-03-29T09:00:00Z'), moment('2019-03-29T11:00:00Z')),
         new Event('Work Times Test', null, moment('2019-03-27T13:25:00Z'), moment('2019-03-27T15:25:00Z')),
         new Event('Work Times Test', null, moment('2019-03-29T11:25:00Z'), moment('2019-03-29T13:25:00Z')),
         new Event('Work Times Test', null, moment('2019-03-27T15:50:00Z'), moment('2019-03-27T16:30:00Z')),
+    );
+    expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
+});
+
+test('Create Events Non-Empty Schedule (Location)', () => {
+    console.log('test9')
+    const deadline = new Deadline('Work Times Test', 'test10', moment('2019-03-31T15:00:00Z'), 400, 35, 120, 25, moment('2019-03-27T11:00:00Z'), 'testLoc', true);
+    const oldSchedule = [
+        new Event('Work Times Test', null, moment('2019-03-27T13:00:00Z'), moment('2019-03-27T18:00:00Z')),
+        new RecurringEvent('Recur Test', 'ye3', moment('2019-03-28T11:00:00Z'), moment('2019-03-28T11:45:00Z'), 'testLoc', null, null, null, Frequency.freqEnum.DAILY),
+        new RecurringEvent('Recur Test2', 'ye3', moment('2019-03-28T14:30:00Z'), moment('2019-03-28T15:00:00Z'), 'testLoc', null, null, null, Frequency.freqEnum.DAILY),
+        new RecurringEvent('testLoc', 'ye3', moment('2019-03-27T10:00:00Z'), moment('2019-03-27T15:00:00Z'), 'testLoc', null, null, null, Frequency.freqEnum.DAILY),
+        new RecurringEvent('nom nom', 'no', moment('2019-03-27T15:15:00Z'), moment('2019-03-27T18:00:00Z'), 'nom nom', null, null, null, Frequency.freqEnum.DAILY),
+    ];
+    const validTimes = getValidTimes(Object.values(oldSchedule), deadline,
+        moment('2019-03-24T09:00:00Z'), moment('2019-03-24T17:00:00Z'));
+    console.log('Valid Times create Schedule:');
+    printRanges(validTimes);
+    const newSchedule = createEvents(Object.values(oldSchedule), deadline, validTimes);
+    console.log('New Schedule:');
+    printRanges(eventToRanges(newSchedule));
+    const correctEvents = oldSchedule.slice();
+    correctEvents.push(
+        new Event('Work Times Test', null, moment('2019-03-28T12:10:00Z'), moment('2019-03-28T14:05:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-31T12:10:00Z'), moment('2019-03-31T14:05:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-30T12:10:00Z'), moment('2019-03-30T14:05:00Z')),
+        new Event('Work Times Test', null, moment('2019-03-29T12:10:00Z'), moment('2019-03-29T13:05:00Z')),
     );
     expect(compareEventTimes(newSchedule, correctEvents)).toBe(true);
 });
