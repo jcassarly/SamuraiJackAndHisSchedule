@@ -51,7 +51,7 @@ function deserializeSyncPayload(events, deadlines) {
     const newEvents = {};
     let largestKey = 0;
     Object.keys(events).forEach((unparsedKey) => {
-        const key = (typeof unparsedKkey === 'number') ? unparsedKey : Number(unparsedKey);
+        const key = (typeof unparsedKey === 'number') ? unparsedKey : Number(unparsedKey);
 
         if (key > largestKey) {
             largestKey = key;

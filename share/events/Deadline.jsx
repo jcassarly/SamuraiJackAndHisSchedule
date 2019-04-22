@@ -232,7 +232,7 @@ function deserializeDeadline(jsonStr) {
         moment(json.startWorkTime),
         json.location,
         json.useLocation,
-        json.color
+        json.color,
     );
 
     // add the child events to the json object

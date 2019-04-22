@@ -63,7 +63,6 @@ class DayEventsController extends Component {
             mouseDownClosureResize,
             clipboardClosure,
             pxToHours,
-            draggingEvent,
         } = this.props;
 
         // convert to hours, for positioning of the element
@@ -135,6 +134,8 @@ class DayEventsController extends Component {
         const {
             day,
             events,
+            draggingEvent,
+            selectedEvent,
         } = this.props;
 
         // start and end of the day
@@ -143,7 +144,22 @@ class DayEventsController extends Component {
 
         // filters out all events that aren't in that day
         const dayEv = new Event(null, null, dayStart, dayEnd);
-        const currEvents = events.filter(event => event.overlap(dayEv));
+        const currEvents = events.filter((event) => {
+            // the current day has focus, so we display all events for the day
+            // plus any events currently being dragged
+            if (draggingEvent.selected) {
+                if (draggingEvent.event && draggingEvent.event.id === event.id) {
+                    return true;
+                }
+            }
+            // otherwise, if the event is during the day and not the one being moved
+            if (event.overlap(dayEv)
+                && (!draggingEvent.event || draggingEvent.event.id !== event.id)) {
+                return true;
+            }
+            // if none of those statements are true, return false
+            return false;
+        });
 
         const nextDay = dayEv.clone();
         nextDay.startTime.add(1, 'day');
@@ -158,9 +174,15 @@ class DayEventsController extends Component {
         currEvents.forEach((event) => { // add each event to the calendar
             // start and end of the event, but cut off if the event spans
             //     into the next or previous day
+            let virtualStart = event.startTime;
+            let virtualEnd = event.endTime;
+            if (selectedEvent && event.id === selectedEvent.id) {
+                virtualStart = virtualStart.clone().add(draggingEvent.diff, 'days');
+                virtualEnd = virtualEnd.clone().add(draggingEvent.diff, 'days');
+            }
 
-            let virtualStart = moment.max(event.startTime, dayStart);
-            let virtualEnd = moment.min(event.endTime, dayEnd);
+            virtualStart = moment.max(virtualStart, dayStart);
+            virtualEnd = moment.min(virtualEnd, dayEnd);
 
             if (event instanceof RecurringEvent) {
                 virtualStart = dayStart;
