@@ -175,15 +175,24 @@ const reducer = (state = initialState, action) => {
             break;
         }
         case MOVE_EVENT: {
-            const { id, amount, type } = action.payload;
-            console.log(id);
-            console.log(newState.events);
+            const {
+                id,
+                amount,
+                type,
+                snap,
+            } = action.payload;
             if (!newState.events[id]) {
                 break;
             }
             const newEvent = newState.events[id].clone();
             const start = newEvent.startTime.clone().add(amount, type);
-            const end = newEvent.endTime.clone().add(amount, type);
+            let diff = 0;
+            if (snap) {
+                const virtualStart = start.diff(start.clone().startOf('day'), 'minutes');
+                diff = Math.round(virtualStart / snap) * snap - virtualStart;
+            }
+            start.add(diff, 'minutes');
+            const end = newEvent.endTime.clone().add(amount, type).add(diff, 'minutes');
             if (amount > 0) {
                 newEvent.endTime = end;
                 newEvent.startTime = start;
@@ -196,11 +205,17 @@ const reducer = (state = initialState, action) => {
             break;
         }
         case CHANGE_START: {
-            const { id, start } = action.payload;
+            const { id, start, snap } = action.payload;
             if (!newState.events[id]) {
                 break;
             }
             const newEvent = newState.events[id].clone();
+            let diff = 0;
+            if (snap) {
+                const virtualStart = start.diff(start.clone().startOf('day'), 'minutes');
+                diff = Math.round(virtualStart / snap) * snap - virtualStart;
+            }
+            start.add(diff, 'minutes');
             try {
                 newEvent.startTime = start;
             } catch {
@@ -211,11 +226,17 @@ const reducer = (state = initialState, action) => {
             break;
         }
         case CHANGE_END: {
-            const { id, end } = action.payload;
+            const { id, end, snap } = action.payload;
             if (!newState.events[id]) {
                 break;
             }
             const newEvent = newState.events[id].clone();
+            let diff = 0;
+            if (snap) {
+                const virtualStart = end.diff(end.clone().startOf('day'), 'minutes');
+                diff = Math.round(virtualStart / snap) * snap - virtualStart;
+            }
+            end.add(diff, 'minutes');
             try {
                 newEvent.endTime = end;
             } catch {

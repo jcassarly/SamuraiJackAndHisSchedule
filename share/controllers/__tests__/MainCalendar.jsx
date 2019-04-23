@@ -3,14 +3,15 @@ import { mount } from 'enzyme';
 import createStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import moment from 'moment-timezone';
-import MainCalendar from '../MainCalendar';
+import MainCalendar, { types } from '../MainCalendar';
 import { Settings } from '../../events/Settings';
 
-jest.mock('../../em2px');
+jest.mock('../../../em2px');
 
 const currDate = new Date('2019-03-19T08:00:00Z');
 moment.now = () => currDate;
 const navNewEvent = jest.fn(() => {});
+const navSettings = jest.fn(() => {});
 const store = createStore()({
     events: {
         maxEventId: 0,
@@ -21,12 +22,17 @@ const store = createStore()({
     settings: new Settings(),
 });
 let calendar = mount(
-    <Provider store={store}><MainCalendar navNewEvent={navNewEvent} /></Provider>,
-).find('MainCalendar').at(0);
+    <Provider store={store}>
+        <MainCalendar
+            navNewEvent={navNewEvent}
+            navSettings={navSettings}
+        />
+    </Provider>,
+).find('MainCalendarController').at(0);
 test('test month', () => {
-    expect(calendar).toHaveState('type', 'month');
-    expect(calendar).toContainExactlyOneMatchingElement('Month');
-    expect(calendar.find('Month').at(0).prop('month').valueOf()).toBe(currDate.valueOf());
+    expect(calendar).toHaveState('type', types.MONTH);
+    expect(calendar).toContainExactlyOneMatchingElement('MonthController');
+    expect(calendar.find('MonthController').at(0).prop('month').valueOf()).toBe(currDate.valueOf());
 });
 
 test('test left nav month', () => {
@@ -41,10 +47,10 @@ test('test right nav month', () => {
 
 test('test week', () => {
     calendar.instance().onSwitch();
-    calendar = calendar.update().find('MainCalendar').at(0);
-    expect(calendar).toHaveState('type', 'week');
-    expect(calendar).toContainExactlyOneMatchingElement('Week');
-    expect(calendar.find('Week').at(0).prop('week').valueOf()).toBe(currDate.valueOf());
+    calendar = calendar.update().find('MainCalendarController').at(0);
+    expect(calendar).toHaveState('type', types.WEEK);
+    expect(calendar).toContainExactlyOneMatchingElement('WeekController');
+    expect(calendar.find('WeekController').at(0).prop('week').valueOf()).toBe(currDate.valueOf());
 });
 
 test('test left nav week', () => {
@@ -59,8 +65,8 @@ test('test right nav week', () => {
 
 test('test day', () => {
     calendar.instance().onSwitch();
-    calendar = calendar.update().find('MainCalendar').at(0);
-    expect(calendar).toHaveState('type', 'day');
+    calendar = calendar.update().find('MainCalendarController').at(0);
+    expect(calendar).toHaveState('type', types.DAY);
     expect(calendar).toContainExactlyOneMatchingElement('Day');
     expect(calendar.find('Day').at(0).prop('day').valueOf()).toBe(currDate.valueOf());
 });

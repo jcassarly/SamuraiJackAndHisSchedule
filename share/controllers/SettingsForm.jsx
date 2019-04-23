@@ -45,6 +45,7 @@ class SettingsForm extends React.Component {
         console.log(props.settings);
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputChangeNum = this.handleInputChangeNum.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -57,6 +58,19 @@ class SettingsForm extends React.Component {
             updateSettings: PropTypes.func.isRequired,
             settings: PropTypes.instanceOf(Settings).isRequired,
         };
+    }
+
+    /**
+     * Updates the state with the change to the input form the user made
+     * @param {obj} event the event object that stores the change the user made
+     */
+    handleInputChangeNum(...args) {
+        const newValue = Number(FormHelper.checkedVal(...args));
+        const inputName = FormHelper.getName(...args);
+
+        this.setState({
+            [inputName]: newValue,
+        });
     }
 
     /**
@@ -157,7 +171,7 @@ class SettingsForm extends React.Component {
                         name="snapToGrid"
                         value={snapToGrid}
                         description="Snap to Grid"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Minutes
                         <BaseElem>
@@ -171,7 +185,7 @@ class SettingsForm extends React.Component {
                         name="minBreak"
                         value={minBreak}
                         description="Min Break Time"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Minutes
                         <BaseElem>
@@ -182,7 +196,7 @@ class SettingsForm extends React.Component {
                         name="minTime"
                         value={minTime}
                         description="Min Event Time"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Minutes
                         <BaseElem>
@@ -193,7 +207,7 @@ class SettingsForm extends React.Component {
                         name="maxTime"
                         value={maxTime}
                         description="Max Event Time"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Minutes
                         <BaseElem>
@@ -204,7 +218,7 @@ class SettingsForm extends React.Component {
                         name="timeBeforeDue"
                         value={timeBeforeDue}
                         description="Time Before Due"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Hours
                         <BaseElem>
@@ -215,7 +229,7 @@ class SettingsForm extends React.Component {
                         name="timeToComplete"
                         value={timeToComplete}
                         description="Time to Complete"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Hours
                         <BaseElem>
@@ -249,7 +263,7 @@ class SettingsForm extends React.Component {
                         name="duration"
                         value={duration}
                         description="Event Duration"
-                        onChange={this.handleInputChange}
+                        onChange={this.handleInputChangeNum}
                     >
                         in Minutes
                         <BaseElem>

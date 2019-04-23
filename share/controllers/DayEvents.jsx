@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
+import { connect } from 'react-redux';
 
 import { Event, RecurringEvent } from '../events/Event';
 // eslint-disable-next-line no-unused-vars
@@ -29,6 +30,7 @@ class DayEventsController extends Component {
      * pxToHours: a method which converts from pixels to hours
      * draggingEvent: info about whether there is an event being dragged
      *     and whether this day controls it, see Day class
+     * snapToGrid: the snap to grid amount.
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -46,11 +48,18 @@ class DayEventsController extends Component {
             event: PropTypes.instanceOf(Event),
             selected: PropTypes.bool,
             diff: PropTypes.number,
-        }).isRequired,
+        }),
+        snapToGrid: PropTypes.number.isRequired,
     }
 
     static defaultProps = {
         selectedEvent: null,
+        draggingEvent: {
+            initialPos: 0,
+            event: null,
+            selected: true,
+            diff: 0,
+        },
     }
 
     generateEventHTML(event, virtualStart, virtualEnd, dayStart) {
@@ -71,17 +80,24 @@ class DayEventsController extends Component {
 
         // if the event is being modified by the user with drag/drop or resize
         if (selectedEvent && selectedEvent.id === event.id) {
+            let diff;
             if (!resizing || startSelected) {
                 // move the start to the correct position
                 startPos += pxToHours(mouseMove);
+                diff = Math.round(startPos * 60 / snapToGrid)
+                    / 60 * snapToGrid - startPos;
+                startPos += diff;
             }
             // If the event is being resized
             if (resizing) {
-                // move the end to the correct position
                 if (startSelected) {
+                    length -= diff;
                     length -= pxToHours(mouseMove);
                 } else {
                     length += pxToHours(mouseMove);
+                    diff = Math.round((startPos + length) * 60 / snapToGrid)
+                        / 60 * snapToGrid - startPos - length;
+                    length += diff;
                 }
             }
         }
@@ -136,6 +152,7 @@ class DayEventsController extends Component {
             events,
             draggingEvent,
             selectedEvent,
+            snapToGrid,
         } = this.props;
 
         // start and end of the day
@@ -253,4 +270,10 @@ class DayEventsController extends Component {
     }
 }
 
-export default DayEventsController;
+const mapStateToProps = state => (
+    {
+        snapToGrid: state.settings.settings.snapToGrid,
+    }
+);
+
+export default connect(mapStateToProps)(DayEventsController);

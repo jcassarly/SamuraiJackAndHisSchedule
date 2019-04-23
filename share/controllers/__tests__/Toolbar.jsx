@@ -9,7 +9,7 @@ import { createStore } from 'redux';
 import Toolbar from '../Toolbar';
 import rootReducer from '../../reducers/index';
 
-jest.mock('../../em2px');
+jest.mock('../../../em2px');
 
 const store = createStore(rootReducer);
 

@@ -70,7 +70,7 @@ class WeekController extends Component {
             focused,
             initialFocus,
         } = this.state;
-        const start = week.startOf('week');
+        const start = week.clone().startOf('week');
         const unix = start.unix();
 
         return (
