@@ -1,0 +1,31 @@
+.inputForm {
+    overflow: auto;
+    height: 100%;
+}
+
+.left {
+    float:left;
+}
+
+.center {
+    display: table;
+    margin: 0 auto;
+}
+
+.right {
+    float:right;
+}
+
+.clear {
+    clear:both;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+li {
+    display: inline;
+}
