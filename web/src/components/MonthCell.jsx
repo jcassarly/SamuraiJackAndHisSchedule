@@ -11,7 +11,12 @@ import '../styles/MonthCell.css';
  */
 const MonthCell = (props) => {
     // see propTypes
-    const { current, date, events, navEditEvent } = props;
+    const {
+        current,
+        date,
+        events,
+        navEditEvent,
+    } = props;
 
     // If the cell does not correspond to the current month, it greys out the date number
     // Displays every event that day in a list inside the cell, overflow is cut off

@@ -29,7 +29,8 @@ function editEvent(
     notifications, // TODO: use notification object here instead
     parent,
     frequency,
-    color) {
+    color,
+) {
     return {
         type: EDIT_EVENT,
         payload: {
@@ -49,7 +50,7 @@ function editEvent(
 }
 
 
-function changeStart(id, start) {
+function changeStart(id, start, snap) {
     return {
         type: CHANGE_START,
         payload: {
@@ -71,5 +72,15 @@ function changeEnd(id, end, snap) {
     };
 }
 
-export { MOVE_EVENT, CHANGE_START, CHANGE_END, EDIT_EVENT};
-export { moveEvent, changeStart, changeEnd, editEvent};
+export {
+    MOVE_EVENT,
+    CHANGE_START,
+    CHANGE_END,
+    EDIT_EVENT,
+};
+export {
+    moveEvent,
+    changeStart,
+    changeEnd,
+    editEvent,
+};
