@@ -482,13 +482,8 @@ class RecurringEvent extends Event {
  */
 function deserialize(jsonStr) {
     const json = JSON.parse(jsonStr);
-    console.log(jsonStr);
-    console.log(json);
 
     const { type, obj } = json;
-
-    console.log(obj);
-    console.log(obj.frequency);
 
     let newEvent = null;
 
