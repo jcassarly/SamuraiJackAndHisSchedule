@@ -126,7 +126,7 @@ class AppController extends Component {
      * Sends the current events and deadlines in the redux store to the server
      * Overwrites whatever was saved on the user's account
      */
-    syncTo() {
+    syncTo = () => {
         const {
             events,
             deadlines,
