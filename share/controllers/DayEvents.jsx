@@ -39,6 +39,7 @@ class DayEventsController extends Component {
      * onMouseDown: a handler for mouse up events
      * clipboardClosure: a method for generating clipboard event handlers
      * pxToHours: a method which converts from pixels to hours
+     * navEditEvent: navigate to editing an event
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -51,6 +52,7 @@ class DayEventsController extends Component {
         mouseDownClosureResize: PropTypes.func.isRequired,
         clipboardClosure: PropTypes.func.isRequired,
         pxToHours: PropTypes.func.isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -69,6 +71,7 @@ class DayEventsController extends Component {
             mouseDownClosureResize,
             clipboardClosure,
             pxToHours,
+            navEditEvent,
         } = this.props;
 
         // start and end of the day
@@ -136,6 +139,7 @@ class DayEventsController extends Component {
                     // the html to add for the event
                     const eventHTML = [
                         <DayEvent
+                            navEditEvent={navEditEvent}
                             key={event.id}
                             startHours={startPos}
                             length={length}

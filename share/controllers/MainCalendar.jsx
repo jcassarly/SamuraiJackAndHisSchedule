@@ -24,6 +24,7 @@ import MainCalendar from '../../components/MainCalendar';
  * CUT: allow the user to cut events
  * COPY: allow the user to copy events
  * PASTE: allow the user to paste events from the clipboard
+ * EDIT: allows the user to edit an existing event
  */
 const modes = {
     NORMAL: 0,
@@ -32,6 +33,7 @@ const modes = {
     CUT: 3,
     COPY: 4,
     PASTE: 5,
+    EDIT: 6,
 };
 
 /**
@@ -74,6 +76,7 @@ class MainCalendarController extends Component {
         moveEvent: PropTypes.func.isRequired,
         changeStart: PropTypes.func.isRequired,
         changeEnd: PropTypes.func.isRequired,
+        navEditEvent: PropTypes.func.isRequired,
         cut: PropTypes.func.isRequired,
         copy: PropTypes.func.isRequired,
         paste: PropTypes.func.isRequired,
@@ -177,7 +180,12 @@ class MainCalendarController extends Component {
             copy,
             paste,
         } = this.props;
-        let { events } = this.props;
+
+        let { events, navEditEvent } = this.props;
+        if (mode !== modes.EDIT) {
+            console.log(mode);
+            navEditEvent = () => {};
+        }
         // converts to an array
         events = Object.values(events);
         // primary calendar component depending on the type of calendar
@@ -189,6 +197,7 @@ class MainCalendarController extends Component {
         case types.DAY:
             calElem = (
                 <Day
+                    navEditEvent={navEditEvent}
                     mode={mode}
                     moveEvent={moveEvent}
                     changeStart={changeStart}
@@ -204,6 +213,7 @@ class MainCalendarController extends Component {
         case types.WEEK:
             calElem = (
                 <Week
+                    navEditEvent={navEditEvent}
                     mode={mode}
                     moveEvent={moveEvent}
                     changeStart={changeStart}
@@ -220,6 +230,7 @@ class MainCalendarController extends Component {
         case types.MONTH:
             calElem = (
                 <Month
+                    navEditEvent={navEditEvent}
                     mode={mode}
                     events={events}
                     id={date.month()}
@@ -236,6 +247,7 @@ class MainCalendarController extends Component {
         //     followed by the correct main calendar element
         return (
             <MainCalendar
+                edit={mode === modes.EDIT}
                 type={type}
                 types={types}
                 calElem={calElem}

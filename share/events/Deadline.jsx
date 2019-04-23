@@ -166,11 +166,23 @@ class Deadline {
 
     /**
      * removes an event from createdEvents
-     * @param {*} event the event to be removed
+     * @param {integer} id the event to be removed
      */
-    removeEvent(event) {
-        const toRemove = this._createdEvents.findIndex(item => item === event);
+    removeEvent(id) {
+        const toRemove = this._createdEvents.findIndex(item => item.id === id);
         this._createdEvents.splice(toRemove);
+    }
+
+    /**
+     * clones the deadline
+     * returns a new Deadline
+     */
+    clone() {
+        const dead = new Deadline(this.name, this.description, this.deadline, this.totalWorkTime,
+            this.minEventTime, this.maxEventTime, this.minBreak, this.startWorkTime,
+            this.location, this.useLocation);
+        dead._createdEvents = this._createdEvents;
+        return dead;
     }
 
     /**

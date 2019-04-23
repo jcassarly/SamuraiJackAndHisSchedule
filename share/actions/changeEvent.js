@@ -14,7 +14,11 @@ function moveEvent(id, amount, type) {
     };
 }
 
-function editEvent(id, 
+/**
+ * Edits an existing event by replacing it with a new one with new fields
+ */
+function editEvent(
+    id, 
     name,
     description,
     eventStart,
@@ -22,6 +26,8 @@ function editEvent(id,
     location,
     locked,
     notifications, // TODO: use notification object here instead
+    parent,
+    frequency,
     color) {
     return {
         type: EDIT_EVENT,
@@ -34,6 +40,8 @@ function editEvent(id,
             location,
             locked,
             notifications,
+            parent,
+            frequency,
             color,
         },
     };

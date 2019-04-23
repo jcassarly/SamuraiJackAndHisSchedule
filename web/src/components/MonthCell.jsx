@@ -11,7 +11,7 @@ import '../styles/MonthCell.css';
  */
 const MonthCell = (props) => {
     // see propTypes
-    const { current, date, events } = props;
+    const { current, date, events, navEditEvent } = props;
 
     // If the cell does not correspond to the current month, it greys out the date number
     // Displays every event that day in a list inside the cell, overflow is cut off
@@ -19,7 +19,7 @@ const MonthCell = (props) => {
         <div className={`monthCell ${(current ? 'current' : '')}`}>
             <div className="monthDay">{date}</div>
             {events.map(event => (
-                <div key={event.name} style={{ backgroundColor: ColorEnum.backColor[event.color], color: ColorEnum.textColor[event.color] }} className="monthEvent">{event.name}</div>
+                <button type="button" key={event.name} onClick={() => { navEditEvent(event.id); }} style={{ backgroundColor: ColorEnum.backColor[event.color], color: ColorEnum.textColor[event.color] }} className="monthEvent event">{event.name}</button>
             ))}
         </div>
     );
@@ -34,6 +34,7 @@ MonthCell.propTypes = {
     current: PropTypes.bool,
     date: PropTypes.number.isRequired,
     events: PropTypes.arrayOf(PropTypes.instanceOf(Event)),
+    navEditEvent: PropTypes.func.isRequired,
 };
 
 // prop defualts

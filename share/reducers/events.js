@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
-import { MOVE_EVENT, CHANGE_START, CHANGE_END, EDIT_EVENT} from '../actions/changeEvent';
+import {
+    MOVE_EVENT, CHANGE_START, CHANGE_END, EDIT_EVENT,
+} from '../actions/changeEvent';
 import {
     CUT,
     COPY,
@@ -9,7 +11,7 @@ import {
 } from '../actions/clipboard';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
-import { deserialize } from '../events/Event';
+import { deserialize, RecurringEvent, Event } from '../events/Event';
 import { deserializeDeadline } from '../events/Deadline';
 import { loadState } from './persistState';
 
@@ -179,7 +181,7 @@ const reducer = (state = initialState, action) => {
             break;
         }
         // edits an existing event
-        case EDIT_EVENT: 
+        case EDIT_EVENT: {
             const {
                 id,
                 name,
@@ -189,29 +191,49 @@ const reducer = (state = initialState, action) => {
                 location,
                 locked,
                 notifications,
+                parent,
+                frequency,
                 color,
-            }
+            } = action.payload;
             if (!newState.events[id]) {
                 break;
             }
-            const newEvent = newState.events[id].clone();
-            newEvent.name = name;
-            newEvent.description = description;
-            if (eventStart.isSameOrAfter(newEvent.endTime)) {
-                newEvent.endTime = eventEnd;
-                newEvent.startTime = eventStart;
+            if (!frequency) {
+                const newEvent = new Event(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications,
+                    parent,
+                    color,
+                );
+                newEvent.id = id;
+                newState.events[id] = newEvent;
             } else {
-                newEvent.startTime = eventStart;
-                newEvent.endTime = eventEnd;
+                const newEvent = new RecurringEvent(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications,
+                    color,
+                    frequency,
+                    null,
+                );
+                newEvent.id = id;
+                const oldEv = newState.events[id];
+                if (oldEv.parent) {
+                    newState.deadlines[oldEv.parent.id] = oldEv.parent.clone().removeEvent(id);
+                }
+                newState.events[id] = newEvent;
             }
-            newEvent.location = location;
-            newEvent.locked = locked;
-            newEvent.notifications = notifications;
-            newEvent.color = color;
-            newEvent.id = id;
-            newState.events[id] = newEvent;
             break;
-
+        }
         case MOVE_EVENT: {
             const { id, amount, type } = action.payload;
             if (!newState.events[id]) {

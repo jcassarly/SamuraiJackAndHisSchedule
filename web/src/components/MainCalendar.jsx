@@ -9,6 +9,7 @@ import '../styles/MainCalendar.css';
  */
 const MainCalendar = (props) => {
     const {
+        edit,
         type,
         types,
         pos,
@@ -43,7 +44,7 @@ const MainCalendar = (props) => {
     //     followed by a Toolbar element,
     //     followed by the correct main calendar element
     return (
-        <div className="calHome">
+        <div className={`calHome ${edit ? '' : 'noEdit'}`}>
             {children}
             {calElem}
         </div>
@@ -51,6 +52,7 @@ const MainCalendar = (props) => {
 };
 
 /**
+ * edit: whether the edit button is selected in toolbar
  * events: An array of events passed in by redux: state.events.events
  * navNewEvent: A handler for navigating to the new event form, gets passed in by the
  *     App component
@@ -62,6 +64,7 @@ const MainCalendar = (props) => {
  * paste: A handler for pasting an event
  */
 MainCalendar.propTypes = {
+    edit: PropTypes.bool.isRequired,
     type: PropTypes.number.isRequired,
     types: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     pos: PropTypes.number.isRequired,

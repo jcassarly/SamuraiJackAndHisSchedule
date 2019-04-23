@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import {
     NameInput,
@@ -16,27 +15,25 @@ import {
 import InputForm from '../../components/InputForm';
 import FormHelper from '../../components/FormHelper';
 import { editEvent } from '../actions/changeEvent';
-import { Event, RecurringEvent } from '../events/Event';
+import { Event } from '../events/Event';
 import Frequency from '../events/Frequency';
 import DateErrorMessage from '../../components/ErrorMessage';
-import ColorEnum from '../ColorEnum';
 
 /**
  * React Component that handles standard event input gathering
  */
-class StandardEventForm extends React.Component {
+class EditEventForm extends React.Component {
     /**
      * Create a form to get input for a standard event
      * @param {func}   props.returnHome  a function to send the user back to home screen
      * @param {func}   props.editEvent a function to edit an event in the redux store
      * @param          props.originalEventId the id of the event being edited
-     * @param          
      * @param {string} props.title       the name of the event form
      *                                   false if it should appear
      */
     constructor(props) {
         super(props);
-        const { title } = this.props;
+        const { title, events, id } = this.props;
         this.state = {
             title,
             name: events[id].name,
@@ -44,11 +41,12 @@ class StandardEventForm extends React.Component {
             eventStart: events[id].startTime,
             eventEnd: events[id].endTime,
             location: events[id].location,
-            frequency: '',
-            notifications: events[id].notifications.notificationType,
-            notificationTime: events[id].notifications.notificationTime,
+            frequency: events[id].frequency,
+            notifications: events[id].notifications,
+            notificationTime: 15,
             color: events[id].color,
-            locked: true,
+            locked: events[id].locked,
+            parent: events[id].parent,
             error: false,
             errorMsg: 'No Error',
         };
@@ -68,10 +66,9 @@ class StandardEventForm extends React.Component {
             returnHome: PropTypes.func.isRequired,
             editEvent: PropTypes.func.isRequired,
             title: PropTypes.string,
-            originalEventId: PropTypes.integer,
+            id: PropTypes.number.isRequired,
             events: PropTypes.objectOf(PropTypes.instanceOf(Event)).isRequired,
         };
-        
     }
 
     /**
@@ -144,18 +141,20 @@ class StandardEventForm extends React.Component {
             notifications,
             color,
             frequency,
+            parent,
         } = this.state;
+        const { editEvent } = this.props;
 
         const {
             returnHome,
+            id,
         } = this.props;
 
-        // attempt to create the new event and add it to the redux store
-        let evt = null;
         try {
-            // create a single event if frequency is just once
-            if (frequency === '') {
-                evt = new Event(
+            // add a recurring event in place of this event
+            if (frequency) {
+                editEvent(
+                    id,
                     name,
                     description,
                     eventStart,
@@ -163,34 +162,34 @@ class StandardEventForm extends React.Component {
                     location,
                     locked,
                     notifications, // TODO: use notification object here instead
-                    null,
+                    parent,
+                    frequency,
                     color,
                 );
-            // create a recurring event otherwise with the chosen frequency
+            // add a singular event in place of this event
+            // eslint-disable-next-line react/destructuring-assignment
             } else {
-                evt = new RecurringEvent(
+                editEvent(
+                    id,
                     name,
                     description,
                     eventStart,
                     eventEnd,
                     location,
                     locked,
-                    notifications,
-                    color,
-                    frequency,
+                    notifications, // TODO: use notification object here instead
+                    parent,
                     null,
-                ); // TODO: handle custom frequency
+                    color,
+                );
             }
-
-            // add the Event to the redux store
-            // eslint-disable-next-line react/destructuring-assignment
-            this.props.createEvent(evt);
 
             // send the user back to home screen
             returnHome();
 
         // if creating and adding the event failed, show an error message on the next render
         } catch (e) {
+            console.error(e);
             this.setState({
                 error: true,
                 errorMsg: e.message,

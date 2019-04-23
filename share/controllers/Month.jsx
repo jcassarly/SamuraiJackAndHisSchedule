@@ -14,7 +14,7 @@ import Month from '../../components/Month';
  * dates not corresponding to the current month are grayed out
  * displays the 6 weeks before and after the current month for navigation purposes
  */
-function createDayList(date, events) {
+function createDayList(date, events, navEditEvent) {
     // Finds the start of the month, then finds 6 weeks prior, then gets the start of that week
     const currDate = date.clone().startOf('month').subtract(6, 'weeks').startOf('week');
 
@@ -28,6 +28,7 @@ function createDayList(date, events) {
         // adds a MonthCell component corresponding to the current date with relevent events
         // current is set to true if the date corresponds to the current month
         dates.push(<MonthCell
+            navEditEvent={navEditEvent}
             key={currDate.toDate()}
             date={currDate.date()}
             current={currDate.month() === date.month()}
@@ -44,17 +45,19 @@ class MonthController extends Component {
      * used by react
      */
     shouldComponentUpdate(nextProps) {
-        const { month, events } = this.props;
-        return nextProps.month.diff(month, 'months') !== 0 || !_.isEqual(events, nextProps.events);
+        const { month, events, navEditEvent } = this.props;
+        return nextProps.month.diff(month, 'months') !== 0
+            || !_.isEqual(events, nextProps.events)
+            || navEditEvent.toString() !== nextProps.navEditEvent.toString();
     }
 
     render() {
         // see proptypes
-        const { month, events } = this.props;
+        const { month, events, navEditEvent } = this.props;
         // uses createDayList to add the MonthCell grid to the calendar
         return (
             <Month>
-                {createDayList(month, events)}
+                {createDayList(month, events, navEditEvent)}
             </Month>
         );
     }
@@ -63,10 +66,12 @@ class MonthController extends Component {
 /**
  * month: the current month being displayed
  * events: an array of events to display
+ * navEditEvent: function to navigate to editing an event
  */
 MonthController.propTypes = {
     month: PropTypes.instanceOf(moment).isRequired,
     events: PropTypes.arrayOf(PropTypes.instanceOf(Event)).isRequired,
+    navEditEvent: PropTypes.func.isRequired,
 };
 
 export default MonthController;

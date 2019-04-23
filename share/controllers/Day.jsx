@@ -23,6 +23,7 @@ class DayController extends Component {
      * cut: handler to cut an event
      * copy: handler to copy an event
      * paste: handler to paste an event
+     * navEditEvent: the handler to navigate to editing an event
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -34,6 +35,7 @@ class DayController extends Component {
         cut: PropTypes.func.isRequired,
         copy: PropTypes.func.isRequired,
         paste: PropTypes.func.isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
 
@@ -194,10 +196,12 @@ class DayController extends Component {
             day,
             events,
             mode,
+            navEditEvent,
         } = this.props;
 
         return (
             <Day
+                navEditEvent={navEditEvent}
                 tool={mode === modes.DRAG_DROP || mode === modes.CUT || mode === modes.COPY}
                 pasting={mode === modes.PASTE}
                 resizing={mode === modes.RESIZE}

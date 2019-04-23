@@ -30,6 +30,7 @@ class Day extends Component {
      * pasteClose: returns a handler for paste events
      * DayEvents: the component to render the events
      * hours: an array of hours with the hour and unix timestamp
+     * navEditEvents: navigate to editing the event
      */
     static propTypes = {
         tool: PropTypes.bool.isRequired,
@@ -51,6 +52,7 @@ class Day extends Component {
             hour: PropTypes.number,
             unix: PropTypes.number,
         })).isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -97,6 +99,7 @@ class Day extends Component {
             // components to render
             DayEvents,
             hours,
+            navEditEvent,
         } = this.props;
 
         // pass in web specific functions to help with handlers
@@ -132,6 +135,7 @@ class Day extends Component {
                 onTouchCancel={onMouseUp}
             >
                 <DayEvents
+                    navEditEvent={navEditEvent}
                     day={day}
                     events={events}
                     resizing={resizing}
