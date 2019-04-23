@@ -37,6 +37,7 @@ function ToolbarController(props) {
         );
     }
 
+    // add the sidmenu to the toolbar last so it shows up on the right
     buttons.push(
         <ToolbarSideMenu key="side-menu" type="button" onClick={toggleSideMenu}>
             <BaseElem>
