@@ -25,3 +25,7 @@
     background-color: blue;
     border-radius: 0.5em;
 }
+
+.monthCell .monthEvent.editing {
+    cursor: pointer;
+}

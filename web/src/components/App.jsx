@@ -1,73 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import '../styles/App.css';
-import MainCalendar from './MainCalendar';
-import ChooseEventType from './ChooseEventType';
-import SettingsForm from './SettingsForm';
 
 /**
  * Primary toplevel app component.
  * renders different toplevel components based on the nav state.
  */
-class App extends Component {
-    /**
-     * App component keeps track of the current navigation in state.nav
-     * default on page startup is main
-     * see pickComp for the list of all nav states
-     */
-    state = {
-        nav: 'main',
-    }
+const App = (props) => {
+    const {
+        children,
+        onClick,
+        onKeyPress,
+    } = props;
+    return (
+        <div
+            id="main"
+            className="app"
+            onClick={onClick}
+            onKeyPress={onKeyPress}
+            role="button"
+            tabIndex={0}
+        >
+            {children}
+        </div>
+    );
+};
 
-    /**
-     * Navigate to the createEvent form
-     */
-    navNewEvent = () => {
-        this.setState({ nav: 'createEvent' });
-    }
+App.propTypes = {
+    children: PropTypes.node.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onKeyPress: PropTypes.func.isRequired,
+};
 
-    /**
-     * Navigate to the SettingsForm
-     */
-    navSettings = () => {
-        this.setState({ nav: 'settings' });
-        console.log('to Settings Menu');
-    }
-
-    /**
-     * Navigate to the main calendar view
-     */
-    returnHome = () => {
-        this.setState({ nav: 'main' });
-    }
-
-    /**
-     * Helper function, picks the toplevel element
-     * @param {nav} the component to navigate to
-     * Returns the toplevel element
-     */
-    pickComp = (nav) => {
-        switch (nav) {
-        case 'createEvent':
-            return <ChooseEventType returnHome={this.returnHome} />;
-        case 'settings':
-            return <SettingsForm returnHome={this.returnHome} />;
-        case 'main':
-        default:
-            return <MainCalendar navNewEvent={this.navNewEvent} navSettings={this.navSettings} />;
-        }
-    }
-
-    /**
-     * Main render function, renders a toplevel component based on the current nav state
-     */
-    render() {
-        const { nav } = this.state;
-        return (
-            <div className="app">
-                {this.pickComp(nav)}
-            </div>
-        );
-    }
-}
 export default App;

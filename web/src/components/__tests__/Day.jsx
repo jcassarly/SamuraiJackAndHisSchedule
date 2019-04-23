@@ -4,8 +4,6 @@ import moment from 'moment-timezone';
 import Day from '../Day';
 import { Event } from '../../events/Event';
 
-jest.mock('../../em2px');
-
 const nonDaylight = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 const daylight = moment.tz('2019-03-10T08:00:00Z', 'America/New_York');
 const daylightEnd = moment.tz('2019-11-03T08:00:00Z', 'America/New_York');

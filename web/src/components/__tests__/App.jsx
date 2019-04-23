@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { render, fireEvent, cleanup } from 'react-testing-library';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -7,8 +7,6 @@ import { createStore } from 'redux';
 import App from '../App';
 import rootReducer from '../../reducers/index';
 import { EventEnum } from '../ChooseEventType';
-
-jest.mock('../../em2px');
 
 const store = createStore(rootReducer);
 

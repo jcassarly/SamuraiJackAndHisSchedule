@@ -4,8 +4,6 @@ import moment from 'moment-timezone';
 import Month from '../Month';
 import { Event } from '../../events/Event';
 
-jest.mock('../../em2px');
-
 const date = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 test('renders a month normally', () => {
     const month = shallow(<Month month={date} events={[]} />);

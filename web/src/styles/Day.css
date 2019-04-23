@@ -1,5 +1,5 @@
 .calDay {
-    overflow: scroll;
+    overflow: auto;
 }
 
 .calDay.tool .dayEvents, .calDay.paste {
@@ -8,6 +8,7 @@
 }
 
 .calDay .dayEvents {
+    cursor: default;
     position: relative;
     width: 100%;
 }
@@ -46,5 +47,5 @@
 }
 
 .calHours > .evHour {
-    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
 }

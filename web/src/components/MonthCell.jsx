@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ColorEnum from './ColorEnum';
-import { Event } from '../events/Event';
+import ColorEnum from '../share/ColorEnum';
+import { Event } from '../share/events/Event';
 
 import '../styles/MonthCell.css';
 
@@ -11,7 +11,13 @@ import '../styles/MonthCell.css';
  */
 const MonthCell = (props) => {
     // see propTypes
-    const { current, date, events } = props;
+    const {
+        current,
+        date,
+        events,
+        navEditEvent,
+        editing,
+    } = props;
 
     // If the cell does not correspond to the current month, it greys out the date number
     // Displays every event that day in a list inside the cell, overflow is cut off
@@ -19,7 +25,18 @@ const MonthCell = (props) => {
         <div className={`monthCell ${(current ? 'current' : '')}`}>
             <div className="monthDay">{date}</div>
             {events.map(event => (
-                <div key={event.name} style={{ backgroundColor: ColorEnum.backColor[event.color], color: ColorEnum.textColor[event.color] }} className="monthEvent">{event.name}</div>
+                <button
+                    type="button"
+                    key={event.name}
+                    onClick={() => { navEditEvent(event.id); }}
+                    style={{
+                        backgroundColor: ColorEnum.backColor[event.color],
+                        color: ColorEnum.textColor[event.color],
+                    }}
+                    className={`monthEvent ${editing ? 'editing' : ''}`}
+                >
+                    {event.name}
+                </button>
             ))}
         </div>
     );
@@ -29,11 +46,14 @@ const MonthCell = (props) => {
  * current: whether the date corresponds to the currently viewed month
  * date: the number of the date to be displayed by the cell
  * events: a list of events that happend on that date
+ * editing: whether the user is currently trying to edit an event
  */
 MonthCell.propTypes = {
     current: PropTypes.bool,
     date: PropTypes.number.isRequired,
     events: PropTypes.arrayOf(PropTypes.instanceOf(Event)),
+    navEditEvent: PropTypes.func.isRequired,
+    editing: PropTypes.bool.isRequired,
 };
 
 // prop defualts

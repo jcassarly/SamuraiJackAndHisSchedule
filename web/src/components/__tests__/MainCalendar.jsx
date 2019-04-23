@@ -6,8 +6,6 @@ import moment from 'moment-timezone';
 import MainCalendar from '../MainCalendar';
 import { Settings } from '../../events/Settings';
 
-jest.mock('../../em2px');
-
 const currDate = new Date('2019-03-19T08:00:00Z');
 moment.now = () => currDate;
 const navNewEvent = jest.fn(() => {});

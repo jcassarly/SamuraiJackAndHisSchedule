@@ -23,7 +23,8 @@
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --open --config ./webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "test": "jest --coverage --runInBand"
+    "test": "jest --coverage --runInBand",
+    "testw": "jest --watch"
   },
   "jest": {
     "testURL": "https://localhost",
