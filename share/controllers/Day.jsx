@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import moment from 'moment-timezone';
 
@@ -29,6 +30,7 @@ class DayController extends Component {
      *     used in week view
      *   event: the event being dragged
      *   selected: whether this day it the one dragging it
+     * snapToGrid: the snap to grid amount
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -48,6 +50,7 @@ class DayController extends Component {
             selected: PropTypes.bool,
             diff: PropTypes.number,
         }),
+        snapToGrid: PropTypes.number.isRequired,
     }
 
     static defaultProps = {
@@ -210,6 +213,7 @@ class DayController extends Component {
             mode,
             notifyDrag,
             draggingEvent,
+            snapToGrid,
         } = this.props;
         // the user isn't dragging or resizing an event
         if (selectedEvent == null) {
@@ -230,16 +234,16 @@ class DayController extends Component {
         if (mode === modes.DRAG_DROP) {
             // move the event some number of minutes based on mouse move
             moveEvent(selectedEvent.id, draggingEvent.diff, 'days');
-            moveEvent(selectedEvent.id, timeDiff, 'minutes');
+            moveEvent(selectedEvent.id, timeDiff, 'minutes', snapToGrid);
         } else if (mode === modes.RESIZE) {
             if (startSelected) {
                 // change the start time based on how the user resized the event
                 const startTime = selectedEvent.startTime.clone().add(timeDiff, 'minutes');
-                changeStart(selectedEvent.id, startTime);
+                changeStart(selectedEvent.id, startTime, snapToGrid);
             } else {
                 // change the end time based on how the user resized the event
                 const endTime = selectedEvent.endTime.clone().add(timeDiff, 'minutes');
-                changeEnd(selectedEvent.id, endTime);
+                changeEnd(selectedEvent.id, endTime, snapToGrid);
             }
         }
         finish(...args);
@@ -282,4 +286,10 @@ class DayController extends Component {
     }
 }
 
-export default DayController;
+const mapStateToProps = state => (
+    {
+        snapToGrid: state.settings.settings.snapToGrid,
+    }
+);
+
+export default connect(mapStateToProps)(DayController);

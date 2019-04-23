@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
+import { connect } from 'react-redux';
 
 import { Event } from '../events/Event';
 import DayEvents from '../../components/DayEvents';
@@ -20,6 +21,7 @@ class DayEventsController extends Component {
      * pxToHours: a method which converts from pixels to hours
      * draggingEvent: info about whether there is an event being dragged
      *     and whether this day controls it, see Day class
+     * snapToGrid: the snap to grid amount.
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -38,6 +40,7 @@ class DayEventsController extends Component {
             selected: PropTypes.bool,
             diff: PropTypes.number,
         }),
+        snapToGrid: PropTypes.number.isRequired,
     }
 
     static defaultProps = {
@@ -63,6 +66,7 @@ class DayEventsController extends Component {
             clipboardClosure,
             pxToHours,
             draggingEvent,
+            snapToGrid,
         } = this.props;
 
         // start and end of the day
@@ -109,16 +113,24 @@ class DayEventsController extends Component {
 
                     // if the event is being modified by the user with drag/drop or resize
                     if (selectedEvent && selectedEvent.id === event.id) {
+                        let diff;
                         if (!resizing || startSelected) {
                             // move the start to the correct position
                             startPos += pxToHours(mouseMove);
+                            diff = Math.round(startPos * 60 / snapToGrid)
+                                / 60 * snapToGrid - startPos;
+                            startPos += diff;
                         }
                         // If the event is being resized
                         if (resizing) {
                             if (startSelected) {
+                                length -= diff;
                                 length -= pxToHours(mouseMove);
                             } else {
                                 length += pxToHours(mouseMove);
+                                diff = Math.round((startPos + length) * 60 / snapToGrid)
+                                    / 60 * snapToGrid - startPos - length;
+                                length += diff;
                             }
                         }
                     }
@@ -173,4 +185,10 @@ class DayEventsController extends Component {
     }
 }
 
-export default DayEventsController;
+const mapStateToProps = state => (
+    {
+        snapToGrid: state.settings.settings.snapToGrid,
+    }
+);
+
+export default connect(mapStateToProps)(DayEventsController);
