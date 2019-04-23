@@ -72,6 +72,7 @@ class DayEventsController extends Component {
             mouseDownClosureResize,
             clipboardClosure,
             pxToHours,
+            snapToGrid,
         } = this.props;
 
         // convert to hours, for positioning of the element
@@ -152,7 +153,6 @@ class DayEventsController extends Component {
             events,
             draggingEvent,
             selectedEvent,
-            snapToGrid,
         } = this.props;
 
         // start and end of the day
