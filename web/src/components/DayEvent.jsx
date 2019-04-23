@@ -27,8 +27,8 @@ const DayEvent = (props) => {
             }}
             onMouseDown={onMouseDown}
             onTouchStart={onMouseDown}
-            onClick={() => {
-                onClip();
+            onClick={(...args) => {
+                onClip(...args);
                 navEditEvent(event.id);
             }}
         >

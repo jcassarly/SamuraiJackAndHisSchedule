@@ -220,7 +220,7 @@ class SettingsForm extends React.Component {
                         description="Time Before Due"
                         onChange={this.handleInputChangeNum}
                     >
-                        in Hours
+                        in Minutes
                         <BaseElem>
                             Default amount of time before a task is due when using Auto-Scheduler
                         </BaseElem>
@@ -231,7 +231,7 @@ class SettingsForm extends React.Component {
                         description="Time to Complete"
                         onChange={this.handleInputChangeNum}
                     >
-                        in Hours
+                        in Minutes
                         <BaseElem>
                             Default total work time to complete a task used by the Auto-Scheduler
                         </BaseElem>

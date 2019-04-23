@@ -10,14 +10,14 @@ class Settings {
         this.locked = true;
         this.language = 'English';
         this.snapToGrid = 15;
-        // the below value is in hours.
-        this.timeBeforeDue = 168;
+        // the below value is in minutes
+        this.timeBeforeDue = 300;
         // the following three values are in minutes
         this.minWorkTime = 15;
         this.maxWorkTime = 120;
         this.minBreakTime = 15;
-        // the below value is in hours
-        this.timeToComplete = 42;
+        // the below value is in minutes
+        this.timeToComplete = 60;
     }
 
     // Essentially an overloaded constructor

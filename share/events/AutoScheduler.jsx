@@ -516,7 +516,7 @@ function createEvents(oldSchedule, deadline, givenValidTimes) {
 
         // Create a new event with the specified duration
         const debugEvent = new Event(deadline.name, deadline.description, moment(range.start),
-            moment(range.start).add(optimalDurations[index], 'minutes'), deadline.location, false, deadline.notifications, deadline, ColorEnum.BLUE_BLACK);
+            moment(range.start).add(optimalDurations[index], 'minutes'), deadline.location, false, deadline.notifications, deadline, deadline.color);
 
         // Add event to the scheudle and the deadline's list of child events
         newSchedule.push(debugEvent);
