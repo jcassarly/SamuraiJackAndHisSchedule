@@ -302,7 +302,6 @@ function FrequencySelect(props) {
         { value: Frequency.freqEnum.WEEKLY, contents: 'Weekly' },
         { value: Frequency.freqEnum.MONTHLY, contents: 'Monthly' },
         { value: Frequency.freqEnum.YEARLY, contents: 'Yearly' },
-        { value: Frequency.freqEnum.CUSTOM, contents: 'Custom' },
     ];
 
     return (
