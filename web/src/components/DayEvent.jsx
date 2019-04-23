@@ -18,7 +18,6 @@ const DayEvent = (props) => {
     return (
         <button
             type="button"
-            className="event"
             style={{
                 top: `${startHours * 3}em`,
                 height: `${length * 3}em`,

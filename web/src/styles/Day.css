@@ -8,6 +8,7 @@
 }
 
 .calDay .dayEvents {
+    cursor: default;
     position: relative;
     width: 100%;
 }

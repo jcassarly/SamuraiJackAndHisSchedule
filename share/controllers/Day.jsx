@@ -267,7 +267,10 @@ class DayController extends Component {
         return (
             <Day
                 navEditEvent={navEditEvent}
-                tool={mode === modes.DRAG_DROP || mode === modes.CUT || mode === modes.COPY}
+                tool={mode === modes.EDIT
+                        || mode === modes.DRAG_DROP
+                        || mode === modes.CUT
+                        || mode === modes.COPY}
                 pasting={mode === modes.PASTE}
                 resizing={mode === modes.RESIZE}
                 startSelected={startSelected}

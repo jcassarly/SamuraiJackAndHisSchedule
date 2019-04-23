@@ -63,6 +63,7 @@ class WeekController extends Component {
             cut,
             copy,
             paste,
+            navEditEvent,
         } = this.props;
         const {
             initialPos,
@@ -80,6 +81,7 @@ class WeekController extends Component {
                     const notifyDrag = this.onDragClose(index);
                     return (
                         <Day
+                            navEditEvent={navEditEvent}
                             // eslint-disable-next-line react/no-array-index-key
                             key={`${unix}-${i}`}
                             day={index === -1 ? start : start.clone().add(index, 'day').startOf('day')}
@@ -117,6 +119,7 @@ class WeekController extends Component {
  * cut: handler to cut an event
  * copy: handler to copy an event
  * paste: handler to paste an event
+ * navEditEvent: navigate to edit an event
  */
 WeekController.propTypes = {
     week: PropTypes.instanceOf(moment).isRequired,
@@ -128,6 +131,7 @@ WeekController.propTypes = {
     cut: PropTypes.func.isRequired,
     copy: PropTypes.func.isRequired,
     paste: PropTypes.func.isRequired,
+    navEditEvent: PropTypes.func.isRequired,
 };
 
 export default WeekController;

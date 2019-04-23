@@ -45,7 +45,7 @@ class LocationEventFormController extends React.Component {
             frequency: '',
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
-            color: ColorEnum.BLUE_BLACK,
+            color: ColorEnum.BLUE_WHITE,
             error: false,
             errorMsg: 'No Error',
         };

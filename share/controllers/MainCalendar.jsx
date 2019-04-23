@@ -185,7 +185,6 @@ class MainCalendarController extends Component {
 
         let { events, navEditEvent } = this.props;
         if (mode !== modes.EDIT) {
-            console.log(mode);
             navEditEvent = () => {};
         }
         // converts to an array
@@ -232,14 +231,10 @@ class MainCalendarController extends Component {
         case types.MONTH:
             calElem = (
                 <Month
-                    navEditEvent={navEditEvent}
-                    mode={mode}
-                    events={events}
-                    id={date.month()}
                     month={date}
-                    cut={cut}
-                    copy={copy}
-                    paste={paste}
+                    events={events}
+                    navEditEvent={navEditEvent}
+                    editing={mode === modes.EDIT}
                 />
             );
         }
@@ -249,7 +244,6 @@ class MainCalendarController extends Component {
         //     followed by the correct main calendar element
         return (
             <MainCalendar
-                edit={mode === modes.EDIT}
                 type={type}
                 types={types}
                 calElem={calElem}

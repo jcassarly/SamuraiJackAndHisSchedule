@@ -47,7 +47,7 @@ class StandardEventForm extends React.Component {
             frequency: '',
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
-            color: ColorEnum.BLUE_BLACK,
+            color: ColorEnum.BLUE_WHITE,
             locked: true,
             error: false,
             errorMsg: 'No Error',

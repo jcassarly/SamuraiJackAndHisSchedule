@@ -33,7 +33,7 @@ const CalHeaderController = (props) => {
         break;
     case types.MONTH:
     default:
-        format = 'MMMM';
+        format = 'MMMM (YYYY)';
     }
 
     return (

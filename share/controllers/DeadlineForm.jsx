@@ -42,7 +42,7 @@ class DeadlineForm extends React.Component {
             maxTime: props.settings.maxWorkTime,
             minBreak: props.settings.minBreakTime,
             totalTime: props.settings.timeToComplete,
-            color: ColorEnum.BLUE_BLACK,
+            color: ColorEnum.BLUE_WHITE,
             error: false,
             errorMsg: 'No Error',
         };

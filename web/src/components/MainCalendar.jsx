@@ -9,7 +9,6 @@ import '../styles/MainCalendar.css';
  */
 const MainCalendar = (props) => {
     const {
-        edit,
         type,
         types,
         pos,
@@ -44,7 +43,7 @@ const MainCalendar = (props) => {
     //     followed by a Toolbar element,
     //     followed by the correct main calendar element
     return (
-        <div className={`calHome ${edit ? '' : 'noEdit'}`}>
+        <div className="calHome">
             {children}
             {calElem}
         </div>
@@ -64,7 +63,6 @@ const MainCalendar = (props) => {
  * paste: A handler for pasting an event
  */
 MainCalendar.propTypes = {
-    edit: PropTypes.bool.isRequired,
     type: PropTypes.number.isRequired,
     types: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     pos: PropTypes.number.isRequired,
