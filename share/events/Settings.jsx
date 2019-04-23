@@ -213,6 +213,9 @@ class Settings {
  * Returns the Settings object parsed from the jsonStr
  */
 function deserializeSettings(jsonStr) {
+    if (jsonStr === '{}') {
+        return new Settings();
+    }
     const json = JSON.parse(jsonStr);
 
     return Settings.createSettingsfromInfo(
