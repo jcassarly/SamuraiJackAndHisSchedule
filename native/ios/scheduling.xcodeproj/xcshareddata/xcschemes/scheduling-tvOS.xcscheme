@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "SamuraiJackAndHisSchedule-tvOS.app"
-               BlueprintName = "SamuraiJackAndHisSchedule-tvOS"
-               ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+               BuildableName = "scheduling-tvOS.app"
+               BlueprintName = "scheduling-tvOS"
+               ReferencedContainer = "container:scheduling.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "SamuraiJackAndHisSchedule-tvOSTests.xctest"
-               BlueprintName = "SamuraiJackAndHisSchedule-tvOSTests"
-               ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+               BuildableName = "scheduling-tvOSTests.xctest"
+               BlueprintName = "scheduling-tvOSTests"
+               ReferencedContainer = "container:scheduling.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "SamuraiJackAndHisSchedule-tvOSTests.xctest"
-               BlueprintName = "SamuraiJackAndHisSchedule-tvOSTests"
-               ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+               BuildableName = "scheduling-tvOSTests.xctest"
+               BlueprintName = "scheduling-tvOSTests"
+               ReferencedContainer = "container:scheduling.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "SamuraiJackAndHisSchedule-tvOS.app"
-            BlueprintName = "SamuraiJackAndHisSchedule-tvOS"
-            ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+            BuildableName = "scheduling-tvOS.app"
+            BlueprintName = "scheduling-tvOS"
+            ReferencedContainer = "container:scheduling.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "SamuraiJackAndHisSchedule-tvOS.app"
-            BlueprintName = "SamuraiJackAndHisSchedule-tvOS"
-            ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+            BuildableName = "scheduling-tvOS.app"
+            BlueprintName = "scheduling-tvOS"
+            ReferencedContainer = "container:scheduling.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "SamuraiJackAndHisSchedule-tvOS.app"
-            BlueprintName = "SamuraiJackAndHisSchedule-tvOS"
-            ReferencedContainer = "container:SamuraiJackAndHisSchedule.xcodeproj">
+            BuildableName = "scheduling-tvOS.app"
+            BlueprintName = "scheduling-tvOS"
+            ReferencedContainer = "container:scheduling.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

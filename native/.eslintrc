@@ -1,0 +1,14 @@
+{
+    "env": {
+        "jest": true
+    },
+    "parser": "babel-eslint",
+    "rules": {
+        "indent": ["error",4],
+        "react/jsx-indent": [4],
+        "react/jsx-indent-props": [4],
+        "no-underscore-dangle": "off",
+        "no-shadow": "off"
+    },
+    "extends": ["airbnb"]
+}

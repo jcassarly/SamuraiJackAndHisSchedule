@@ -1,4 +1,4 @@
-package com.samuraijackandhisschedule;
+package com.scheduling;
 
 import android.app.Application;
 
