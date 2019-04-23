@@ -32,11 +32,11 @@ class SettingsForm extends React.Component {
             location: props.settings.defaultLocation,
             notifications: props.settings.defaultNotificationType,
             notificationTime: props.settings.defaultNotificationTimeBefore,
-            snapToGrid: props.settings.defaultSnapToGrid,
+            snapToGrid: props.settings.snapToGrid,
             minBreak: props.settings.minBreakTime,
             minTime: props.settings.minWorkTime,
             maxTime: props.settings.maxWorkTime,
-            language: props.settings.defaultLanguage,
+            language: props.settings.language,
             duration: props.settings.eventLength,
             timeBeforeDue: props.settings.timeBeforeDue,
             timeToComplete: props.settings.timeToComplete,
@@ -143,6 +143,10 @@ class SettingsForm extends React.Component {
             timeToComplete,
         } = this.state;
 
+        const langOptions = [
+            { value: 'English', contents: 'English' },
+        ];
+
         // generate the input form based on the Settings input form in the design doc
         return (
             <InputForm onSubmit={this.handleSubmit} onBack={returnHome} title={title}>
@@ -224,9 +228,8 @@ class SettingsForm extends React.Component {
                         name="language"
                         value={language}
                         onChange={this.handleInputChange}
-                    >
-                        <option value="English">English</option>
-                    </SelectInput>
+                        options={langOptions}
+                    />
                 </SettingsSection>
 
                 <SettingsSection title="Events">
