@@ -5,6 +5,10 @@
     grid-template-rows: 3em 3em 1fr;
 }
 
+.calHome.noEdit .event {
+    cursor: default;
+}
+
 .calendarSlider {
     display: block;
     width: 100%;

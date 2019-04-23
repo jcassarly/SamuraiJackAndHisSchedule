@@ -10,6 +10,7 @@ import { serializeSyncPayload } from '../reducers/events';
 import MainCalendar from './MainCalendar';
 import ChooseEventType from './ChooseEventType';
 import SettingsForm from './SettingsForm';
+import EditEvent from './EditEventForm';
 import App from '../../components/App';
 import SideMenuController from './SideMenu';
 
@@ -44,6 +45,13 @@ class AppController extends Component {
     navSettings = () => {
         this.setState({ nav: 'settings' });
         console.log('to Settings Menu');
+    }
+
+    /**
+     * Navigate to the edit event form
+     */
+    navEditEvent = (id) => {
+        this.setState({ nav: 'editEvent', currId: id });
     }
 
     /**
@@ -93,17 +101,21 @@ class AppController extends Component {
      * Returns the toplevel element
      */
     pickComp = (nav) => {
+        const { currId } = this.state;
         switch (nav) {
         case 'createEvent':
             return <ChooseEventType returnHome={this.returnHome} />;
         case 'settings':
             return <SettingsForm returnHome={this.returnHome} />;
+        case 'editEvent':
+            return <EditEvent returnHome={this.returnHome} id={currId} />;
         case 'main':
         default:
             return (
                 <MainCalendar
                     navNewEvent={this.navNewEvent}
                     navSettings={this.navSettings}
+                    navEditEvent={this.navEditEvent}
                     toggleSideMenu={this.toggleSideMenu}
                 />
             );

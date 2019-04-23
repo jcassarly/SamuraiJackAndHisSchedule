@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { CREATE_EVENT, CREATE_DEADLINE_EVENT } from '../actions/createEvent';
-import { MOVE_EVENT, CHANGE_START, CHANGE_END } from '../actions/changeEvent';
+import {
+    MOVE_EVENT, CHANGE_START, CHANGE_END, EDIT_EVENT,
+} from '../actions/changeEvent';
 import {
     CUT,
     COPY,
@@ -9,7 +11,7 @@ import {
 } from '../actions/clipboard';
 import { SYNC_FROM } from '../actions/sync';
 import autoSchedule from '../events/AutoScheduler';
-import { deserialize } from '../events/Event';
+import { deserialize, RecurringEvent, Event } from '../events/Event';
 import { deserializeDeadline } from '../events/Deadline';
 import { loadState } from './persistState';
 
@@ -171,6 +173,60 @@ const reducer = (state = initialState, action) => {
                 newState.deadlines[state.maxDeadlineId] = action.payload.deadline;
                 newState.deadlines[state.maxDeadlineId].id = state.maxDeadlineId;
                 newState.maxDeadlineId = state.maxDeadlineId + 1;
+            }
+            break;
+        }
+        // edits an existing event
+        case EDIT_EVENT: {
+            const {
+                id,
+                name,
+                description,
+                eventStart,
+                eventEnd,
+                location,
+                locked,
+                notifications,
+                parent,
+                frequency,
+                color,
+            } = action.payload;
+            if (!newState.events[id]) {
+                break;
+            }
+            if (!frequency) {
+                const newEvent = new Event(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications,
+                    parent,
+                    color,
+                );
+                newEvent.id = id;
+                newState.events[id] = newEvent;
+            } else {
+                const newEvent = new RecurringEvent(
+                    name,
+                    description,
+                    eventStart,
+                    eventEnd,
+                    location,
+                    locked,
+                    notifications,
+                    color,
+                    frequency,
+                    null,
+                );
+                newEvent.id = id;
+                const oldEv = newState.events[id];
+                if (oldEv.parent) {
+                    newState.deadlines[oldEv.parent.id] = oldEv.parent.clone().removeEvent(id);
+                }
+                newState.events[id] = newEvent;
             }
             break;
         }

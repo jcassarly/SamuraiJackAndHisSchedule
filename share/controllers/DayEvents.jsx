@@ -31,6 +31,7 @@ class DayEventsController extends Component {
      * draggingEvent: info about whether there is an event being dragged
      *     and whether this day controls it, see Day class
      * snapToGrid: the snap to grid amount.
+     * navEditEvent: navigate to editing an event
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -50,6 +51,7 @@ class DayEventsController extends Component {
             diff: PropTypes.number,
         }),
         snapToGrid: PropTypes.number.isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -73,6 +75,7 @@ class DayEventsController extends Component {
             clipboardClosure,
             pxToHours,
             snapToGrid,
+            navEditEvent,
         } = this.props;
 
         // convert to hours, for positioning of the element
@@ -109,6 +112,7 @@ class DayEventsController extends Component {
         // the html to add for the event
         const eventHTML = [
             <DayEvent
+                navEditEvent={navEditEvent}
                 key={event.id}
                 startHours={startPos}
                 length={length}

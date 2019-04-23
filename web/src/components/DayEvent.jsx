@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -14,10 +12,13 @@ const DayEvent = (props) => {
         onMouseDown,
         onClip,
         event,
+        navEditEvent,
     } = props;
 
     return (
-        <div
+        <button
+            type="button"
+            className="event"
             style={{
                 top: `${startHours * 3}em`,
                 height: `${length * 3}em`,
@@ -26,10 +27,13 @@ const DayEvent = (props) => {
             }}
             onMouseDown={onMouseDown}
             onTouchStart={onMouseDown}
-            onClick={onClip}
+            onClick={() => {
+                onClip();
+                navEditEvent(event.id);
+            }}
         >
             {event.name}
-        </div>
+        </button>
     );
 };
 
@@ -46,6 +50,7 @@ DayEvent.propTypes = {
     onMouseDown: PropTypes.func.isRequired,
     onClip: PropTypes.func.isRequired,
     event: PropTypes.instanceOf(Event).isRequired,
+    navEditEvent: PropTypes.func.isRequired,
 };
 
 export default DayEvent;

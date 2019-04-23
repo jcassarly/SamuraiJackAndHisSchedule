@@ -33,6 +33,7 @@ class Day extends Component {
      * onlyHours: whether to only display the hours, used for week view.
      * draggingEvent: info about whether there is an event being dragged
      *     and whether this day controls it, see Day class
+     * navEditEvents: navigate to editing the event
      */
     static propTypes = {
         tool: PropTypes.bool.isRequired,
@@ -61,6 +62,7 @@ class Day extends Component {
             selected: PropTypes.bool,
             diff: PropTypes.number,
         }).isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -110,6 +112,7 @@ class Day extends Component {
             hours,
             onlyHours,
             draggingEvent,
+            navEditEvent,
         } = this.props;
 
         // pass in web specific functions to help with handlers
@@ -145,6 +148,7 @@ class Day extends Component {
                 onTouchCancel={onMouseUp}
             >
                 <DayEvents
+                    navEditEvent={navEditEvent}
                     day={day}
                     events={events}
                     resizing={resizing}

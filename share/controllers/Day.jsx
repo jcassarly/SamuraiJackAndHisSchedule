@@ -31,6 +31,7 @@ class DayController extends Component {
      *   event: the event being dragged
      *   selected: whether this day it the one dragging it
      * snapToGrid: the snap to grid amount
+     * navEditEvent: the handler to navigate to editing an event
      */
     static propTypes = {
         day: PropTypes.instanceOf(moment).isRequired,
@@ -51,6 +52,7 @@ class DayController extends Component {
             diff: PropTypes.number,
         }),
         snapToGrid: PropTypes.number.isRequired,
+        navEditEvent: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -259,10 +261,12 @@ class DayController extends Component {
             mode,
             onlyHours,
             draggingEvent,
+            navEditEvent,
         } = this.props;
 
         return (
             <Day
+                navEditEvent={navEditEvent}
                 tool={mode === modes.DRAG_DROP || mode === modes.CUT || mode === modes.COPY}
                 pasting={mode === modes.PASTE}
                 resizing={mode === modes.RESIZE}
