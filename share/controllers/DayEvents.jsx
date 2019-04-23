@@ -192,14 +192,11 @@ class DayEventsController extends Component {
                     event.frequency.timing,
                 );
 
-                console.log(event.inRangeOfEvent(virtualEnd));
-                console.log(event.inRangeOfEvent(virtualStart));
-
                 if (event.endTime.isBefore(dayEnd)
                         && event.inRangeOfEvent(virtualStart)
                         && event.isMultiDay()) {
                     htmlEvents.push(this.generateEventHTML(
-                        event.clone(),
+                        event,
                         virtualStart.clone(),
                         virtualEnd.clone(),
                         dayStart.clone(),
@@ -230,7 +227,7 @@ class DayEventsController extends Component {
                     // returns a correctly positioned div representing an event
                     // The events get positioned overtop of calHours
                     htmlEvents.push(this.generateEventHTML(
-                        event.clone(),
+                        event,
                         virtualStart.clone(),
                         virtualEnd.clone(),
                         dayStart.clone(),
@@ -240,7 +237,7 @@ class DayEventsController extends Component {
                 // returns a correctly positioned div representing an event
                 // The events get positioned overtop of calHours
                 htmlEvents.push(this.generateEventHTML(
-                    event.clone(),
+                    event,
                     virtualStart.clone(),
                     virtualEnd.clone(),
                     dayStart.clone(),

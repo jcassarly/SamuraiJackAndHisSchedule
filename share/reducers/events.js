@@ -102,8 +102,7 @@ function deserializeSyncPayload(events, deadlines) {
  * }
  */
 function serializeSyncPayload(events, deadlines, settings) {
-    // serialize the events\
-    console.log(events);
+    // serialize the events
     const eventsClone = {};
     Object.keys(events).forEach((key) => {
         eventsClone[key] = JSON.stringify(events[key].serialize());
@@ -177,6 +176,8 @@ const reducer = (state = initialState, action) => {
         }
         case MOVE_EVENT: {
             const { id, amount, type } = action.payload;
+            console.log(id);
+            console.log(newState.events);
             if (!newState.events[id]) {
                 break;
             }
