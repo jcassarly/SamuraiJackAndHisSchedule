@@ -41,7 +41,7 @@ class EditEventForm extends React.Component {
             eventStart: events[id].startTime,
             eventEnd: events[id].endTime,
             location: events[id].location,
-            frequency: events[id].frequency,
+            frequency: (events[id].frequency) ? events[id].frequency.timing : null,
             notifications: events[id].notifications,
             notificationTime: 15,
             color: events[id].color,
