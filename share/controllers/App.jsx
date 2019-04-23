@@ -62,11 +62,12 @@ class AppController extends Component {
     }
 
     handleKeyPress = (event) => {
+        const { nav } = this.state;
         const { syncFromAsync } = this.props;
 
-        if (event.key === 'l') {
+        if (event.key === 'l' && nav === 'main') {
             syncFromAsync();
-        } else if (event.key === 's') {
+        } else if (event.key === 's' && nav === 'main') {
             this.syncTo();
         }
     }
