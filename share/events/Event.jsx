@@ -228,10 +228,19 @@ class Event {
         );
     }
 
+    /**
+     * Adds a notification object to the event
+     * @param {Number} timeBefore the time before the event to send the notification
+     * @param {NotificationEnum} type the type of notification
+     */
     addNotification(timeBefore, type) {
         this._notifications.push(new Notifications(type, timeBefore, this._startTime));
     }
 
+    /**
+     * Remove a notification from the event
+     * @param {Notification} notification the notification object to remove
+     */
     removeNotification(notification) {
         const toRemove = this._notifications.findIndex(item => item.equals(notification));
         this._notifications.splice(toRemove);
@@ -360,12 +369,23 @@ class RecurringEvent extends Event {
         );
     }
 
+    /**
+     * Checks if the time overlaps with the recurring event
+     * @param {moment} time the time to check
+     */
     inRangeOfEvent(time) {
         const timeEvent = new Event(null, null, time.clone(), time.clone());
 
         return this.overlap(timeEvent);
     }
 
+    /**
+     * Checks if the time overlaps with a period of time that is not in the day of the start time
+     * nor the day of the end time
+     *
+     * returns false if the event spans less than 2 days
+     * @param {moment} time the time to check
+     */
     inRangeOfNonEndDays(time) {
         let retval = false;
         if (this.getDaySpan() > 2 && this.frequency.timing !== Frequency.freqEnum.DAILY) {
@@ -390,25 +410,14 @@ class RecurringEvent extends Event {
         this._frequency = value;
     }
 
+    /**
+     * Checks if the other event overlaps with the time range associated with this
+     * recurring event.
+     * @param {Event} other the other event to check for overlap
+     * @param {string} precisionType the precision of time to add to generate the range
+     */
     rangeOverlap(other, precisionType) {
-        /* let retval = false;
-        if (this.startTime.get(precisionType) > this.endTime.get(precisionType)) {
-            retval = neitherInRange(
-                other.startTime.get(precisionType),
-                other.endTime.get(precisionType),
-                this.endTime.get(precisionType),
-                this.startTime.get(precisionType),
-            );
-        } else {
-            retval = eitherInRange(
-                other.startTime.get(precisionType),
-                other.endTime.get(precisionType),
-                this.startTime.get(precisionType),
-                this.endTime.get(precisionType),
-            );
-        }
-
-        return retval; */
+        // make sure the other event could possibly overlap (ie after this event starts)
         if (other.endTime.isSameOrAfter(this.startTime)) {
             const newStart = this.startTime.clone();
             const newEnd = this.endTime.clone();
@@ -416,7 +425,9 @@ class RecurringEvent extends Event {
             const regEvent = new Event(null, null, newStart, newEnd);
 
             // loop until other.startTime >= newEnd
+            // this determines if other ever actually overlaps with this event in the future
             while (!regEvent.overlap(other)) {
+                // break condition from the loop for if we pass the other event
                 if (other.endTime.isBefore(regEvent.startTime)) {
                     return false;
                 }
@@ -425,28 +436,41 @@ class RecurringEvent extends Event {
                 regEvent.endTime.add(1, precisionType);
             }
 
+            // this event overlapped with the other event at some point
             return true;
         }
 
+        // the other event could not possibly overlap since it is before the start
+        // of any recurrence
         return false;
     }
 
+    /**
+     * Checks if this recurring event overlaps with the other event
+     * @param {Event} other the other event to check for overlap
+     */
     overlap(other) {
+        // determine if the other event is before this event entirely (no chance of overlap)
         const minOverlapTime = (other.endTime.isSameOrAfter(this.startTime));
 
+        // check for overlap depending on the type of frequency
         switch (this.frequency.timing) {
         case Frequency.freqEnum.DAILY:
+            // if the other event's end time is past this start time, then every day overlaps
             return minOverlapTime;
         case Frequency.freqEnum.WEEKLY:
-            return minOverlapTime && this.rangeOverlap(other, 'week');
+            // if other is past the min threshold and overlaps at some point in the future (or now)
+            return minOverlapTime && this.rangeOverlap(other, 'week'); // increment iter by weeks
         case Frequency.freqEnum.MONTHLY: {
             // note that this overlap has some odd behaviors when events start
             // and end in different months.  Not sure what the correct behavoir is
             // so this issue is being overlooked right now
-            return minOverlapTime && (this.rangeOverlap(other, 'month'));
+            // if other is past the min threshold and overlaps at some point in the future (or now)
+            return minOverlapTime && (this.rangeOverlap(other, 'month')); // increment by months
         }
         case Frequency.freqEnum.YEARLY:
-            return minOverlapTime && (this.rangeOverlap(other, 'year'));
+            // if other is past the min threshold and overlaps at some point in the future (or now)
+            return minOverlapTime && (this.rangeOverlap(other, 'year')); // increment iter by years
         default:
             throw new Error('not a valid frequency');
         }
