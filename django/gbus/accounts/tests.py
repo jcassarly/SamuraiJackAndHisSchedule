@@ -16,9 +16,8 @@ HTTP_REDIRECT = 302
 HTTP_OK       = 200
 
 class UserCreationTest(TestCase):
-    def test_sets_new_data(self):
-        """Checks that the signup form successfully executes."""
-
+    def setUp(self):
+        """Set up the user account"""
         # created the user data
         user_data = {"username": TEST_USERNAME, "password1": TEST_PASSWORD, "password2": TEST_PASSWORD}
 
@@ -31,6 +30,9 @@ class UserCreationTest(TestCase):
         # save the form
         form.save()
 
+    def test_sets_new_data(self):
+        """Checks that the signup form successfully executes."""
+
         # login the user
         response = self.client.post(reverse('login'), {'username': TEST_USERNAME, 'password': TEST_PASSWORD})
 
@@ -42,3 +44,16 @@ class UserCreationTest(TestCase):
 
         # check that the data is what was in the database by default
         self.assertEquals(data.getvalue(), b'{"events": {}, "deadlines": {}, "settings": {}, "username": "tester2"}')
+
+    def test_sets_username(self):
+        """Check that the save_username function sets the cookie"""
+
+        # login the user
+        response = self.client.post(reverse('login'), {'username': TEST_USERNAME, 'password': TEST_PASSWORD})
+
+        # followt he redirects
+        resp = self.client.get(response.url)
+        resp2 = self.client.get(resp.url)
+
+        # check that the tester2 cookie is set since the login went to save_username and then to the home screen
+        self.assertEquals(resp2.cookies.get('username').value, TEST_USERNAME)
