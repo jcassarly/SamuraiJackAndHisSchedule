@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import moment from 'moment-timezone';
 
-import DayEvents from '../DayEvents';
+import DayEventsController from '../DayEvents';
 import { Event } from '../../events/Event';
 
 const daylight = moment.tz('2019-03-10T08:00:00Z', 'America/New_York');
@@ -13,7 +13,7 @@ const clipboardClosure = jest.fn(() => () => {});
 const pxToHours = jest.fn(() => {});
 
 function createDayEvents(day, events) {
-    return shallow(<DayEvents
+    return shallow(<DayEventsController
         day={day}
         events={events}
         resizing={false}

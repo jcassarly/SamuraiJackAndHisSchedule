@@ -257,17 +257,17 @@ class Event {
             return other.overlap(this);
         }
 
-        if (this.startTime.isAfter(other.startTime)
-        && this.startTime.isBefore(other.endTime)) {
+        if (this.startTime.isSameOrAfter(other.startTime)
+        && this.startTime.isSameOrBefore(other.endTime)) {
             return true;
-        } if (other.startTime.isAfter(this.startTime)
-        && other.startTime.isBefore(this.endTime)) {
+        } if (other.startTime.isSameOrAfter(this.startTime)
+        && other.startTime.isSameOrBefore(this.endTime)) {
             return true;
-        } if (this.endTime.isAfter(other.startTime)
-        && this.endTime.isBefore(other.endTime)) {
+        } if (this.endTime.isSameOrAfter(other.startTime)
+        && this.endTime.isSameOrBefore(other.endTime)) {
             return true;
-        } if (other.endTime.isAfter(this.startTime)
-        && other.endTime.isBefore(this.endTime)) {
+        } if (other.endTime.isSameOrAfter(this.startTime)
+        && other.endTime.isSameOrBefore(this.endTime)) {
             return true;
         }
         return false;

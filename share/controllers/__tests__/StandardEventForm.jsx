@@ -93,7 +93,7 @@ test('changes end date to third of month plus 1 hour from current time correctly
     // click the button
     fireEvent.click(thirdDayOfMonth);
 
-    // epxected resulting date
+    // expected resulting date
     const endDate = moment().date(1).add(2, 'day').add(1, 'hour');
 
     // check the click updated the form correctly
@@ -193,7 +193,7 @@ test('changes notifications to email correctly', () => {
 
     // find the notifications field
     const input = getByText('Notification Type:').children.notifications;
-    expect(input.value).toEqual('');
+    expect(input.value).toEqual('email');
 
     // change the selected opition
     fireEvent.change(input, { target: { value: Notifications.noteEnum.EMAIL } });
@@ -210,7 +210,7 @@ test('changes notification time correctly', () => {
 
     // find the notification time field
     const input = getByPlaceholderText('Notification Time');
-    expect(input.value).toEqual('0');
+    expect(input.value).toEqual('15');
 
     // change the value in the field
     input.value = 123;

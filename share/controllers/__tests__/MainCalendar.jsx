@@ -19,7 +19,9 @@ const store = createStore()({
         maxDeadlineId: 0,
         deadlines: {},
     },
-    settings: new Settings(),
+    settings: {
+        settings: new Settings(),
+    },
 });
 let calendar = mount(
     <Provider store={store}>
