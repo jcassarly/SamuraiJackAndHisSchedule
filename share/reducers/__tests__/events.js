@@ -8,6 +8,7 @@ import {
 } from '../../actions/createEvent';
 import { Event } from '../../events/Event';
 import { Deadline } from '../../events/Deadline';
+import ColorEnum from '../../ColorEnum';
 // import { syncFrom, syncFromAsync } from '../../actions/sync';
 
 jest.mock('../../events/AutoScheduler');
@@ -27,7 +28,7 @@ const originalState = {
 };
 const eventTime = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 const event = new Event('test', 'description', eventTime.clone(), eventTime.clone().add(1, 'hour'));
-const deadline = new Deadline('test', eventTime.clone().add(10, 'days'), 360, 10, 60, 10, eventTime.clone().add(2, 'hours'), 10, eventTime.clone());
+const deadline = new Deadline('test', 'desc', eventTime.clone().add(10, 'days'), 360, 10, 60, 10, eventTime.clone().add(2, 'hours'), 'here', true, ColorEnum.BLUE_WHITE);
 
 test('keeps state', () => {
     expect(reducer(state)).toEqual(state);

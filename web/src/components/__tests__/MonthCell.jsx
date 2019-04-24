@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment-timezone';
 import { shallow } from 'enzyme';
 import MonthCell from '../MonthCell';
-import { Event } from '../../events/Event';
+import { Event } from '../../share/events/Event';
 
 test('renders no-event', () => {
     const cell = shallow(<MonthCell date={5} />);
