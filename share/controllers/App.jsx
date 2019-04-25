@@ -61,34 +61,52 @@ class AppController extends Component {
         this.setState({ nav: 'main' });
     }
 
+    /**
+     * Handler for mouse clicks on the main calendar page to close the sidemenu if it is open
+     * when the user clicks on the calendar
+     * @param {obj} event the Javascript event object that triggered this event handler
+     */
     closeSideMenuOnClick = (event) => {
         const { sideMenu } = this.state;
 
+        // if the sidement is open and the mouse is over the calendar and not the menu
         if (sideMenu && event.clientX < document.body.clientWidth - SIDE_MENU_SIZE) {
             this.toggleSideMenu();
         }
     }
 
+    /**
+     * Handle button presses to sync back and forth with the server
+     * @param {obj} event the Javascript event object that triggered this event handler
+     */
     handleKeyPress = (event) => {
         const { nav } = this.state;
         const { syncFromAsync } = this.props;
 
+        // if key pressed is l on the main calendar page, load data from the server
         if (event.key === 'l' && nav === 'main') {
             syncFromAsync();
+        // if key pressed is s on the main calendar page, send data to the server
         } else if (event.key === 's' && nav === 'main') {
             this.syncTo();
         }
     }
 
+    /**
+     * Toggles the state of the side menu
+     */
     toggleSideMenu = () => {
         const { sideMenu } = this.state;
 
         let newWidth = '0px';
 
+        // if the side menu is not open, open it
+        // otherwise it will close
         if (!sideMenu) {
             newWidth = `${SIDE_MENU_SIZE}px`;
         }
 
+        // update the state
         this.setState({
             sideMenu: !sideMenu,
             sideMenuWidth: newWidth,
@@ -168,6 +186,13 @@ class AppController extends Component {
     }
 }
 
+/**
+ * username: the username of the account logged in
+ * events: the list of events from the redux store
+ * deadlines: the list of deadlines from the redux store
+ * settings: the settings object from the redux store
+ * syncFromAsync: a function to sync all data to the server
+ */
 AppController.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     events: PropTypes.object.isRequired,

@@ -18,6 +18,8 @@ const store = createStore(rootReducer);
 
 afterEach(cleanup);
 
+moment.now = () => new Date('2019-03-19T08:00:00Z');
+
 test('changes description', () => {
     // render the vent form
     const { getByPlaceholderText } = render(
@@ -174,13 +176,13 @@ test('changes notifications to email correctly', () => {
 
     // find the notifications field
     const input = getByText('Notification Type:').children.notifications;
-    expect(input.value).toEqual('');
+    expect(input.value).toEqual('email');
 
     // change the selected opition
-    fireEvent.change(input, { target: { value: Notifications.noteEnum.EMAIL } });
+    fireEvent.change(input, { target: { value: Notifications.noteEnum.TEXT } });
 
     // check the resulting change
-    expect(input.value).toEqual(Notifications.noteEnum.EMAIL);
+    expect(input.value).toEqual(Notifications.noteEnum.TEXT);
 });
 
 test('changes notification time correctly', () => {
@@ -191,7 +193,7 @@ test('changes notification time correctly', () => {
 
     // find the notification time field
     const input = getByPlaceholderText('Notification Time');
-    expect(input.value).toEqual('0');
+    expect(input.value).toEqual('15');
 
     // change the value in the field
     input.value = 123;

@@ -10,6 +10,12 @@ import DayEvents from '../../components/DayEvents';
 import DayEvent from '../../components/DayEvent';
 import DragEv from '../../components/DragEv';
 
+/**
+ * Update the time to be with respect to the reference
+ * @param {*} time the time to update
+ * @param {*} reference the reference for the new time
+ * @param {*} frequency the frequency at which the event occurs
+ */
 // eslint-disable-next-line no-unused-vars
 function getUpdatedTime(time, reference, frequency) {
     const newTime = time.clone();
@@ -64,6 +70,16 @@ class DayEventsController extends Component {
         },
     }
 
+    /**
+     * turn a start and end time in a given day into an HTML format to display on the calendar
+     *
+     * Note that this function also handles the HTML for the event being selected by the user.
+     *
+     * @param {Event} event the event object being displayed
+     * @param {moment} virtualStart the start time to display on the calendar
+     * @param {moment} virtualEnd the end time to display on the calendar
+     * @param {moment} dayStart the start of the day that the event will be added to
+     */
     generateEventHTML(event, virtualStart, virtualEnd, dayStart) {
         const {
             resizing,
@@ -205,7 +221,10 @@ class DayEventsController extends Component {
             virtualStart = moment.max(virtualStart, dayStart);
             virtualEnd = moment.min(virtualEnd, dayEnd);
 
+            // if we are looking at a recurring event
             if (event instanceof RecurringEvent) {
+                // determine the time that would be from the beginning of the day to the end time
+                // this is necessary for when the event overlaps multiple days
                 virtualStart = dayStart;
                 virtualEnd = getUpdatedTime(
                     event.endTime,
@@ -213,9 +232,15 @@ class DayEventsController extends Component {
                     event.frequency.timing,
                 );
 
+                // if the endtime is before the end of the day
+                //    (to stop this event from showing up before it actually starts)
+                // and the start of the current day is in the range of the event
+                // and the recurring event is multiple days - if its not, then we don't
+                //    need to show anything that starts at the beginning of the day
                 if (event.endTime.isBefore(dayEnd)
                         && event.inRangeOfEvent(virtualStart)
                         && event.isMultiDay()) {
+                    // add the calculated start and end times to the array to display
                     htmlEvents.push(this.generateEventHTML(
                         event,
                         virtualStart.clone(),
@@ -224,26 +249,41 @@ class DayEventsController extends Component {
                     ));
                 }
 
+                // if the start of the day is not on the same day as an endtime of an iteration
+                // of a recurring event, calculate the updated start of the event with repect to
+                // the current day
                 if (!event.inRangeOfNonEndDays(dayStart)) {
                     virtualStart = moment.max(getUpdatedTime(
                         event.startTime,
                         dayStart,
                         event.frequency.timing,
                     ), dayStart);
+                // otherwise we just use the start of the day because the event should
+                // span the whole day
                 } else {
                     virtualStart = dayStart;
                 }
 
+                // if the event does not overlap multiple days and it is not on the same day as an
+                // endpoint of an iteration of the recurring event, calculate the end time
+                // with respect to the current day
                 if (!event.isMultiDay() && !event.inRangeOfNonEndDays(dayEnd)) {
                     virtualEnd = moment.min(getUpdatedTime(
                         event.endTime,
                         dayStart,
                         event.frequency.timing,
                     ), dayEnd);
+                // otherwise, we jsut use the end of the day because the event should
+                // span the whole day
                 } else {
                     virtualEnd = dayEnd;
                 }
 
+                // if the event is not multiday or it overlaps the next day, then push the event
+                // to the array to display.
+                // this is necessary to check because if the event is multiday and it does not
+                // overlap with the next day, then the above push should be the last one for this
+                // iteration of the recurring event
                 if (!event.isMultiDay() || event.overlap(nextDay)) {
                     // returns a correctly positioned div representing an event
                     // The events get positioned overtop of calHours
@@ -254,6 +294,7 @@ class DayEventsController extends Component {
                         dayStart.clone(),
                     ));
                 }
+            // if not a recurring event
             } else {
                 // returns a correctly positioned div representing an event
                 // The events get positioned overtop of calHours
@@ -266,6 +307,7 @@ class DayEventsController extends Component {
             }
         });
 
+        // add the event html events to the calendar
         return (
             <DayEvents>
                 {htmlEvents}

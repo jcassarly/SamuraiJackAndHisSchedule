@@ -7,7 +7,7 @@ import BaseElem from '../../components/BaseElem';
 
 class SideMenuController extends React.Component {
     /**
-     * Create a new user
+     * Create a new side menu
      * @param {*} props the arguments passed into the Toolbar
      *                  see proptypes below for more info
      */
@@ -30,6 +30,9 @@ class SideMenuController extends React.Component {
         });
     }
 
+    /**
+     * Render the side menu
+     */
     render() {
         const {
             navSettings,
@@ -60,6 +63,12 @@ class SideMenuController extends React.Component {
     }
 }
 
+/**
+ * navSettings: a function to tell the main calendar to display the settings form
+ * syncTo: a function to sync the data currentlyon the calendar to the server
+ * syncFrom: a function to sync data from the server to the calendar
+ * style: an object with a width to defined whether the side menu is open or not
+ */
 SideMenuController.propTypes = {
     navSettings: PropTypes.func.isRequired,
     syncTo: PropTypes.func.isRequired,

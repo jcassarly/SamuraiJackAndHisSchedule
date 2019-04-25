@@ -86,7 +86,8 @@ test('changes end date to third of month plus 1 hour from current time correctly
     fireEvent.click(thirdDayOfMonth);
 
     // check that the input field changed based on the date change
-    const endDate = moment().date(1).add(2, 'day').add(1, 'hour');
+    // adding 12 hours because of default deadline length being different than event
+    const endDate = moment().date(1).add(2, 'day').add(12, 'hour');
     expect(endDateInput.value).toEqual(endDate.format('L LT'));
 });
 
@@ -119,7 +120,7 @@ test('changing start date to after end date pulls up error message', () => {
     fireEvent.click(firstDayOfMonth);
 
     // check that the input field updated correctly
-    const endDate = moment().date(1).add(1, 'hour');
+    const endDate = moment().date(1).add(12, 'hour');
     expect(endDateInput.value).toEqual(endDate.format('L LT'));
 
     // submit the event
@@ -129,6 +130,9 @@ test('changing start date to after end date pulls up error message', () => {
     // check that the error message appeared
     const errorDiv = getByText('Please enter a valid date combination');
     expect(errorDiv).toBeDefined();
+
+    // note that the error and callback from this test is expected since the catch
+    // still throws the error to the console
 });
 
 test('changes location correctly', () => {
@@ -218,6 +222,6 @@ test('changes total time correctly', () => {
     testNumberInput(
         'Total Time to Complete',
         <Provider store={store}><DeadlineForm returnHome={() => {}} /></Provider>,
-        '42',
+        '60',
     );
 });

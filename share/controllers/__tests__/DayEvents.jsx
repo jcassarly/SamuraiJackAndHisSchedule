@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import moment from 'moment-timezone';
 
 import { Settings } from '../../events/Settings';
-import DayEvents from '../DayEvents';
+import DayEventsController from '../DayEvents';
 import { Event } from '../../events/Event';
 
 const daylight = moment.tz('2019-03-10T08:00:00Z', 'America/New_York');
@@ -24,7 +24,7 @@ const store = createStore()({
 function createDayEvents(day, events) {
     return mount(
         <Provider store={store}>
-            <DayEvents
+            <DayEventsController
                 navEditEvent={navEditEvent}
                 day={day}
                 events={events}
