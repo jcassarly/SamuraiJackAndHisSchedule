@@ -15,7 +15,7 @@ const notify = new Notifications('email', 15, start);
 const notes = new Array(notify);
 const startWork = moment('2010-10-20 1:30', 'YYYY-MM-DD HH:mm');
 const deadlineTime = moment('2010-10-20 4:30', 'YYYY-MM-DD HH:mm');
-const deadline = new Deadline('deadline', deadlineTime, 42, 30, 60, 15, startWork, 'all over');
+const deadline = new Deadline('deadline', 'description', deadlineTime, 42, 30, 60, 15, startWork, 'all over');
 
 test('name works', () => {
     const event = new Event('test', 'desctest', start, end, 'nowhere', true, notes, null);
@@ -61,7 +61,7 @@ test('overlap works', () => {
     const event = new Event('test', 'desctest', start, end, 'nowhere', true, notes, deadline);
     const event2 = new Event('test', 'desctest', start2, end2, 'nowhere', true, notes, deadline);
     const event3 = new Event('test', 'desctest', start3, end3, 'nowhere', true, notes, deadline);
-    expect(Event.overlap(event, event3)).toBe(true);
-    expect(Event.overlap(event, event2)).toBe(false);
-    expect(Event.overlap(event2, event)).toBe(false);
+    expect(event.overlap(event3)).toBe(true);
+    expect(event.overlap(event2)).toBe(false);
+    expect(event2.overlap(event)).toBe(false);
 });

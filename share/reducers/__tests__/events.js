@@ -26,8 +26,22 @@ const originalState = {
     deadlines: {},
 };
 const eventTime = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
-const event = new Event('test', 'description', eventTime.clone(), eventTime.clone().add(1, 'hour'));
-const deadline = new Deadline('test', eventTime.clone().add(10, 'days'), 360, 10, 60, 10, eventTime.clone().add(2, 'hours'), 10, eventTime.clone());
+const event = new Event(
+    'test',
+    'description',
+    eventTime.clone(),
+    eventTime.clone().add(1, 'hour'),
+);
+const deadline = new Deadline(
+    'test',
+    'description',
+    eventTime.clone().add(10, 'days'),
+    360,
+    10,
+    60,
+    10,
+    eventTime.clone().add(2, 'hours'),
+);
 
 test('keeps state', () => {
     expect(reducer(state)).toEqual(state);

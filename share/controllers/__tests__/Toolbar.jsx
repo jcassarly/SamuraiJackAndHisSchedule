@@ -16,9 +16,19 @@ const store = createStore(rootReducer);
 afterEach(cleanup);
 
 const navNewEvent = jest.fn(() => {});
+const toggleMode = jest.fn(() => {});
+const toggleSideMenu = jest.fn(() => {});
 test('toolbar works', () => {
     const { getByText } = render(
-        <Provider store={store}><Toolbar navNewEvent={navNewEvent} /></Provider>,
+        <Provider store={store}>
+            <Toolbar
+                navNewEvent={navNewEvent}
+                toggleMode={toggleMode}
+                toggleSideMenu={toggleSideMenu}
+                currMode={0}
+                calType={0}
+            />
+        </Provider>,
     );
 
     const newEventButton = getByText('New Event');

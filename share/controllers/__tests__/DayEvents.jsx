@@ -1,7 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import createStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 import moment from 'moment-timezone';
 
+import { Settings } from '../../events/Settings';
 import DayEvents from '../DayEvents';
 import { Event } from '../../events/Event';
 
@@ -11,19 +14,30 @@ const mouseDownClosureDrag = jest.fn(() => () => {});
 const mouseDownClosureResize = jest.fn(() => () => {});
 const clipboardClosure = jest.fn(() => () => {});
 const pxToHours = jest.fn(() => {});
+const navEditEvent = jest.fn(() => {});
 
+const store = createStore()({
+    settings: {
+        settings: new Settings(),
+    },
+});
 function createDayEvents(day, events) {
-    return shallow(<DayEvents
-        day={day}
-        events={events}
-        resizing={false}
-        startSelected={false}
-        mouseMove={0}
-        mouseDownClosureDrag={mouseDownClosureDrag}
-        mouseDownClosureResize={mouseDownClosureResize}
-        clipboardClosure={clipboardClosure}
-        pxToHours={pxToHours}
-    />);
+    return mount(
+        <Provider store={store}>
+            <DayEvents
+                navEditEvent={navEditEvent}
+                day={day}
+                events={events}
+                resizing={false}
+                startSelected={false}
+                mouseMove={0}
+                mouseDownClosureDrag={mouseDownClosureDrag}
+                mouseDownClosureResize={mouseDownClosureResize}
+                clipboardClosure={clipboardClosure}
+                pxToHours={pxToHours}
+            />
+        </Provider>,
+    ).find('DayEventsController').at(0);
 }
 
 test('renders single event', () => {

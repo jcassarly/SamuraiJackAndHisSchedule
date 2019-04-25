@@ -14,10 +14,12 @@ const changeEnd = jest.fn(() => {});
 const cut = jest.fn(() => {});
 const copy = jest.fn(() => {});
 const paste = jest.fn(() => {});
+const navEditEvent = jest.fn(() => {});
 
 function createWeek(date, events, mode) {
     return shallow(
         <Week
+            navEditEvent={navEditEvent}
             week={date}
             events={events}
             mode={mode}
@@ -31,17 +33,18 @@ function createWeek(date, events, mode) {
     );
 }
 
+const dayComp = 'Connect(DayController)';
 const date = moment.tz('2019-03-19T08:00:00Z', 'America/New_York');
 test('displays days', () => {
     const week = createWeek(date, [], modes.NORMAL);
 
-    expect(week.find('DayController')).toHaveLength(8);
+    expect(week.find(dayComp)).toHaveLength(8);
     for (let i = 0; i < 7; i += 1) {
-        expect(week.find('DayController').at(i + 1).prop('day').valueOf()).toBe(date.clone().startOf('week').add(i, 'days').valueOf());
+        expect(week.find(dayComp).at(i + 1).prop('day').valueOf()).toBe(date.clone().startOf('week').add(i, 'days').valueOf());
     }
-    expect(week.find('DayController').at(1)).toHaveProp('mode', modes.NORMAL);
-    expect(week.find('DayController').at(0)).toHaveProp('onlyHours', true);
-    expect(week.find('DayController').at(1)).toHaveProp('onlyHours', false);
+    expect(week.find(dayComp).at(1)).toHaveProp('mode', modes.NORMAL);
+    expect(week.find(dayComp).at(0)).toHaveProp('onlyHours', true);
+    expect(week.find(dayComp).at(1)).toHaveProp('onlyHours', false);
 });
 
 test('event handlers', () => {
@@ -52,7 +55,7 @@ test('event handlers', () => {
     expect(copy.mock.calls).toHaveLength(0);
     expect(paste.mock.calls).toHaveLength(0);
 
-    const day = createWeek(date, [], modes.NORMAL).find('DayController').at(1);
+    const day = createWeek(date, [], modes.NORMAL).find(dayComp).at(1);
 
     day.prop('moveEvent')();
     expect(moveEvent.mock.calls).toHaveLength(1);
@@ -70,7 +73,7 @@ test('event handlers', () => {
 
 test('notify drag', () => {
     const week = createWeek(date, [], modes.DRAG_DROP);
-    const days = week.find('DayController');
+    const days = week.find(dayComp);
 
     const def = {
         initialFocus: -1,

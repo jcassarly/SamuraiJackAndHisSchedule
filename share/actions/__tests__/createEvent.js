@@ -22,7 +22,16 @@ test('create event action creator', () => {
 });
 
 test('create deadline event action creator', () => {
-    const deadline = new Deadline('test', eventTime.clone().add(10, 'days'), 360, 10, 60, 10, eventTime.clone().add(2, 'hours'), 10, eventTime.clone());
+    const deadline = new Deadline(
+        'test',
+        'description',
+        eventTime.clone().add(10, 'days'),
+        360,
+        10,
+        60,
+        10,
+        eventTime.clone().add(2, 'hours'),
+    );
     const createAction = {
         type: CREATE_DEADLINE_EVENT,
         payload: {

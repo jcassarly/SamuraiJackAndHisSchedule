@@ -150,7 +150,7 @@ class AppController extends Component {
      */
     render() {
         const { nav, sideMenuWidth } = this.state;
-        const { username, syncFromAsync } = this.props;
+        const { syncFromAsync } = this.props;
         return (
             <App
                 onClick={this.closeSideMenuOnClick}
@@ -162,7 +162,6 @@ class AppController extends Component {
                     navSettings={this.navSettings}
                     syncTo={this.syncTo}
                     syncFrom={syncFromAsync}
-                    username={username}
                 />
             </App>
         );
@@ -170,7 +169,6 @@ class AppController extends Component {
 }
 
 AppController.propTypes = {
-    username: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     events: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
@@ -182,7 +180,6 @@ AppController.propTypes = {
 
 const mapStateToProps = state => (
     {
-        username: state.username,
         events: state.events.events,
         deadlines: state.events.deadlines,
         settings: state.settings.settings,

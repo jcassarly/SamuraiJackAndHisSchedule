@@ -24,7 +24,7 @@ function renderCal(type) {
 
 test('renders month', () => {
     const header = renderCal(types.MONTH);
-    expect(header).toHaveProp('date', 'March');
+    expect(header).toHaveProp('date', 'March (2019)');
 });
 
 test('renders week', () => {

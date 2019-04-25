@@ -12,6 +12,8 @@ const currDate = new Date('2019-03-19T08:00:00Z');
 moment.now = () => currDate;
 const navNewEvent = jest.fn(() => {});
 const navSettings = jest.fn(() => {});
+const toggleSideMenu = jest.fn(() => {});
+const navEditEvent = jest.fn(() => {});
 const store = createStore()({
     events: {
         maxEventId: 0,
@@ -19,11 +21,15 @@ const store = createStore()({
         maxDeadlineId: 0,
         deadlines: {},
     },
-    settings: new Settings(),
+    settings: {
+        settings: new Settings(),
+    },
 });
 let calendar = mount(
     <Provider store={store}>
         <MainCalendar
+            navEditEvent={navEditEvent}
+            toggleSideMenu={toggleSideMenu}
             navNewEvent={navNewEvent}
             navSettings={navSettings}
         />
