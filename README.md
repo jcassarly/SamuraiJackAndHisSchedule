@@ -2,45 +2,31 @@
 
 ## Authors:
 
-- Jack Doiron (jad245) <- Team Lead
-- Jared Cassarly (jwc160)
-- Shota Nemoto (srn24)
-- Martin Peters (mjp184)
+- Sophie Doiron <- Team Lead
+- Jared Cassarly
+- Shota Nemoto
+- Martin Peters
 
-## Overview
+## Installation
+Requires Linux/Mac/WSL.
 
-The app will be a standard scheduler/calendar.  It will allow for easier User Experience than existing platforms like Google Calendar.  The way in which the User Experience will be streamlined will be through increasing the speed at which users can create events.  Additionally, the application will be cross platform, allowing the user to manage their schedule on all of their devices.
+ 1. Install nodejs and npm.  (For example, `sudo apt install nodejs`)
+ 1. Install python3 (`sudo apt install python3`)
+ 1. Verify pip is installed
+ 1. Install pipenv
+ 1. Navigate to `/django/`
+ 1. run `pipenv shell` (running the python server requires being in this shell)
+ 1. Navigate to `/share`
+ 1. Run `./sync_share.sh` and press y
+ 1. Navigate to `/web`
+ 1. run `npm install`
+ 1. run `./builder.sh`
+ 1. The server should now be running at https://localhost:8000
 
-## Features
+To run the standalone app without the server, navigate to `/web` and run `npm run`
 
-### Drag and Drop Events
+## Testing
 
-The app will make it easy to move events around to different times.
+To run javascript tests, navigate to `/web` and run `npm test`
 
-The app will also be able to allow the user to easily resize events.  Instead of only being able to open the settings for the event, the user will be able to drag the boundaries of the event to change the time period in which it takes place.
-
-### Auto-Scheduling
-
-Allows the user to give a deadline for a task and then the program splits up the task between the current time and the deadline.  This feature will be configurable by the user to allow them to split up the task appropriately for their schedule.  
-
-This feature will also take into account the location that the task can be performed.
-
-This feature will also auto-update when the user adds more events to their calendar.  The user will be notified when this happens.  The app will also ask for verification that the changes are acceptable.
-
-### Calendar Sync
-
-The application will maintain the calendar between all devices on which the user is signed in.  As a result the application will also require the user to make an account in order to have access to this feature.
-
-### Notifications
-
-The scheduling app will allow the user to adjust the frequency of notifications, the type of notification (eg vibration, banners, emails, etc).  
-
-Additionally, it will allow the user to set the default notification delays easily.
-
-### API Integration
-
-The app will be able to integrate with other services using an API.
-
-### Compatibility
-
-The application will function on multiple different types of devices including Windows, Linux, Android, and iPhone.
+To run python tests, navigate to `/django/gbus` and run `./run_coverage.sh`
